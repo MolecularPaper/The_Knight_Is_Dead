@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45d68f5e783ce5745b35097485ca64d8, type: 3}
+  m_Name: Spawn Data
+  m_EditorClassIdentifier: 
+  spawnDatas:
+  - enemyData:
+      currentHp: 0
+      hpPoint: 10
+      atkPoint: 1
+      soul: 10
+    entityObject: {fileID: 2208238547154598288, guid: 289593dfee0c7b642b13f5fdd8bc907e, type: 3}
+  - enemyData:
+      currentHp: 0
+      hpPoint: 20
+      atkPoint: 1
+      soul: 12
+    entityObject: {fileID: 2208238547154598288, guid: 289593dfee0c7b642b13f5fdd8bc907e, type: 3}
+  - enemyData:
+      currentHp: 0
+      hpPoint: 30
+      atkPoint: 2
+      soul: 14
+    entityObject: {fileID: 2208238547154598288, guid: 289593dfee0c7b642b13f5fdd8bc907e, type: 3}
+  - enemyData:
+      currentHp: 0
+      hpPoint: 40
+      atkPoint: 2
+      soul: 18
+    entityObject: {fileID: 2208238547154598288, guid: 289593dfee0c7b642b13f5fdd8bc907e, type: 3}
+  - enemyData:
+      currentHp: 0
+      hpPoint: 50
+      atkPoint: 2
+      soul: 25
+    entityObject: {fileID: 2208238547154598288, guid: 289593dfee0c7b642b13f5fdd8bc907e, type: 3}
+  - enemyData:
+      currentHp: 0
+      hpPoint: 60
+      atkPoint: 2
+      soul: 30
+    entityObject: {fileID: 2208238547154598288, guid: 289593dfee0c7b642b13f5fdd8bc907e, type: 3}
+  - enemyData:
+      currentHp: 0
+      hpPoint: 70
+      atkPoint: 3
+      soul: 40
+    entityObject: {fileID: 2208238547154598288, guid: 289593dfee0c7b642b13f5fdd8bc907e, type: 3}
