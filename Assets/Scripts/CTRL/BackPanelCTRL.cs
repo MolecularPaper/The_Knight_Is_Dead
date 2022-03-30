@@ -34,8 +34,8 @@ public class BackPanelCTRL : MonoBehaviour
     public void UpdateBackgroundAnimation()
     {
         foreach (Animator backAnimator in backAnimators) {
-            if (player && !player.isMove && backAnimator.speed != 0) backAnimator.speed = Mathf.MoveTowards(backAnimator.speed, 0, backRampRate);
-            else if (player && player.isMove && backAnimator.speed != 1) backAnimator.speed = Mathf.MoveTowards(backAnimator.speed, 1, backRampRate);
+            if (player && !player.isMove && backAnimator.speed != 0) backAnimator.speed = Mathf.MoveTowards(backAnimator.speed, 0, backRampRate * Time.deltaTime);
+            else if (player && player.isMove && backAnimator.speed != 1) backAnimator.speed = Mathf.MoveTowards(backAnimator.speed, 1, backRampRate * Time.deltaTime);
         }
     }
 }

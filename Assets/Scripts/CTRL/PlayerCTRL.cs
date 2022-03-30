@@ -3,18 +3,9 @@ using System.Threading.Tasks;
 using System.Collections;
 using UnityEngine;
 
-public class PlayerCTRL : MonoBehaviour
+public class PlayerCTRL : Entity
 {
     public PlayerData playerData;
-
-    /// <summary>
-    /// 메인 캐릭터 애니메이터 컴포넌트
-    /// </summary>
-    private Animator animator;
-    private SpriteRenderer spriteRenderer;
-
-    [SerializeField] private Transform hpBar;
-    [SerializeField] private Color hitColor;
 
     public bool isMove {
         get => animator.GetBool("IsMove");
@@ -26,11 +17,9 @@ public class PlayerCTRL : MonoBehaviour
         set => animator.SetBool("IsAttack", value);
     }
 
-    void Awake()
+    protected override void Awake()
     {
-        animator = GetComponent<Animator>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
-
+        base.Awake();
         playerData.currentHp = playerData.hpPoint;
         Move();
     }
@@ -40,10 +29,10 @@ public class PlayerCTRL : MonoBehaviour
         isAttack = GameManager.gm.canAction;
     }
 
-    public async Task Stop()
+    public async void Stop()
     {
         while (true) {
-            if (GameManager.gm.isStopDistance) {
+            if (GameManager.gm.canAction) {
                 isMove = false;
                 return;
             }
@@ -59,11 +48,11 @@ public class PlayerCTRL : MonoBehaviour
         CalHpBar();
     }
 
-    public void AttackEnemy()
+    public override void Attack()
     {
         if (!GameManager.gm.currentEnemy) return;
 
-        int totalDamage = playerData.atkPoint;
+        long totalDamage = playerData.atkPoint;
 
         if (Random.Range(0f, 100f) < playerData.cripPoint) {
             totalDamage += (int)(playerData.atkPoint * playerData.cridPoint);
@@ -72,34 +61,21 @@ public class PlayerCTRL : MonoBehaviour
         GameManager.gm.currentEnemy.Damage(totalDamage);
     }
 
-    public void Damage(int damage)
+    public override void Damage(long damage)
     {
-        _ = HitEffect();
-        playerData.currentHp -= (damage - playerData.defPoint);
+        playerData.currentHp -= (damage - playerData.defPoint) < 0 ? 0 : (damage - playerData.defPoint);
+        base.Damage(damage);
 
         if (playerData.currentHp <= 0) {
             Dead();
         }
-
-        CalHpBar();
     }
-    public async Task HitEffect()
+
+    protected override void Dead()
     {
-        Color originColor = spriteRenderer.color;
-        spriteRenderer.color = hitColor;
-
-        await Task.Delay(100);
-
-        spriteRenderer.color = originColor;
+        base.Dead();
+        GameManager.gm.PlayerDead();
     }
 
-    private void Dead()
-    {
-        hpBar.gameObject.SetActive(false);
-        animator.SetTrigger("Dead");
-
-        _ = GameManager.gm.PlayerDead();
-    }
-
-    public void CalHpBar() => hpBar.localScale = new Vector3((float)playerData.currentHp / playerData.hpPoint, hpBar.localScale.y, hpBar.localScale.z);
+    protected override void CalHpBar() => hpBar.localScale = new Vector3((float) playerData.currentHp / playerData.hpPoint, hpBar.localScale.y, hpBar.localScale.z);
 }

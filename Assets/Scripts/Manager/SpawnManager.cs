@@ -36,6 +36,5 @@ public class SpawnManager : MonoBehaviour
 
         GameManager.gm.SetEnemy(enemy);
         canSpawn = false;
-
     }
 }

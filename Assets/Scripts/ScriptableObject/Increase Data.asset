@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b94cd80fc859e874da3597f187051e01, type: 3}
+  m_Name: Increase Data
+  m_EditorClassIdentifier: 
+  atkIncreseWidth: 0.1
+  atkSoulIncreseWidth: 2.25
+  defIncreseWidth: 0.5
+  defSoulIncreseWidth: 1
+  lukIncreseWidth: 0.2
+  lukSoulIncreseWidth: 10
+  cridIncreseWidth: 0.2
+  cridSoulIncreseWidth: 10
+  cripIncreseWidth: 0.2
+  cripSoulIncreseWidth: 10

@@ -4,67 +4,63 @@ using System.Collections;
 using UnityEngine;
 using TMPro;
 
-public class EnemyCTRL : MonoBehaviour
+public class EnemyCTRL : Entity
 {
-    private SpriteRenderer spriteRenderer;
-    private Animator animator;
-
     [HideInInspector] public EntityData enemyData;
-    [SerializeField] private Transform hpBar;
-    [SerializeField] private Color hitColor;
 
     private float hpBarScale;
 
 
-    void Awake()
+    protected override void Awake()
     {
-        animator = GetComponent<Animator>();
-        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        base.Awake();
+        enemyData.currentHp = enemyData.hpPoint;
         hpBarScale = hpBar.localScale.x;
+        Move();
     }
 
     void Update()
     {
-        if (GameManager.gm.player) return;
+        if (!GameManager.gm.player) return;
         animator.SetBool("IsAttack", GameManager.gm.canAction);
     }
 
-    public void AttackPlayer()
+    private async void Move()
     {
-        if (GameManager.gm.player) return;
+        while (true) {
+            if (!GameManager.gm.canAction) {
+                transform.Translate(Vector3.right * 5 * Time.deltaTime);
+                await Task.Delay(1);
+            }
+            else {
+                return;
+            }
+        }
+    }
+
+    public override void Attack()
+    {
+        if (!GameManager.gm.player) return;
         GameManager.gm.player.Damage(enemyData.atkPoint);
     }
 
-    public void Damage(int damage)
+    public override void Damage(long damage)
     {
-        _ = HitEffect();
         enemyData.currentHp -= damage;
+        base.Damage(damage);
 
         if (enemyData.currentHp <= 0) {
             Dead();
         }
-
-        hpBar.localScale = new Vector3(Mathf.Lerp(0, hpBarScale, (float)enemyData.currentHp / enemyData.hpPoint), hpBar.localScale.y, hpBar.localScale.z);
     }
 
-    public async Task HitEffect()
+    protected override void Dead()
     {
-        Color originColor = spriteRenderer.color;
-        spriteRenderer.color = hitColor;
+        base.Dead();
 
-        await Task.Delay(100);
-
-        spriteRenderer.color = originColor;
-    }
-
-    public void Dead()
-    {
-        hpBar.gameObject.SetActive(false);
-        animator.SetTrigger("Dead");
-
-        _ = GameManager.gm.EnemyDead();
+        GameManager.gm.EnemyDead();
         GameManager.gm.AddSoul(enemyData.soul);
     }
 
-    public void Destroy() => Destroy(this.gameObject);
+    protected override void CalHpBar() => hpBar.localScale = new Vector3(Mathf.Lerp(0, hpBarScale, (float)enemyData.currentHp / enemyData.hpPoint), hpBar.localScale.y, hpBar.localScale.z);
 }
