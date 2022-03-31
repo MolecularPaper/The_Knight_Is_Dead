@@ -6,6 +6,7 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private PlayerCTRL _player;
+    [SerializeField] private BackPanelCTRL backPanelCTRL;
     [SerializeField] private float canActionDistance;
 
     public static GameManager gm { get; set; }
@@ -21,9 +22,23 @@ public class GameManager : MonoBehaviour
         gm = this;
     }
 
+    void Start()
+    {
+        StartGame();
+    }
+
     void Update()
     {
 
+    }
+
+    public async void StartGame()
+    {
+        player.Reset();
+        UIManager.ui.UpdateStage(SpawnManager.sm.spawnIndex + 1);
+        await UIManager.ui.FadeOut(false);
+        SpawnManager.sm.canSpawn = true;
+        player.Move();
     }
 
     public void SetEnemy(EnemyCTRL enemy)
@@ -45,13 +60,19 @@ public class GameManager : MonoBehaviour
 
     public async void PlayerDead()
     {
-        currentEnemy = null;
-        await Task.Delay(1);
+        currentEnemy.Destroy();
+        await UIManager.ui.FadeOut(true);
+
+        SpawnManager.sm.canSpawn = false;
+        SpawnManager.sm.ReturnSpawn();
+        backPanelCTRL.Reset();
+
+        StartGame();
     }
 
     public void AddSoul(long count)
     {
-        player.playerData.soul += count + (long)(count * (player.playerData.abilities[AbilityType.LUK].point / 100));
+        player.playerData.soul += count + count * (player.playerData.abilities[AbilityType.LUK].point / 100);
         UIManager.ui.UpdateItemUI();
         UIManager.ui.UdateAllAbilityUI();
     }

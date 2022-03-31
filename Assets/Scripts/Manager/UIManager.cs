@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Collections;
 using System;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEngine;
 using TMPro;
@@ -10,9 +12,14 @@ public class UIManager : MonoBehaviour
     public static UIManager ui;
     private AudioSource audioSource;
 
-    [SerializeField] private TextMeshProUGUI stage;
+    [SerializeField] TextMeshProUGUI stage;
     [SerializeField] PlayerCTRL player;
     [SerializeField] CanvasGroup[] taps;
+    
+    [Space(10)]
+    [SerializeField] CanvasGroup fade;
+    [SerializeField] float fadeSpeed;
+
     private int activeTapIndex = 0;
 
     [Header("Abillity")]
@@ -28,9 +35,8 @@ public class UIManager : MonoBehaviour
     {
         ui = this;
         audioSource = GetComponent<AudioSource>();
-
-        UpdateItemUI();
         AddButtonSoundEffect();
+        UpdateItemUI();
     }
 
     private void Start()
@@ -68,9 +74,11 @@ public class UIManager : MonoBehaviour
 
     private void AddButtonSoundEffect()
     {
-        Button[] allButtons = FindObjectsOfType<Button>();
-        foreach (Button button in allButtons) {
-            button.onClick.AddListener(() => { audioSource.PlayOneShot(buttonClickSound); });
+        EventTrigger[] allButtons = FindObjectsOfType<EventTrigger>();
+        foreach (EventTrigger eventTrigger in allButtons) {
+            EventTrigger.Entry entry = new EventTrigger.Entry();
+            entry.callback.AddListener((data) => { audioSource.PlayOneShot(buttonClickSound); });
+            eventTrigger.triggers.Add(entry);
         }
     }
 
@@ -102,5 +110,26 @@ public class UIManager : MonoBehaviour
         abilityUI[(int)type].level.text = $"{abilityUI[(int)type].title} {ability.level}LV";
         abilityUI[(int)type].description.text = $"{point} -> {nextPoint}";
         abilityUI[(int)type].soul.text = $"{string.Format("{0:#,#}", ability.requestSoul)} ¼Ò¿ï";
+    }
+
+    public async Task FadeOut(bool isFadeOut)
+    {
+        fade.gameObject.SetActive(true);
+
+        while (true) {
+            if (isFadeOut) {
+                fade.alpha = Mathf.MoveTowards(fade.alpha, 1, fadeSpeed * Time.deltaTime);
+                if (fade.alpha == 1) break;
+            }
+            else {
+                fade.alpha = Mathf.MoveTowards(fade.alpha, 0, fadeSpeed * Time.deltaTime);
+                if (fade.alpha == 0) {
+                    fade.gameObject.SetActive(false);
+                    break;
+                }
+            }
+
+            await Task.Delay(1);
+        }
     }
 }

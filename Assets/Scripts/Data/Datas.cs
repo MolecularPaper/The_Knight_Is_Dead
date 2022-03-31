@@ -62,6 +62,7 @@ public class EntityData
     {
         this.abilities = entityData.abilities;
         this.soul = entityData.soul;
+        abilities = new Dictionary<AbilityType, Ability>();
     }
 }
 

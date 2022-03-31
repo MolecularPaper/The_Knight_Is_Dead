@@ -13,12 +13,17 @@ public class BackPanelCTRL : MonoBehaviour
     /// </summary>
     [SerializeField] private float backRampRate;
     
-    private PlayerCTRL player;
+    [SerializeField] private PlayerCTRL player;
+
+    public void Reset()
+    {
+        foreach (Animator backAnimator in backAnimators) {
+            backAnimator.Rebind();
+        }
+    }
 
     void Awake()
     {
-        player = GameObject.FindWithTag("Player").GetComponent<PlayerCTRL>();
-
         foreach (Animator backAnimator in backAnimators) {
             backAnimator.speed = 0;
         }

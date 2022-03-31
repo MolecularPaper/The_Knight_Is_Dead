@@ -16,10 +16,7 @@ public class IncreaseData : ScriptableObject
     [Space(10)]
     public float defIncreseWidth;
     public float defSoulIncreseWidth;
-
-    [Space(10)]
-    public float eraIncreseWidth;
-    public float eraSoulIncreseWidth;
+    public float defConst;
 
     [Space(10)]
     public float lukIncreseWidth;
@@ -32,4 +29,9 @@ public class IncreaseData : ScriptableObject
     [Space(10)]
     public float cripIncreseWidth;
     public float cripSoulIncreseWidth;
+
+    [Space(10)]
+    public float enemyHPIncrese;
+    public float enemyAtkIncrese;
+    public float enemySoulIncrese;
 }

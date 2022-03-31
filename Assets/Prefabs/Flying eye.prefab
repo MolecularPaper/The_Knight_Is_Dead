@@ -329,7 +329,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hpBar: {fileID: 7758084399371086209}
   hitColor: {r: 0.78431374, g: 0, b: 0, a: 1}
-  hitSounds: []
+  hitSounds:
+  - {fileID: 8300000, guid: e7f9fcb7e90d3d14e8bbf73f4e0db4ad, type: 3}
   enemyData:
     currentHp: 0
     soul: 0

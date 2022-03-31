@@ -5,9 +5,10 @@ using UnityEngine;
 
 public class PlayerCTRL : Entity
 {
-    public PlayerData playerData;
-
+    [SerializeField] private AudioClip attackSound;
     [SerializeField] private IncreaseData increaseData;
+
+    public PlayerData playerData;
 
     public bool isMove {
         get => animator.GetBool("IsMove");
@@ -19,11 +20,21 @@ public class PlayerCTRL : Entity
         set => animator.SetBool("IsAttack", value);
     }
 
+    public bool isDead = true;
+
+    public void Reset()
+    {
+        animator.Rebind();
+        isDead = false;
+        playerData.currentHp = playerData.abilities[AbilityType.HP].point;
+        hpBar.gameObject.SetActive(true);
+        CalHpBar();
+    }
+
     protected override void Awake()
     {
         base.Awake();
         ResetAbility();
-        Move();
     }
 
     void Update()
@@ -36,7 +47,7 @@ public class PlayerCTRL : Entity
         playerData.abilities = new Dictionary<AbilityType, Ability>();
         playerData.abilities.Add(AbilityType.HP, new Ability(100, 12000, increaseData.hpIncreseWidth, increaseData.hpSoulIncreseWidth));
         playerData.abilities.Add(AbilityType.ATK, new Ability(1, 12000, increaseData.atkIncreseWidth, increaseData.atkSoulIncreseWidth));
-        playerData.abilities.Add(AbilityType.DEF, new Ability(0, 12000, increaseData.defIncreseWidth, increaseData.defSoulIncreseWidth));
+        playerData.abilities.Add(AbilityType.DEF, new Ability(1, 12000, increaseData.defIncreseWidth, increaseData.defSoulIncreseWidth));
         playerData.abilities.Add(AbilityType.LUK, new Ability(0, 12000, increaseData.lukIncreseWidth, increaseData.lukSoulIncreseWidth, "%"));
         playerData.abilities.Add(AbilityType.CRIP, new Ability(0, 12000, increaseData.cripIncreseWidth, increaseData.cripSoulIncreseWidth, "%"));
         playerData.abilities.Add(AbilityType.CRID, new Ability(50, 12000, increaseData.cridIncreseWidth, increaseData.cridSoulIncreseWidth, "%"));
@@ -71,28 +82,27 @@ public class PlayerCTRL : Entity
             totalDamage += (int)(totalDamage * playerData.abilities[AbilityType.CRID].point);
         }
 
+        audioSource.PlayOneShot(attackSound);
         GameManager.gm.currentEnemy.Damage(totalDamage);
     }
 
     public override void Damage(long damage)
     {
-        long def = (long)playerData.abilities[AbilityType.DEF].point;
+        if (isDead) return;
 
-        float defConst = 1f;
-        print((long)(damage * (playerData.abilities[AbilityType.DEF].point / (playerData.abilities[AbilityType.DEF].point + defConst))));
-        playerData.currentHp -= (long)(damage * (playerData.abilities[AbilityType.DEF].point / (playerData.abilities[AbilityType.DEF].point + defConst)));
+        float def = playerData.abilities[AbilityType.DEF].point;
+
+        print("데미지받음: " + (long)((1 - def / (def + increaseData.defConst)) * damage));
+        playerData.currentHp -= (long)((1 - def / (def + increaseData.defConst)) * damage);
         base.Damage(damage);
 
         if (playerData.currentHp <= 0) {
-            Dead();
+            base.Dead();
+            isDead = true;
         }
     }
 
-    protected override void Dead()
-    {
-        base.Dead();
-        GameManager.gm.PlayerDead();
-    }
+    public void DeadEvent() => GameManager.gm.PlayerDead();
 
     protected override void CalHpBar() => hpBar.localScale = new Vector3((float)playerData.currentHp / playerData.abilities[AbilityType.HP].point, hpBar.localScale.y, hpBar.localScale.z);
 }
