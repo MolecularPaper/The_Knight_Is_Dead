@@ -6,12 +6,20 @@ using UnityEngine;
 public class IncreaseData : ScriptableObject
 {
     [Space(10)]
+    public float hpIncreseWidth;
+    public float hpSoulIncreseWidth;
+
+    [Space(10)]
     public float atkIncreseWidth;
     public float atkSoulIncreseWidth;
 
     [Space(10)]
     public float defIncreseWidth;
     public float defSoulIncreseWidth;
+
+    [Space(10)]
+    public float eraIncreseWidth;
+    public float eraSoulIncreseWidth;
 
     [Space(10)]
     public float lukIncreseWidth;

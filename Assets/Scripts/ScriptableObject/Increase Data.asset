@@ -12,13 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b94cd80fc859e874da3597f187051e01, type: 3}
   m_Name: Increase Data
   m_EditorClassIdentifier: 
+  hpIncreseWidth: 0.6
+  hpSoulIncreseWidth: 1.5
   atkIncreseWidth: 0.1
-  atkSoulIncreseWidth: 2.25
-  defIncreseWidth: 0.5
-  defSoulIncreseWidth: 1
-  lukIncreseWidth: 0.2
-  lukSoulIncreseWidth: 10
-  cridIncreseWidth: 0.2
-  cridSoulIncreseWidth: 10
-  cripIncreseWidth: 0.2
-  cripSoulIncreseWidth: 10
+  atkSoulIncreseWidth: 2
+  defIncreseWidth: 0.3
+  defSoulIncreseWidth: 2
+  eraIncreseWidth: 0
+  eraSoulIncreseWidth: 0
+  lukIncreseWidth: 0.1
+  lukSoulIncreseWidth: 2
+  cridIncreseWidth: 0.6
+  cridSoulIncreseWidth: 2
+  cripIncreseWidth: 0.1
+  cripSoulIncreseWidth: 2

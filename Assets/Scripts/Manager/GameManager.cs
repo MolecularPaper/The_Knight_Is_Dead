@@ -12,8 +12,6 @@ public class GameManager : MonoBehaviour
     public EnemyCTRL currentEnemy { get; private set; }
     public PlayerCTRL player { get => _player; }
 
-    public IncreaseData increaseData;
-
     public bool canAction {
         get => currentEnemy && player && Vector3.Distance(player.transform.position, currentEnemy.transform.position) <= canActionDistance;
     }
@@ -53,68 +51,31 @@ public class GameManager : MonoBehaviour
 
     public void AddSoul(long count)
     {
-        player.playerData.soul += count + (long)(count * player.playerData.lukPoint);
+        player.playerData.soul += count + (long)(count * (player.playerData.abilities[AbilityType.LUK].point / 100));
         UIManager.ui.UpdateItemUI();
+        UIManager.ui.UdateAllAbilityUI();
     }
 
     public bool doIncreaseAbillity { get; set; }
-    public async void IncreaseAbility(int index)
+    public async void IncreaseAbility(string typeStr)
     {
+        if (!System.Enum.TryParse<AbilityType>(typeStr, out AbilityType type)) throw new System.FormatException();
+        PlayerData playerData = player.playerData;
+        Ability ability = player.playerData.abilities[type];
+
         doIncreaseAbillity = true;
         bool canIncreaseAbillity = true;
-        long requestSoul = 0;
-
         while (doIncreaseAbillity) {
-            if (!canIncreaseAbillity) return;
-
-            PlayerData playerData = player.playerData;
+            if (!canIncreaseAbillity || ability.requestSoul > player.playerData.soul) return;
             canIncreaseAbillity = false;
-            switch (index) {
-                case 0:
-                    requestSoul = playerData.RequestSoul(increaseData.atkSoulIncreseWidth, playerData.atkLevel);
-                    if (!player.playerData.CanLevelUp(requestSoul)) return;
 
-                    playerData.soul -= requestSoul;
-                    playerData.atkPoint += (long)playerData.IncreasePoint(increaseData.atkIncreseWidth, playerData.atkLevel);
-                    playerData.atkLevel++;
-                    break;
-                case 1:
-                    requestSoul = playerData.RequestSoul(increaseData.defSoulIncreseWidth, playerData.defLevel);
-                    if (!player.playerData.CanLevelUp(requestSoul)) return;
+            playerData.soul -= ability.requestSoul;
+            ability.point += ability.upPoint;
+            ability.level++;
 
-                    playerData.soul -= requestSoul;
-                    playerData.defPoint += (long)playerData.IncreasePoint(increaseData.defIncreseWidth, playerData.defLevel);
-                    playerData.defLevel++;
-                    break;
-                case 2:
-                    requestSoul = playerData.RequestSoul(increaseData.lukSoulIncreseWidth, playerData.lukLevel);
-                    if (!player.playerData.CanLevelUp(requestSoul)) return;
+            player.playerData.abilities[type] = ability;
 
-                    playerData.soul -= requestSoul;
-                    playerData.lukPoint += playerData.IncreasePoint(increaseData.lukIncreseWidth, playerData.lukLevel)/100;
-                    playerData.lukLevel++;
-                    break;
-                case 3:
-                    requestSoul = playerData.RequestSoul(increaseData.cridSoulIncreseWidth, playerData.cridLevel);
-                    if (!player.playerData.CanLevelUp(requestSoul)) return;
-
-                    playerData.soul -= requestSoul;
-                    playerData.cridPoint += playerData.IncreasePoint(increaseData.cridIncreseWidth, playerData.cridLevel) / 100f;
-                    playerData.cridLevel++;
-                    break;
-                case 4:
-                    requestSoul = playerData.RequestSoul(increaseData.cripSoulIncreseWidth, playerData.cripLevel);
-                    if (!player.playerData.CanLevelUp(requestSoul)) return;
-
-                    playerData.soul -= requestSoul;
-                    playerData.cripPoint += 0.01f;
-                    playerData.cripLevel++;
-                    break;
-                default:
-                    throw new System.FormatException();
-            }
-
-            UIManager.ui.UpdateAbillityIncreaseUI();
+            UIManager.ui.UdateAllAbilityUI();
             UIManager.ui.UpdateItemUI();
 
             await Task.Delay(100);

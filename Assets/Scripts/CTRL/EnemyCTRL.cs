@@ -14,7 +14,12 @@ public class EnemyCTRL : Entity
     protected override void Awake()
     {
         base.Awake();
-        enemyData.currentHp = enemyData.hpPoint;
+        
+    }
+
+    public void Reset()
+    {
+        enemyData.currentHp = (long)enemyData.abilities[AbilityType.HP].point;
         hpBarScale = hpBar.localScale.x;
         Move();
     }
@@ -41,7 +46,7 @@ public class EnemyCTRL : Entity
     public override void Attack()
     {
         if (!GameManager.gm.player) return;
-        GameManager.gm.player.Damage(enemyData.atkPoint);
+        GameManager.gm.player.Damage((long)enemyData.abilities[AbilityType.ATK].point);
     }
 
     public override void Damage(long damage)
@@ -62,5 +67,5 @@ public class EnemyCTRL : Entity
         GameManager.gm.AddSoul(enemyData.soul);
     }
 
-    protected override void CalHpBar() => hpBar.localScale = new Vector3(Mathf.Lerp(0, hpBarScale, (float)enemyData.currentHp / enemyData.hpPoint), hpBar.localScale.y, hpBar.localScale.z);
+    protected override void CalHpBar() => hpBar.localScale = new Vector3(Mathf.Lerp(0, hpBarScale, (float)enemyData.currentHp / enemyData.abilities[AbilityType.HP].point), hpBar.localScale.y, hpBar.localScale.z);
 }

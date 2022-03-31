@@ -7,6 +7,8 @@ public class PlayerCTRL : Entity
 {
     public PlayerData playerData;
 
+    [SerializeField] private IncreaseData increaseData;
+
     public bool isMove {
         get => animator.GetBool("IsMove");
         set => animator.SetBool("IsMove", value);
@@ -20,13 +22,24 @@ public class PlayerCTRL : Entity
     protected override void Awake()
     {
         base.Awake();
-        playerData.currentHp = playerData.hpPoint;
+        ResetAbility();
         Move();
     }
 
     void Update()
     {
         isAttack = GameManager.gm.canAction;
+    }
+
+    private void ResetAbility()
+    {
+        playerData.abilities = new Dictionary<AbilityType, Ability>();
+        playerData.abilities.Add(AbilityType.HP, new Ability(100, 12000, increaseData.hpIncreseWidth, increaseData.hpSoulIncreseWidth));
+        playerData.abilities.Add(AbilityType.ATK, new Ability(1, 12000, increaseData.atkIncreseWidth, increaseData.atkSoulIncreseWidth));
+        playerData.abilities.Add(AbilityType.DEF, new Ability(0, 12000, increaseData.defIncreseWidth, increaseData.defSoulIncreseWidth));
+        playerData.abilities.Add(AbilityType.LUK, new Ability(0, 12000, increaseData.lukIncreseWidth, increaseData.lukSoulIncreseWidth, "%"));
+        playerData.abilities.Add(AbilityType.CRIP, new Ability(0, 12000, increaseData.cripIncreseWidth, increaseData.cripSoulIncreseWidth, "%"));
+        playerData.abilities.Add(AbilityType.CRID, new Ability(50, 12000, increaseData.cridIncreseWidth, increaseData.cridSoulIncreseWidth, "%"));
     }
 
     public async void Stop()
@@ -44,7 +57,7 @@ public class PlayerCTRL : Entity
     {
         isMove = true;
         isAttack = false;
-        playerData.currentHp = playerData.hpPoint;
+        playerData.currentHp = (long)playerData.abilities[AbilityType.HP].point;
         CalHpBar();
     }
 
@@ -52,10 +65,10 @@ public class PlayerCTRL : Entity
     {
         if (!GameManager.gm.currentEnemy) return;
 
-        long totalDamage = playerData.atkPoint;
+        long totalDamage = playerData.abilities[AbilityType.ATK].point;
 
-        if (Random.Range(0f, 100f) < playerData.cripPoint) {
-            totalDamage += (int)(playerData.atkPoint * playerData.cridPoint);
+        if (Random.Range(0f, 10000f) < playerData.abilities[AbilityType.CRIP].point) {
+            totalDamage += (int)(totalDamage * playerData.abilities[AbilityType.CRID].point);
         }
 
         GameManager.gm.currentEnemy.Damage(totalDamage);
@@ -63,7 +76,11 @@ public class PlayerCTRL : Entity
 
     public override void Damage(long damage)
     {
-        playerData.currentHp -= (damage - playerData.defPoint) < 0 ? 0 : (damage - playerData.defPoint);
+        long def = (long)playerData.abilities[AbilityType.DEF].point;
+
+        float defConst = 1f;
+        print((long)(damage * (playerData.abilities[AbilityType.DEF].point / (playerData.abilities[AbilityType.DEF].point + defConst))));
+        playerData.currentHp -= (long)(damage * (playerData.abilities[AbilityType.DEF].point / (playerData.abilities[AbilityType.DEF].point + defConst)));
         base.Damage(damage);
 
         if (playerData.currentHp <= 0) {
@@ -77,5 +94,5 @@ public class PlayerCTRL : Entity
         GameManager.gm.PlayerDead();
     }
 
-    protected override void CalHpBar() => hpBar.localScale = new Vector3((float) playerData.currentHp / playerData.hpPoint, hpBar.localScale.y, hpBar.localScale.z);
+    protected override void CalHpBar() => hpBar.localScale = new Vector3((float)playerData.currentHp / playerData.abilities[AbilityType.HP].point, hpBar.localScale.y, hpBar.localScale.z);
 }

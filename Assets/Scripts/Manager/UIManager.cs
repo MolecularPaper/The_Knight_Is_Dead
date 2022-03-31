@@ -10,12 +10,13 @@ public class UIManager : MonoBehaviour
     public static UIManager ui;
     private AudioSource audioSource;
 
+    [SerializeField] private TextMeshProUGUI stage;
     [SerializeField] PlayerCTRL player;
     [SerializeField] CanvasGroup[] taps;
     private int activeTapIndex = 0;
 
     [Header("Abillity")]
-    public InceaseAbillity[] abillities;
+    public InceaseAbillity[] abilityUI;
 
     [Header("Item")]
     [SerializeField] ItemInfo[] itemInfos;
@@ -30,8 +31,14 @@ public class UIManager : MonoBehaviour
 
         UpdateItemUI();
         AddButtonSoundEffect();
-        UpdateAbillityIncreaseUI();
     }
+
+    private void Start()
+    {
+        UdateAllAbilityUI();
+    }
+
+    public void UpdateStage(int stageNum) => stage.text = $"스테이지 {stageNum}";
 
     public void TapControl(int _activeTapIndex)
     {
@@ -67,39 +74,33 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    public void HoldTest()
+    public void UdateAllAbilityUI()
     {
-        print("HoldCheck");
+        for (int i = 0; i < abilityUI.Length; i++) {
+            UdateAbilityUI((AbilityType)i);
+        }
     }
 
-    public void UpdateAbillityIncreaseUI()
+    public void UdateAbilityUI(AbilityType type)
     {
-        PlayerData playerData = player.playerData;
+        Ability ability = player.playerData.abilities[type];
 
-        //공격력
-        abillities[0].description.text = $"{playerData.atkPoint} -> {playerData.atkPoint + playerData.IncreasePoint(GameManager.gm.increaseData.atkIncreseWidth, playerData.atkLevel)} ";
-        abillities[0].soul.text = $"{playerData.RequestSoul(GameManager.gm.increaseData.atkSoulIncreseWidth, playerData.atkLevel)} 소울";
-
-        //방어력
-        abillities[1].description.text = $"{playerData.defPoint} -> {playerData.defPoint + playerData.IncreasePoint(GameManager.gm.increaseData.defIncreseWidth, playerData.defLevel)} ";
-        abillities[1].soul.text = $"{playerData.RequestSoul(GameManager.gm.increaseData.defSoulIncreseWidth, playerData.defLevel)} 소울";
-
-        //운
-        abillities[2].description.text = $"{string.Format("{0:F2}", playerData.lukPoint)} -> {string.Format("{0:F2}", playerData.lukPoint + playerData.IncreasePoint(GameManager.gm.increaseData.lukIncreseWidth, playerData.lukLevel)/100f)}%";
-        abillities[2].soul.text = $"{playerData.RequestSoul(GameManager.gm.increaseData.lukSoulIncreseWidth, playerData.lukLevel)} 소울";
-
-        //치명 데미지
-        abillities[3].description.text = $"{string.Format("{0:F2}", playerData.cridPoint)}% -> {string.Format("{0:F2}", playerData.cridPoint + playerData.IncreasePoint(GameManager.gm.increaseData.cridIncreseWidth, playerData.cridLevel)/100f)}% ";
-        abillities[3].soul.text = $"{playerData.RequestSoul(GameManager.gm.increaseData.cripSoulIncreseWidth, playerData.cridLevel)} 소울";
-        
-        //치명 확률
-        if (player.playerData.cripPoint <= 10000) {
-            abillities[4].description.text = $"{string.Format("{0:F2}", playerData.cripPoint)}% -> {string.Format("{0:F2}", playerData.cripPoint + 0.01f)}%";
-            abillities[4].soul.text = $"{playerData.RequestSoul(GameManager.gm.increaseData.cripSoulIncreseWidth, playerData.cripLevel)} 소울";
+        if (ability.requestSoul > player.playerData.soul || ability.level >= ability.maxLevel) {
+            abilityUI[(int)type].levelUpButton.interactable = false;
         }
         else {
-            player.playerData.cripPoint = 10000;
-            abillities[4].levelUpButton.interactable = false;
+            abilityUI[(int)type].levelUpButton.interactable = true;
         }
+
+        string point = ability.point.ToString();
+        string nextPoint = ability.nextPoint.ToString();
+        if(!string.IsNullOrEmpty(ability.sign)) {
+            point = string.Format("{0:F2}", ability.point / 100f) + ability.sign;
+            nextPoint = string.Format("{0:F2}", ability.nextPoint / 100f) + ability.sign;
+        }
+
+        abilityUI[(int)type].level.text = $"{abilityUI[(int)type].title} {ability.level}LV";
+        abilityUI[(int)type].description.text = $"{point} -> {nextPoint}";
+        abilityUI[(int)type].soul.text = $"{string.Format("{0:#,#}", ability.requestSoul)} 소울";
     }
 }
