@@ -19,26 +19,36 @@ public enum AbilityType
 [Serializable]
 public struct Ability
 {
-    public Ability(long point, int maxLevel = 0, float pwidth = 0, float swidth = 0, string sign = "")
+    public Ability(long point, long maxPoint = 0, float pwidth = 0, float swidth = 0, string sign = "", bool fixedIncrease = false)
     {
         this.point = point;
         this.pwidth = pwidth;
         this.swidth = swidth;
-        this.maxLevel = maxLevel;
+        this.maxPoint = maxPoint;
         this.sign = sign;
-        this.level = 1;
+        this.fixedIncrease = fixedIncrease;
+        level = 1;
     }
 
     public long point;
     public int level;
-    public int maxLevel;
+    public long maxPoint;
     
     public string sign { get; }
-
     private float pwidth;
     private float swidth;
+    private bool fixedIncrease;
 
-    public long upPoint { get => (long)Mathf.Pow(pwidth * level, 2) + 1; }
+    public long upPoint {
+        get {
+            if (fixedIncrease) {
+                return (long)(pwidth * 100);
+            }
+            else {
+                return (long)Mathf.Pow(pwidth * level, 2) + 1;
+            }
+        }
+    }
     public long requestSoul { get => (long)Mathf.Pow(swidth * level, 2); }
 
     public long nextPoint { get => point + upPoint; }
@@ -66,7 +76,6 @@ public class EntityData
     }
 }
 
-
 [Serializable]
 public class PlayerData : EntityData
 {
@@ -81,6 +90,69 @@ public class PlayerData : EntityData
     public int crystal = 0;
 
     public bool CanLevelUp(long requestSoul) => soul >= requestSoul;
+
+    public PlayerData(GameSaveData playerSaveData)
+    {
+        soul = playerSaveData.soul;
+        for (int i = 0; i < playerSaveData.abilityTypes.Count; i++) {
+            abilities.Add(playerSaveData.abilityTypes[i], playerSaveData.abilities[i]);
+        }
+    }
+}
+
+[Serializable]
+public class GameData
+{
+    public int stageIndex = 0;
+    public int highestStageIndex = 0;
+
+    public GameData() { }
+    public GameData(GameSaveData gameSaveData)
+    {
+        stageIndex = gameSaveData.stageIndex;
+        highestStageIndex = gameSaveData.highestStageIndex;
+    }
+
+    public void ReturnStage()
+    {
+        stageIndex = 0;
+        stageIndex = Mathf.Clamp(stageIndex, 0, int.MaxValue);
+    }
+
+    public void SetHighestStage()
+    {
+        if (stageIndex > highestStageIndex)
+            highestStageIndex = stageIndex;
+    }
+}
+
+[Serializable]
+public class GameSaveData
+{
+    //게임 데이터
+    public int stageIndex = 0;
+    public int highestStageIndex = 0;
+
+    //플레이어 데이터
+    public long soul;
+    public int diamond;
+    public int crystal;
+    public List<AbilityType> abilityTypes = new List<AbilityType>();
+    public List<Ability> abilities = new List<Ability>();
+
+    public GameSaveData(PlayerData playerData, GameData gameData)
+    {
+        stageIndex = gameData.stageIndex;
+        highestStageIndex = gameData.highestStageIndex;
+
+        soul = playerData.soul;
+        diamond = playerData.diamond;
+        crystal = playerData.crystal;
+        foreach (var item in playerData.abilities) {
+            abilityTypes.Add(item.Key);
+            abilities.Add(item.Value);
+        }
+    }
 }
 
 [Serializable]
@@ -101,7 +173,7 @@ public class ItemInfo
 }
 
 [Serializable]
-public class InceaseAbillity
+public class AbillityUI
 {
     public string title;
     public TextMeshProUGUI level;

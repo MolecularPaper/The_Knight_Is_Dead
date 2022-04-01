@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Collections;
+using System.Threading;
 using UnityEngine;
+using System.IO;
 
 public class GameManager : MonoBehaviour
 {
@@ -9,9 +11,12 @@ public class GameManager : MonoBehaviour
     [SerializeField] private BackPanelCTRL backPanelCTRL;
     [SerializeField] private float canActionDistance;
 
+    private CancellationTokenSource tokenSource = new CancellationTokenSource();
     public static GameManager gm { get; set; }
+    public GameData gameData { get; set; }
     public EnemyCTRL currentEnemy { get; private set; }
     public PlayerCTRL player { get => _player; }
+    private GameDataManager gameDataManager;
 
     public bool canAction {
         get => currentEnemy && player && Vector3.Distance(player.transform.position, currentEnemy.transform.position) <= canActionDistance;
@@ -20,6 +25,17 @@ public class GameManager : MonoBehaviour
     void Awake()
     {
         gm = this;
+        gameDataManager = GetComponent<GameDataManager>();
+
+        try {
+            GameSaveData saveData = gameDataManager.LoadData();
+            gameData = new GameData(saveData);
+            player.playerData = new PlayerData(saveData);
+        }
+        catch (DirectoryNotFoundException) {
+            gameData = new GameData();
+            player.ResetAbility();
+        }
     }
 
     void Start()
@@ -27,17 +43,26 @@ public class GameManager : MonoBehaviour
         StartGame();
     }
 
-    void Update()
+    void OnApplicationQuit()
     {
+        _ = UIManager.ui.FadeOut(true);
+        gameDataManager.SaveData(player.playerData, gameData);
+        CancelToken();
+    }
 
+    public void CancelToken()
+    {
+        if (!tokenSource.IsCancellationRequested) {
+            tokenSource.Cancel();
+        }
     }
 
     public async void StartGame()
     {
         player.Reset();
-        UIManager.ui.UpdateStage(SpawnManager.sm.spawnIndex + 1);
+        UIManager.ui.UpdateStage(gameData.stageIndex, gameData.highestStageIndex);
         await UIManager.ui.FadeOut(false);
-        SpawnManager.sm.canSpawn = true;
+        SpawnManager.sm.Spawn();
         player.Move();
     }
 
@@ -51,20 +76,29 @@ public class GameManager : MonoBehaviour
     {
         currentEnemy = null;
 
-        await Task.Delay(1500);
+        try { await Task.Delay(1500, tokenSource.Token); }
+        catch { return; }
+
         player.Move();
 
-        await Task.Delay(2000);
-        SpawnManager.sm.canSpawn = true;
+        try { await Task.Delay(2000, tokenSource.Token); }
+        catch { return; }
+
+        SpawnManager.sm.Spawn();
+        gameData.SetHighestStage();
+        gameData.stageIndex++;
+
+        UIManager.ui.UpdateStage(gameData.stageIndex, gameData.highestStageIndex);
     }
 
     public async void PlayerDead()
     {
+        tokenSource.Cancel();
+
         currentEnemy.Destroy();
         await UIManager.ui.FadeOut(true);
 
-        SpawnManager.sm.canSpawn = false;
-        SpawnManager.sm.ReturnSpawn();
+        gameData.ReturnStage();
         backPanelCTRL.Reset();
 
         StartGame();
@@ -87,7 +121,7 @@ public class GameManager : MonoBehaviour
         doIncreaseAbillity = true;
         bool canIncreaseAbillity = true;
         while (doIncreaseAbillity) {
-            if (!canIncreaseAbillity || ability.requestSoul > player.playerData.soul) return;
+            if (!canIncreaseAbillity || ability.requestSoul > player.playerData.soul || ability.point >= ability.maxPoint) return;
             canIncreaseAbillity = false;
 
             playerData.soul -= ability.requestSoul;

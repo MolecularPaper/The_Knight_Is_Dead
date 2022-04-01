@@ -12,6 +12,7 @@ public class UIManager : MonoBehaviour
     public static UIManager ui;
     private AudioSource audioSource;
 
+    [SerializeField] TextMeshProUGUI highestStage;
     [SerializeField] TextMeshProUGUI stage;
     [SerializeField] PlayerCTRL player;
     [SerializeField] CanvasGroup[] taps;
@@ -23,7 +24,7 @@ public class UIManager : MonoBehaviour
     private int activeTapIndex = 0;
 
     [Header("Abillity")]
-    public InceaseAbillity[] abilityUI;
+    public AbillityUI[] abilityUI;
 
     [Header("Item")]
     [SerializeField] ItemInfo[] itemInfos;
@@ -36,15 +37,19 @@ public class UIManager : MonoBehaviour
         ui = this;
         audioSource = GetComponent<AudioSource>();
         AddButtonSoundEffect();
-        UpdateItemUI();
     }
 
     private void Start()
     {
+        UpdateItemUI();
         UdateAllAbilityUI();
     }
 
-    public void UpdateStage(int stageNum) => stage.text = $"스테이지 {stageNum}";
+    public void UpdateStage(int stageIndex, int highestIndex)
+    {
+        highestStage.text = $"최고 스테이지: {highestIndex + 1}";
+        stage.text = $"스테이지 {stageIndex + 1}";
+    }
 
     public void TapControl(int _activeTapIndex)
     {
@@ -93,18 +98,24 @@ public class UIManager : MonoBehaviour
     {
         Ability ability = player.playerData.abilities[type];
 
-        if (ability.requestSoul > player.playerData.soul || ability.level >= ability.maxLevel) {
+        string point = ability.point.ToString();
+        string nextPoint = ability.nextPoint.ToString();
+        if (!string.IsNullOrEmpty(ability.sign)) {
+            point = string.Format("{0:F2}", ability.point / 100f) + ability.sign;
+            nextPoint = string.Format("{0:F2}", ability.nextPoint / 100f) + ability.sign;
+        }
+
+        if (ability.requestSoul > player.playerData.soul) {
             abilityUI[(int)type].levelUpButton.interactable = false;
+        }
+        else if(ability.point >= ability.maxPoint) {
+            abilityUI[(int)type].levelUpButton.interactable = false;
+            abilityUI[(int)type].description.text = point;
+            abilityUI[(int)type].soul.text = "MAX";
+            return;
         }
         else {
             abilityUI[(int)type].levelUpButton.interactable = true;
-        }
-
-        string point = ability.point.ToString();
-        string nextPoint = ability.nextPoint.ToString();
-        if(!string.IsNullOrEmpty(ability.sign)) {
-            point = string.Format("{0:F2}", ability.point / 100f) + ability.sign;
-            nextPoint = string.Format("{0:F2}", ability.nextPoint / 100f) + ability.sign;
         }
 
         abilityUI[(int)type].level.text = $"{abilityUI[(int)type].title} {ability.level}LV";

@@ -46,7 +46,7 @@ public class EnemyCTRL : Entity
     public override void Attack()
     {
         if (!GameManager.gm.player) return;
-        GameManager.gm.player.Damage((long)enemyData.abilities[AbilityType.ATK].point);
+        GameManager.gm.player.Damage(enemyData.abilities[AbilityType.ATK].point);
     }
 
     public override void Damage(long damage)
@@ -62,9 +62,7 @@ public class EnemyCTRL : Entity
     protected override void Dead()
     {
         base.Dead();
-
         GameManager.gm.EnemyDead();
-        GameManager.gm.AddSoul(enemyData.soul);
     }
 
     protected override void CalHpBar() => hpBar.localScale = new Vector3(Mathf.Lerp(0, hpBarScale, (float)enemyData.currentHp / enemyData.abilities[AbilityType.HP].point), hpBar.localScale.y, hpBar.localScale.z);

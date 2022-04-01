@@ -34,7 +34,6 @@ public class PlayerCTRL : Entity
     protected override void Awake()
     {
         base.Awake();
-        ResetAbility();
     }
 
     void Update()
@@ -42,15 +41,15 @@ public class PlayerCTRL : Entity
         isAttack = GameManager.gm.canAction;
     }
 
-    private void ResetAbility()
+    public void ResetAbility()
     {
         playerData.abilities = new Dictionary<AbilityType, Ability>();
-        playerData.abilities.Add(AbilityType.HP, new Ability(100, 12000, increaseData.hpIncreseWidth, increaseData.hpSoulIncreseWidth));
-        playerData.abilities.Add(AbilityType.ATK, new Ability(1, 12000, increaseData.atkIncreseWidth, increaseData.atkSoulIncreseWidth));
-        playerData.abilities.Add(AbilityType.DEF, new Ability(1, 12000, increaseData.defIncreseWidth, increaseData.defSoulIncreseWidth));
-        playerData.abilities.Add(AbilityType.LUK, new Ability(0, 12000, increaseData.lukIncreseWidth, increaseData.lukSoulIncreseWidth, "%"));
-        playerData.abilities.Add(AbilityType.CRIP, new Ability(0, 12000, increaseData.cripIncreseWidth, increaseData.cripSoulIncreseWidth, "%"));
-        playerData.abilities.Add(AbilityType.CRID, new Ability(50, 12000, increaseData.cridIncreseWidth, increaseData.cridSoulIncreseWidth, "%"));
+        playerData.abilities.Add(AbilityType.HP, new Ability(100, long.MaxValue, increaseData.hpIncreseWidth, increaseData.hpSoulIncreseWidth));
+        playerData.abilities.Add(AbilityType.ATK, new Ability(1, long.MaxValue, increaseData.atkIncreseWidth, increaseData.atkSoulIncreseWidth));
+        playerData.abilities.Add(AbilityType.DEF, new Ability(1, long.MaxValue, increaseData.defIncreseWidth, increaseData.defSoulIncreseWidth));
+        playerData.abilities.Add(AbilityType.LUK, new Ability(0, long.MaxValue, increaseData.lukIncreseWidth, increaseData.lukSoulIncreseWidth, "%", true));
+        playerData.abilities.Add(AbilityType.CRID, new Ability(50, 1000000, increaseData.cridIncreseWidth, increaseData.cridSoulIncreseWidth, "%", true));
+        playerData.abilities.Add(AbilityType.CRIP, new Ability(2000, 8000, increaseData.cripIncreseWidth, increaseData.cripSoulIncreseWidth, "%", true));
     }
 
     public async void Stop()
@@ -79,7 +78,7 @@ public class PlayerCTRL : Entity
         long totalDamage = playerData.abilities[AbilityType.ATK].point;
 
         if (Random.Range(0f, 10000f) < playerData.abilities[AbilityType.CRIP].point) {
-            totalDamage += (int)(totalDamage * playerData.abilities[AbilityType.CRID].point);
+            totalDamage += (int)(totalDamage * (playerData.abilities[AbilityType.CRID].point / 100f));
         }
 
         audioSource.PlayOneShot(attackSound);
