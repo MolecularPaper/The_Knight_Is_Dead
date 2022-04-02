@@ -48,8 +48,8 @@ public class PlayerCTRL : Entity
         playerData.abilities.Add(AbilityType.ATK, new Ability(1, long.MaxValue, increaseData.atkIncreseWidth, increaseData.atkSoulIncreseWidth));
         playerData.abilities.Add(AbilityType.DEF, new Ability(1, long.MaxValue, increaseData.defIncreseWidth, increaseData.defSoulIncreseWidth));
         playerData.abilities.Add(AbilityType.LUK, new Ability(0, long.MaxValue, increaseData.lukIncreseWidth, increaseData.lukSoulIncreseWidth, "%", true));
-        playerData.abilities.Add(AbilityType.CRID, new Ability(50, 1000000, increaseData.cridIncreseWidth, increaseData.cridSoulIncreseWidth, "%", true));
-        playerData.abilities.Add(AbilityType.CRIP, new Ability(2000, 8000, increaseData.cripIncreseWidth, increaseData.cripSoulIncreseWidth, "%", true));
+        playerData.abilities.Add(AbilityType.CRID, new Ability(100, 1000000, increaseData.cridIncreseWidth, increaseData.cridSoulIncreseWidth, "%", true));
+        playerData.abilities.Add(AbilityType.CRIP, new Ability(0, 8000, increaseData.cripIncreseWidth, increaseData.cripSoulIncreseWidth, "%", true));
     }
 
     public async void Stop()
@@ -81,7 +81,7 @@ public class PlayerCTRL : Entity
             totalDamage += (int)(totalDamage * (playerData.abilities[AbilityType.CRID].point / 100f));
         }
 
-        audioSource.PlayOneShot(attackSound);
+        SoundManager.sound.PlaySE(attackSound);
         GameManager.gm.currentEnemy.Damage(totalDamage);
     }
 

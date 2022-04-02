@@ -9,7 +9,6 @@ public abstract class Entity : MonoBehaviour
     /// 메인 캐릭터 애니메이터 컴포넌트
     /// </summary>
     protected SpriteRenderer spriteRenderer;
-    protected AudioSource audioSource;
     protected Animator animator;
 
     [SerializeField] protected Transform hpBar;
@@ -23,10 +22,8 @@ public abstract class Entity : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-        audioSource = GetComponent<AudioSource>();
         if(!animator) animator = GetComponentInChildren<Animator>();
         if(!spriteRenderer) spriteRenderer = GetComponentInChildren<SpriteRenderer>();
-        if(!spriteRenderer) audioSource = GetComponentInChildren<AudioSource>();
     }
 
     public abstract void Attack();
@@ -42,7 +39,7 @@ public abstract class Entity : MonoBehaviour
     {
         if (hitSounds == null || hitSounds.Length == 0) return;
 
-        audioSource.PlayOneShot(hitSounds[Random.Range(0, hitSounds.Length - 1)]);
+        SoundManager.sound.PlaySE(hitSounds[Random.Range(0, hitSounds.Length - 1)]);
     }
 
     protected async void HitEffect()

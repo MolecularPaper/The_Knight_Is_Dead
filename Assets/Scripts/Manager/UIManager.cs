@@ -10,7 +10,6 @@ using TMPro;
 public class UIManager : MonoBehaviour
 {
     public static UIManager ui;
-    private AudioSource audioSource;
 
     [SerializeField] TextMeshProUGUI highestStage;
     [SerializeField] TextMeshProUGUI stage;
@@ -29,14 +28,9 @@ public class UIManager : MonoBehaviour
     [Header("Item")]
     [SerializeField] ItemInfo[] itemInfos;
 
-    [Header("Sound")]
-    [SerializeField] AudioClip buttonClickSound;
-
     void Awake()
     {
         ui = this;
-        audioSource = GetComponent<AudioSource>();
-        AddButtonSoundEffect();
     }
 
     private void Start()
@@ -74,16 +68,6 @@ public class UIManager : MonoBehaviour
                         break;
                 }
             }
-        }
-    }
-
-    private void AddButtonSoundEffect()
-    {
-        EventTrigger[] allButtons = FindObjectsOfType<EventTrigger>();
-        foreach (EventTrigger eventTrigger in allButtons) {
-            EventTrigger.Entry entry = new EventTrigger.Entry();
-            entry.callback.AddListener((data) => { audioSource.PlayOneShot(buttonClickSound); });
-            eventTrigger.triggers.Add(entry);
         }
     }
 

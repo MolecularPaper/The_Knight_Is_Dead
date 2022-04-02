@@ -27,6 +27,8 @@ public class GameManager : MonoBehaviour
         gm = this;
         gameDataManager = GetComponent<GameDataManager>();
 
+        Screen.sleepTimeout = SleepTimeout.NeverSleep;
+
         try {
             GameSaveData saveData = gameDataManager.LoadData();
             gameData = new GameData(saveData);
@@ -35,12 +37,13 @@ public class GameManager : MonoBehaviour
         catch (DirectoryNotFoundException) {
             gameData = new GameData();
             player.ResetAbility();
-        }
+        }        
     }
 
     void Start()
     {
         StartGame();
+        SoundManager.sound.SetVolume(gameData);
     }
 
     void OnApplicationQuit()
@@ -74,10 +77,15 @@ public class GameManager : MonoBehaviour
 
     public async void EnemyDead()
     {
+        AddSoul(currentEnemy.enemyData.soul);
         currentEnemy = null;
 
         try { await Task.Delay(1500, tokenSource.Token); }
         catch { return; }
+
+        gameData.stageIndex++;
+        gameData.SetHighestStage();
+        UIManager.ui.UpdateStage(gameData.stageIndex, gameData.highestStageIndex);
 
         player.Move();
 
@@ -85,15 +93,12 @@ public class GameManager : MonoBehaviour
         catch { return; }
 
         SpawnManager.sm.Spawn();
-        gameData.SetHighestStage();
-        gameData.stageIndex++;
-
-        UIManager.ui.UpdateStage(gameData.stageIndex, gameData.highestStageIndex);
     }
 
     public async void PlayerDead()
     {
         tokenSource.Cancel();
+        tokenSource = new CancellationTokenSource();
 
         currentEnemy.Destroy();
         await UIManager.ui.FadeOut(true);

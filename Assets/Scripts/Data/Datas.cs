@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Collections;
 using System;
+using UnityEngine.EventSystems;
+using UnityEngine.Events;
 using UnityEngine.UI;
 using UnityEngine;
 using TMPro;
@@ -55,6 +57,16 @@ public struct Ability
 }
 
 [Serializable]
+public class AbillityUI
+{
+    public string title;
+    public TextMeshProUGUI level;
+    public TextMeshProUGUI description;
+    public Button levelUpButton;
+    public TextMeshProUGUI soul;
+}
+
+[Serializable]
 public class EntityData
 {
     [Header("Info")]
@@ -105,12 +117,16 @@ public class GameData
 {
     public int stageIndex = 0;
     public int highestStageIndex = 0;
+    public float bgmVolume = 0.3f;
+    public float seVolume = 0.3f;
 
     public GameData() { }
     public GameData(GameSaveData gameSaveData)
     {
         stageIndex = gameSaveData.stageIndex;
         highestStageIndex = gameSaveData.highestStageIndex;
+        bgmVolume = gameSaveData.bgmVolume;
+        seVolume = gameSaveData.seVolume;
     }
 
     public void ReturnStage()
@@ -127,12 +143,8 @@ public class GameData
 }
 
 [Serializable]
-public class GameSaveData
+public class GameSaveData : GameData
 {
-    //게임 데이터
-    public int stageIndex = 0;
-    public int highestStageIndex = 0;
-
     //플레이어 데이터
     public long soul;
     public int diamond;
@@ -144,6 +156,8 @@ public class GameSaveData
     {
         stageIndex = gameData.stageIndex;
         highestStageIndex = gameData.highestStageIndex;
+        bgmVolume = gameData.bgmVolume;
+        seVolume = gameData.seVolume;
 
         soul = playerData.soul;
         diamond = playerData.diamond;
@@ -170,14 +184,4 @@ public class ItemInfo
     public CanvasGroup group;
     public TextMeshProUGUI count;
     public bool isActive;
-}
-
-[Serializable]
-public class AbillityUI
-{
-    public string title;
-    public TextMeshProUGUI level;
-    public TextMeshProUGUI description;
-    public Button levelUpButton;
-    public TextMeshProUGUI soul;
 }

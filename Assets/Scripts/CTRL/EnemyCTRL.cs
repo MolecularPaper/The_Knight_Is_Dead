@@ -14,7 +14,6 @@ public class EnemyCTRL : Entity
     protected override void Awake()
     {
         base.Awake();
-        
     }
 
     public void Reset()
