@@ -11,7 +11,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private BackPanelCTRL backPanelCTRL;
     [SerializeField] private float canActionDistance;
 
-    private CancellationTokenSource tokenSource = new CancellationTokenSource();
+    public CancellationTokenSource timerTokenSource = new CancellationTokenSource();
+    private CancellationTokenSource entityTokenSource = new CancellationTokenSource();
     public static GameManager gm { get; set; }
     public GameData gameData { get; set; }
     public EnemyCTRL currentEnemy { get; private set; }
@@ -50,13 +51,21 @@ public class GameManager : MonoBehaviour
     {
         _ = UIManager.ui.FadeOut(true);
         gameDataManager.SaveData(player.playerData, gameData);
-        CancelToken();
+        CancelEntityToken();
+        CancelTimerToken();
     }
 
-    public void CancelToken()
+    public void CancelEntityToken()
     {
-        if (!tokenSource.IsCancellationRequested) {
-            tokenSource.Cancel();
+        if (!entityTokenSource.IsCancellationRequested) {
+            entityTokenSource.Cancel();
+        }
+    }
+
+    public void CancelTimerToken()
+    {
+        if (!timerTokenSource.IsCancellationRequested) {
+            timerTokenSource.Cancel();
         }
     }
 
@@ -80,7 +89,7 @@ public class GameManager : MonoBehaviour
         AddSoul(currentEnemy.enemyData.soul);
         currentEnemy = null;
 
-        try { await Task.Delay(1500, tokenSource.Token); }
+        try { await Task.Delay(1500, entityTokenSource.Token); }
         catch { return; }
 
         gameData.stageIndex++;
@@ -89,7 +98,7 @@ public class GameManager : MonoBehaviour
 
         player.Move();
 
-        try { await Task.Delay(2000, tokenSource.Token); }
+        try { await Task.Delay(2000, entityTokenSource.Token); }
         catch { return; }
 
         SpawnManager.sm.Spawn();
@@ -97,8 +106,8 @@ public class GameManager : MonoBehaviour
 
     public async void PlayerDead()
     {
-        tokenSource.Cancel();
-        tokenSource = new CancellationTokenSource();
+        entityTokenSource.Cancel();
+        entityTokenSource = new CancellationTokenSource();
 
         currentEnemy.Destroy();
         await UIManager.ui.FadeOut(true);

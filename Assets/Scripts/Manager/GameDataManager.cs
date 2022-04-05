@@ -48,6 +48,6 @@ public class GameDataManager : MonoBehaviour
         string path = Application.persistentDataPath + $"/{saveFileName}.sav";
         if (File.Exists(path)) File.Delete(path);
         SceneManager.LoadScene(gameObject.scene.name);
-        GameManager.gm.CancelToken();
+        GameManager.gm.CancelEntityToken();
     }
 }
