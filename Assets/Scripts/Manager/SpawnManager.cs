@@ -1,41 +1,30 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
 
 public class SpawnManager : MonoBehaviour
 {
-    public static SpawnManager sm;
-
+    [SerializeField] private SpawnList spawnList;
     [SerializeField] private Transform spawnPoint;
-    [SerializeField] private SpawnDatabase spawnDatabase;
-    [SerializeField] private IncreaseData increaseData;
 
-    void Awake()
+    public EnemyCTRL SpawnEnemy(int index)
     {
-        sm = this;
-    }
+        if (index >= spawnList.enemyPrefabs.Count)
+            index = spawnList.enemyPrefabs.Count - 1;
 
-    public void Spawn()
-    {
-        int spawnIndex = GameManager.gm.gameData.stageIndex;
-        EnemyCTRL enemy = Instantiate(spawnDatabase.spawnDatas[spawnIndex].entityObject, spawnPoint.position, Quaternion.identity, spawnPoint).GetComponent<EnemyCTRL>();
-        enemy.enemyData = new EntityData(spawnDatabase.spawnDatas[spawnIndex].enemyData);
+        GameObject enemy = Instantiate(spawnList.enemyPrefabs[index], spawnPoint.position, spawnPoint.rotation, spawnPoint);
+        EnemyCTRL enemyCTRL = enemy.GetComponent<EnemyCTRL>();
 
-        long hp = (long)Mathf.Pow(increaseData.enemyHPIncrese * (spawnIndex + 1), 2) + 10;
-        long atk = (long)Mathf.Pow(increaseData.enemyAtkIncrese * (spawnIndex + 1), 2) + 5;
-        long soul = (long)(Mathf.Pow(increaseData.enemySoulIncrese * (spawnIndex + 1), 2)) + 5;
+        ulong hp = (ulong)Mathf.Pow(spawnList.hpIncrease * (index + 1), 2) + 10;
+        ulong atk = (ulong)Mathf.Pow(spawnList.atkIncrease * (index + 1), 2) + 5;
+        ulong soul = (ulong)(Mathf.Pow(spawnList.soulIncrease * (index + 1), 2)) + 5;
 
-        print($"몬스터 정보[체력: {hp}, 공격력: {atk}, 영혼: {soul}]");
+        enemyCTRL.AddAbility(new Ability("HP", hp));
+        enemyCTRL.AddAbility(new Ability("ATK", atk));
+        enemyCTRL.AddItem(new Item("Soul", soul));
+        enemyCTRL.SetCurrentHP();
+        enemyCTRL.Move();
 
-        enemy.enemyData.abilities.Add(AbilityType.HP, new Ability(hp));
-        enemy.enemyData.abilities.Add(AbilityType.ATK, new Ability(atk));
-        enemy.enemyData.soul = soul;
-
-        enemy.enemyData.currentHp = (long)enemy.enemyData.abilities[AbilityType.HP].point;
-        enemy.Reset();
-
-        GameManager.gm.SetEnemy(enemy);
+        return enemyCTRL;
     }
 }

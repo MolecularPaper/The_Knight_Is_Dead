@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7758084399371086209}
   - component: {fileID: 7758084399371086222}
   m_Layer: 0
-  m_Name: hpBar
+  m_Name: HpBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -174,8 +174,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7758084400519629753}
   - component: {fileID: 5338004700594344383}
-  - component: {fileID: 5910168647050576129}
-  - component: {fileID: 2397683967905211815}
+  - component: {fileID: -4409792274164561328}
   m_Layer: 0
   m_Name: Flying eye
   m_TagString: Enemy
@@ -219,103 +218,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!82 &5910168647050576129
-AudioSource:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7758084400519629752}
-  m_Enabled: 1
-  serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
-  m_Volume: 1
-  m_Pitch: 1
-  Loop: 0
-  Mute: 0
-  Spatialize: 0
-  SpatializePostEffects: 0
-  Priority: 128
-  DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
-  Pan2D: 0
-  rolloffMode: 0
-  BypassEffects: 0
-  BypassListenerEffects: 0
-  BypassReverbZones: 0
-  rolloffCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  panLevelCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  spreadCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  reverbZoneMixCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
---- !u!114 &2397683967905211815
+--- !u!114 &-4409792274164561328
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -324,16 +227,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 7758084400519629752}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0878beebfb88bf8439b1915b4d2e9355, type: 3}
+  m_Script: {fileID: 11500000, guid: eb07e809bbcdc9e41a49e5a24e8cba90, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  items: []
+  abilities: []
   hpBar: {fileID: 7758084399371086209}
-  hitColor: {r: 0.78431374, g: 0, b: 0, a: 1}
-  hitSounds:
-  - {fileID: 8300000, guid: e7f9fcb7e90d3d14e8bbf73f4e0db4ad, type: 3}
-  enemyData:
-    currentHp: 0
-    soul: 0
+  hitColor: {r: 1, g: 0, b: 0, a: 1}
+  attakSound: {fileID: 8300000, guid: 01cfde3b31ad19d41adccd4ad06a970b, type: 3}
+  hitSound: {fileID: 8300000, guid: e7f9fcb7e90d3d14e8bbf73f4e0db4ad, type: 3}
+  stopDistance: 4
 --- !u!1 &8849803885995599337
 GameObject:
   m_ObjectHideFlags: 0

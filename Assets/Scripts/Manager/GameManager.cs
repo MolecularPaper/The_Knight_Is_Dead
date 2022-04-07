@@ -1,154 +1,118 @@
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Collections;
-using System.Threading;
 using UnityEngine;
-using System.IO;
+using UnityEngine.SceneManagement;
 
-public class GameManager : MonoBehaviour
+public class GameInstance : MonoBehaviour
 {
-    [SerializeField] private PlayerCTRL _player;
-    [SerializeField] private BackPanelCTRL backPanelCTRL;
-    [SerializeField] private float canActionDistance;
+    public static GameManager gm;
+    protected SpawnManager spawnManager;
+    protected PlayerCTRL playerCTRL;
+    protected EnemyCTRL enemyCTRL;
+    [SerializeField] protected Fade fade;
+}
 
-    public CancellationTokenSource timerTokenSource = new CancellationTokenSource();
-    private CancellationTokenSource entityTokenSource = new CancellationTokenSource();
-    public static GameManager gm { get; set; }
-    public GameData gameData { get; set; }
-    public EnemyCTRL currentEnemy { get; private set; }
-    public PlayerCTRL player { get => _player; }
-    private GameDataManager gameDataManager;
+public class GameInfo : GameInstance
+{
+    public int highestStageIndex;
 
-    public bool canAction {
-        get => currentEnemy && player && Vector3.Distance(player.transform.position, currentEnemy.transform.position) <= canActionDistance;
-    }
+    public int stageIndex;
+}
 
-    void Awake()
+public class GameInfoExtension : GameInfo
+{
+    public Vector3 PlayerPosition => playerCTRL.transform.position;
+}
+
+public class GameManager : GameInfoExtension, IPlayerObserver, IEnemyObserver
+{
+    public delegate void StageChangedDel(GameInfo gameInfo);
+    public StageChangedDel stageChanged;
+
+    public void Awake()
     {
         gm = this;
-        gameDataManager = GetComponent<GameDataManager>();
-
-        Screen.sleepTimeout = SleepTimeout.NeverSleep;
-
-        try {
-            GameSaveData saveData = gameDataManager.LoadData();
-            gameData = new GameData(saveData);
-            player.playerData = new PlayerData(saveData);
-        }
-        catch (DirectoryNotFoundException) {
-            gameData = new GameData();
-            player.ResetAbility();
-        }        
+        GameObject player = GameObject.FindWithTag("Player");
+        playerCTRL = player.GetComponent<PlayerCTRL>();
+        playerCTRL.Subscribe(this);
+        spawnManager = GetComponent<SpawnManager>();
     }
 
-    void Start()
+    public void Start() => GameStart();
+
+    public async void GameStart()
     {
-        StartGame();
-        SoundManager.sound.SetVolume(gameData);
+        stageChanged.Invoke(this);
+        await Task.Delay(1000);
+        playerCTRL.IsMove = true;
+        SpawnEnemy();
     }
 
-    void OnApplicationQuit()
+    public void AttackEnemy(ulong damage)
     {
-        _ = UIManager.ui.FadeOut(true);
-        gameDataManager.SaveData(player.playerData, gameData);
-        CancelEntityToken();
-        CancelTimerToken();
-    }
-
-    public void CancelEntityToken()
-    {
-        if (!entityTokenSource.IsCancellationRequested) {
-            entityTokenSource.Cancel();
+        if (enemyCTRL) {
+            enemyCTRL.HitSound();
+            enemyCTRL.HitEffect();
+            enemyCTRL.Damage(damage);
         }
     }
 
-    public void CancelTimerToken()
+    public void AttackPlayer(ulong damage)
     {
-        if (!timerTokenSource.IsCancellationRequested) {
-            timerTokenSource.Cancel();
+        if (playerCTRL) {
+            playerCTRL.HitSound();
+            playerCTRL.HitEffect();
+            playerCTRL.Damage(damage);
         }
     }
 
-    public async void StartGame()
+    public async void PlayerUpdated(PlayerInfo playerInfo)
     {
-        player.Reset();
-        UIManager.ui.UpdateStage(gameData.stageIndex, gameData.highestStageIndex);
-        await UIManager.ui.FadeOut(false);
-        SpawnManager.sm.Spawn();
-        player.Move();
+        if (playerInfo.IsDead) {
+            fade.FadeOut(true);
+            while (!fade.isFadeOut) await Task.Delay(1);
+
+            stageIndex -= 10;
+            stageIndex = Mathf.Clamp(stageIndex, 0, int.MaxValue);
+
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            return;
+        }
     }
 
-    public void SetEnemy(EnemyCTRL enemy)
+    public async void EnemyUpdated(EnemyInfo enemyInfo)
     {
-        currentEnemy = enemy;
-        player.Stop();
-    }
+        if (enemyInfo.IsDead) {
+            UpdateStageIndex();
+            playerCTRL.SetCurrentHP();
+            playerCTRL.IsAttack = false;
+            playerCTRL.GetItem("Soul").Count += enemyInfo.GetItem("Soul").Count;
+            await Task.Delay(1000);
+            playerCTRL.IsMove = true;
+            await Task.Delay(2000);
+            SpawnEnemy();
+            return;
+        }
 
-    public async void EnemyDead()
-    {
-        AddSoul(currentEnemy.enemyData.soul);
-        currentEnemy = null;
-
-        try { await Task.Delay(1500, entityTokenSource.Token); }
-        catch { return; }
-
-        gameData.stageIndex++;
-        gameData.SetHighestStage();
-        UIManager.ui.UpdateStage(gameData.stageIndex, gameData.highestStageIndex);
-
-        player.Move();
-
-        try { await Task.Delay(2000, entityTokenSource.Token); }
-        catch { return; }
-
-        SpawnManager.sm.Spawn();
-    }
-
-    public async void PlayerDead()
-    {
-        entityTokenSource.Cancel();
-        entityTokenSource = new CancellationTokenSource();
-
-        currentEnemy.Destroy();
-        await UIManager.ui.FadeOut(true);
-
-        gameData.ReturnStage();
-        backPanelCTRL.Reset();
-
-        StartGame();
-    }
-
-    public void AddSoul(long count)
-    {
-        player.playerData.soul += count + count * (player.playerData.abilities[AbilityType.LUK].point / 100);
-        UIManager.ui.UpdateItemUI();
-        UIManager.ui.UdateAllAbilityUI();
-    }
-
-    public bool doIncreaseAbillity { get; set; }
-    public async void IncreaseAbility(string typeStr)
-    {
-        if (!System.Enum.TryParse<AbilityType>(typeStr, out AbilityType type)) throw new System.FormatException();
-        PlayerData playerData = player.playerData;
-        Ability ability = player.playerData.abilities[type];
-
-        doIncreaseAbillity = true;
-        bool canIncreaseAbillity = true;
-        while (doIncreaseAbillity) {
-            if (!canIncreaseAbillity || ability.requestSoul > player.playerData.soul || ability.point >= ability.maxPoint) return;
-            canIncreaseAbillity = false;
-
-            playerData.soul -= ability.requestSoul;
-            ability.point += ability.upPoint;
-            ability.level++;
-
-            player.playerData.abilities[type] = ability;
-
-            UIManager.ui.UdateAllAbilityUI();
-            UIManager.ui.UpdateItemUI();
-
+        if (enemyInfo.IsStop) {
+            playerCTRL.IsMove = false;
             await Task.Delay(100);
-            canIncreaseAbillity = true;
+            playerCTRL.IsAttack = true;
+            enemyCTRL.IsAttack = true;
         }
+    }
+
+    public void SpawnEnemy()
+    {
+        enemyCTRL = spawnManager.SpawnEnemy(stageIndex);
+        enemyCTRL.Subscribe(this);
+    }
+
+    public void UpdateStageIndex()
+    {
+        stageIndex++;
+        if (highestStageIndex < stageIndex) {
+            highestStageIndex = stageIndex;
+        }
+        stageChanged.Invoke(this);
     }
 }

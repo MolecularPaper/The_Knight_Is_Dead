@@ -422,7 +422,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 351272299}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: SoundManager, Assembly-CSharp
         m_MethodName: ChangeSEVolume
         m_Mode: 2
@@ -548,9 +548,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 43927163}
-  - component: {fileID: 43927166}
-  - component: {fileID: 43927164}
   - component: {fileID: 43927165}
+  - component: {fileID: 43927164}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -582,12 +581,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 43927162}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b1300ea1e1f05f145b7ef13c4200f11e, type: 3}
+  m_Script: {fileID: 11500000, guid: 2422ae6d4ece2974e9d01fad67387a2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _player: {fileID: 1984596037}
-  backPanelCTRL: {fileID: 1484128075}
-  canActionDistance: 4
+  fade: {fileID: 456303358}
+  highestStageIndex: 0
+  stageIndex: 0
 --- !u!114 &43927165
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -597,25 +596,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 43927162}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f14d84f2353b57746a34af860b47e73a, type: 3}
+  m_Script: {fileID: 11500000, guid: 851388db1a89caf46bfa4f06fb01f8c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spawnList: {fileID: 11400000, guid: 9f6ca386c6c1867458313462fe155708, type: 2}
   spawnPoint: {fileID: 2140163087}
-  spawnDatabase: {fileID: 11400000, guid: 0b8fef8733c9f634e925a5e1c52884a1, type: 2}
-  increaseData: {fileID: 11400000, guid: 8ef52336c9ac9f74c815d0799f1b24fe, type: 2}
---- !u!114 &43927166
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 43927162}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d71139c97a51eb348a28502fb3b1bdd0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  saveFileName: BugGameData
 --- !u!1 &73629294
 GameObject:
   m_ObjectHideFlags: 0
@@ -777,6 +762,7 @@ GameObject:
   - component: {fileID: 78899502}
   - component: {fileID: 78899504}
   - component: {fileID: 78899503}
+  - component: {fileID: 78899505}
   m_Layer: 0
   m_Name: Soul
   m_TagString: Untagged
@@ -825,6 +811,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 78899501}
   m_CullTransparentMesh: 1
+--- !u!114 &78899505
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 78899501}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cf2ec677c29a9e4ea285effe30e8cea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemName: Soul
+  count: {fileID: 2086947192}
 --- !u!1 &91625913
 GameObject:
   m_ObjectHideFlags: 0
@@ -970,6 +970,7 @@ GameObject:
   - component: {fileID: 95801391}
   - component: {fileID: 95801392}
   - component: {fileID: 95801393}
+  - component: {fileID: 95801394}
   m_Layer: 0
   m_Name: Diamond
   m_TagString: Untagged
@@ -1018,6 +1019,20 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &95801394
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 95801390}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cf2ec677c29a9e4ea285effe30e8cea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemName: Diamond
+  count: {fileID: 1011273062}
 --- !u!1 &102204862
 GameObject:
   m_ObjectHideFlags: 0
@@ -1163,6 +1178,7 @@ GameObject:
   - component: {fileID: 112597976}
   - component: {fileID: 112597977}
   - component: {fileID: 112597978}
+  - component: {fileID: 112597979}
   m_Layer: 0
   m_Name: Crystal
   m_TagString: Untagged
@@ -1211,6 +1227,20 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &112597979
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 112597975}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cf2ec677c29a9e4ea285effe30e8cea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemName: Crystal
+  count: {fileID: 1917886951}
 --- !u!1 &120816474
 GameObject:
   m_ObjectHideFlags: 0
@@ -1908,6 +1938,7 @@ GameObject:
   - component: {fileID: 176670098}
   - component: {fileID: 176670100}
   - component: {fileID: 176670099}
+  - component: {fileID: 176670101}
   m_Layer: 5
   m_Name: Defense
   m_TagString: Untagged
@@ -1976,6 +2007,24 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 176670097}
   m_CullTransparentMesh: 1
+--- !u!114 &176670101
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 176670097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59f36041bf821ab4ea77f575ac16d379, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  titleName: "\uBC29\uC5B4\uB825"
+  abilityName: DEF
+  title: {fileID: 91625915}
+  description: {fileID: 1974293603}
+  requestSoul: {fileID: 524588295}
+  levelUpButton: {fileID: 395524603}
 --- !u!1 &200271616
 GameObject:
   m_ObjectHideFlags: 0
@@ -2109,7 +2158,7 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 1392597318}
+        - m_Target: {fileID: 0}
           m_TargetAssemblyTypeName: RewardAD, Assembly-CSharp
           m_MethodName: WatchDoubleSpeedRewardedAd
           m_Mode: 1
@@ -2470,14 +2519,14 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 43927164}
-          m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-          m_MethodName: IncreaseAbility
+        - m_Target: {fileID: 4544550978808934478}
+          m_TargetAssemblyTypeName: PlayerCTRL, Assembly-CSharp
+          m_MethodName: LevelUpAbility
           m_Mode: 5
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 5
+            m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: CRIP
             m_BoolArgument: 0
@@ -2486,16 +2535,16 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 43927164}
-          m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-          m_MethodName: set_doIncreaseAbillity
+        - m_Target: {fileID: 4544550978808934478}
+          m_TargetAssemblyTypeName: PlayerCTRL, Assembly-CSharp
+          m_MethodName: set_isHoldButton
           m_Mode: 6
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
             m_FloatArgument: 0
-            m_StringArgument: 0
+            m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
 --- !u!114 &292796631
@@ -3348,8 +3397,7 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 1009467383}
-  - {fileID: 417655587}
-  - {fileID: 392103035}
+  - {fileID: 537723907}
   - {fileID: 456303354}
   m_Father: {fileID: 1984301589}
   m_RootOrder: 1
@@ -3429,7 +3477,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 351272297}
-  - component: {fileID: 351272299}
+  - component: {fileID: 351272298}
   m_Layer: 0
   m_Name: SoundManager
   m_TagString: Untagged
@@ -3453,7 +3501,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &351272299
+--- !u!114 &351272298
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -3462,14 +3510,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 351272296}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 482b0c941660c6444b488cd8bffc7f7f, type: 3}
+  m_Script: {fileID: 11500000, guid: bad5ec1a4a1b20e4980c2d8e281ac8f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   bgmSource: {fileID: 1195775329}
   seSource: {fileID: 857499953}
   buttonClickSound: {fileID: 8300000, guid: 96e317371a1c3a149865470283ab2b55, type: 3}
-  bgmSilder: {fileID: 1341826717}
-  seSilder: {fileID: 22539553}
+  bgmSilder: {fileID: 0}
+  seSilder: {fileID: 0}
 --- !u!1 &376384038
 GameObject:
   m_ObjectHideFlags: 0
@@ -3777,12 +3825,12 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 392103034}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 346833641}
-  m_RootOrder: 2
+  m_Father: {fileID: 537723907}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
@@ -3943,14 +3991,14 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 43927164}
-          m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-          m_MethodName: IncreaseAbility
+        - m_Target: {fileID: 4544550978808934478}
+          m_TargetAssemblyTypeName: PlayerCTRL, Assembly-CSharp
+          m_MethodName: LevelUpAbility
           m_Mode: 5
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 2
+            m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: DEF
             m_BoolArgument: 0
@@ -3959,16 +4007,16 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 43927164}
-          m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-          m_MethodName: set_doIncreaseAbillity
+        - m_Target: {fileID: 4544550978808934478}
+          m_TargetAssemblyTypeName: PlayerCTRL, Assembly-CSharp
+          m_MethodName: set_isHoldButton
           m_Mode: 6
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
             m_FloatArgument: 0
-            m_StringArgument: 0
+            m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
 --- !u!114 &395524603
@@ -4078,12 +4126,12 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 417655586}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 346833641}
-  m_RootOrder: 1
+  m_Father: {fileID: 537723907}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
@@ -4274,6 +4322,7 @@ GameObject:
   - component: {fileID: 456303356}
   - component: {fileID: 456303357}
   - component: {fileID: 456303355}
+  - component: {fileID: 456303358}
   m_Layer: 0
   m_Name: Fade
   m_TagString: Untagged
@@ -4293,7 +4342,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 346833641}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -4350,6 +4399,19 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &456303358
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 456303353}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 149b390f5c6cbe945ad03e769b80ba9a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fadeSpeed: 1
 --- !u!1 &456412572
 GameObject:
   m_ObjectHideFlags: 0
@@ -4616,7 +4678,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 43927166}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: GameDataManager, Assembly-CSharp
         m_MethodName: DeleteSaveData
         m_Mode: 1
@@ -4759,6 +4821,7 @@ GameObject:
   - component: {fileID: 502475605}
   - component: {fileID: 502475607}
   - component: {fileID: 502475606}
+  - component: {fileID: 502475608}
   m_Layer: 5
   m_Name: Luck
   m_TagString: Untagged
@@ -4827,6 +4890,24 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 502475604}
   m_CullTransparentMesh: 1
+--- !u!114 &502475608
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 502475604}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59f36041bf821ab4ea77f575ac16d379, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  titleName: "\uC6B4"
+  abilityName: LUK
+  title: {fileID: 298832076}
+  description: {fileID: 894841875}
+  requestSoul: {fileID: 102204864}
+  levelUpButton: {fileID: 1945880320}
 --- !u!1 &511801257
 GameObject:
   m_ObjectHideFlags: 0
@@ -5388,6 +5469,58 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 535437211}
   m_CullTransparentMesh: 1
+--- !u!1 &537723906
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 537723907}
+  - component: {fileID: 537723908}
+  m_Layer: 0
+  m_Name: StageUI
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &537723907
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 537723906}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 417655587}
+  - {fileID: 392103035}
+  m_Father: {fileID: 346833641}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &537723908
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 537723906}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0db7defc7c77d049ad7b043f03d470f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  highestStage: {fileID: 417655588}
+  stage: {fileID: 392103036}
 --- !u!1 &545814937
 GameObject:
   m_ObjectHideFlags: 0
@@ -5918,9 +6051,9 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 43927164}
-          m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-          m_MethodName: IncreaseAbility
+        - m_Target: {fileID: 4544550978808934478}
+          m_TargetAssemblyTypeName: PlayerCTRL, Assembly-CSharp
+          m_MethodName: LevelUpAbility
           m_Mode: 5
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -5934,16 +6067,16 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 43927164}
-          m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-          m_MethodName: set_doIncreaseAbillity
+        - m_Target: {fileID: 4544550978808934478}
+          m_TargetAssemblyTypeName: PlayerCTRL, Assembly-CSharp
+          m_MethodName: set_isHoldButton
           m_Mode: 6
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
             m_FloatArgument: 0
-            m_StringArgument: 0
+            m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
 --- !u!114 &629287352
@@ -7979,6 +8112,7 @@ GameObject:
   - component: {fileID: 1042112197}
   - component: {fileID: 1042112199}
   - component: {fileID: 1042112198}
+  - component: {fileID: 1042112200}
   m_Layer: 5
   m_Name: Attack
   m_TagString: Untagged
@@ -8047,6 +8181,24 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1042112196}
   m_CullTransparentMesh: 1
+--- !u!114 &1042112200
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1042112196}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59f36041bf821ab4ea77f575ac16d379, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  titleName: "\uACF5\uACA9\uB825"
+  abilityName: ATK
+  title: {fileID: 1821000333}
+  description: {fileID: 1828045513}
+  requestSoul: {fileID: 166145504}
+  levelUpButton: {fileID: 1090508551}
 --- !u!1 &1042917914
 GameObject:
   m_ObjectHideFlags: 0
@@ -8618,8 +8770,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1984301590}
-        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+      - m_Target: {fileID: 1404976525}
+        m_TargetAssemblyTypeName: TapUI, Assembly-CSharp
         m_MethodName: TapControl
         m_Mode: 3
         m_Arguments:
@@ -8807,14 +8959,14 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 43927164}
-          m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-          m_MethodName: IncreaseAbility
+        - m_Target: {fileID: 4544550978808934478}
+          m_TargetAssemblyTypeName: PlayerCTRL, Assembly-CSharp
+          m_MethodName: LevelUpAbility
           m_Mode: 5
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 1
+            m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: ATK
             m_BoolArgument: 0
@@ -8823,16 +8975,16 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 43927164}
-          m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-          m_MethodName: set_doIncreaseAbillity
+        - m_Target: {fileID: 4544550978808934478}
+          m_TargetAssemblyTypeName: PlayerCTRL, Assembly-CSharp
+          m_MethodName: set_isHoldButton
           m_Mode: 6
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
             m_FloatArgument: 0
-            m_StringArgument: 0
+            m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
 --- !u!1 &1096999263
@@ -9693,7 +9845,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 351272299}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: SoundManager, Assembly-CSharp
         m_MethodName: ChangeBGMVolume
         m_Mode: 2
@@ -9992,8 +10144,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1984301590}
-        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+      - m_Target: {fileID: 1404976525}
+        m_TargetAssemblyTypeName: TapUI, Assembly-CSharp
         m_MethodName: TapControl
         m_Mode: 3
         m_Arguments:
@@ -10505,7 +10657,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1392597317}
-  - component: {fileID: 1392597318}
   m_Layer: 0
   m_Name: AdManager
   m_TagString: Untagged
@@ -10527,22 +10678,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1392597318
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1392597316}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 590c20b5d0b2ea24192ed8b02162dcc7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  doubleSpeedSceond: 300
-  doubleSpeedCoolTimeSceond: 1200
-  doubleSpeedButton: {fileID: 236202147}
-  doubleSpeedText: {fileID: 511801259}
 --- !u!1 &1394207219
 GameObject:
   m_ObjectHideFlags: 0
@@ -10631,6 +10766,7 @@ GameObject:
   - component: {fileID: 1404976522}
   - component: {fileID: 1404976523}
   - component: {fileID: 1404976524}
+  - component: {fileID: 1404976525}
   m_Layer: 0
   m_Name: Taps
   m_TagString: Untagged
@@ -10721,6 +10857,22 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &1404976525
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1404976520}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2bb884451cc6e049b60475c8776069f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  taps:
+  - {fileID: 1429130466}
+  - {fileID: 636935485}
+  - {fileID: 456905675}
 --- !u!1 &1414010165
 GameObject:
   m_ObjectHideFlags: 0
@@ -11269,7 +11421,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1484128072}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 70420e4be0d989046819048ace7641e5, type: 3}
+  m_Script: {fileID: 11500000, guid: 8f1c3cf21ef48ed46a7cc9def4a97be8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   backAnimators:
@@ -11278,7 +11430,6 @@ MonoBehaviour:
   - {fileID: 606396404}
   - {fileID: 1993995490}
   backRampRate: 4
-  player: {fileID: 1984596037}
 --- !u!1 &1536911214
 GameObject:
   m_ObjectHideFlags: 0
@@ -11290,6 +11441,7 @@ GameObject:
   - component: {fileID: 1536911215}
   - component: {fileID: 1536911217}
   - component: {fileID: 1536911216}
+  - component: {fileID: 1536911218}
   m_Layer: 5
   m_Name: CriticalPersent
   m_TagString: Untagged
@@ -11358,6 +11510,24 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1536911214}
   m_CullTransparentMesh: 1
+--- !u!114 &1536911218
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1536911214}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59f36041bf821ab4ea77f575ac16d379, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  titleName: "\uD06C\uB9AC\uD2F0\uCEEC \uD655\uB960"
+  abilityName: CRIP
+  title: {fileID: 1334676690}
+  description: {fileID: 815251382}
+  requestSoul: {fileID: 1785258890}
+  levelUpButton: {fileID: 292796631}
 --- !u!1 &1549053721
 GameObject:
   m_ObjectHideFlags: 0
@@ -11741,7 +11911,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -0.00036621094}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1558834159
@@ -11795,6 +11965,7 @@ GameObject:
   - component: {fileID: 1571084831}
   - component: {fileID: 1571084833}
   - component: {fileID: 1571084832}
+  - component: {fileID: 1571084834}
   m_Layer: 5
   m_Name: CriticalDamage
   m_TagString: Untagged
@@ -11863,6 +12034,24 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1571084830}
   m_CullTransparentMesh: 1
+--- !u!114 &1571084834
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1571084830}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59f36041bf821ab4ea77f575ac16d379, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  titleName: "\uD06C\uB9AC\uD2F0\uCEEC \uB370\uBBF8\uC9C0"
+  abilityName: CRID
+  title: {fileID: 1825952323}
+  description: {fileID: 1693872398}
+  requestSoul: {fileID: 1554276937}
+  levelUpButton: {fileID: 1791533098}
 --- !u!1 &1588123921
 GameObject:
   m_ObjectHideFlags: 0
@@ -12086,8 +12275,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1984301590}
-        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+      - m_Target: {fileID: 1404976525}
+        m_TargetAssemblyTypeName: TapUI, Assembly-CSharp
         m_MethodName: TapControl
         m_Mode: 3
         m_Arguments:
@@ -12670,14 +12859,14 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 43927164}
-          m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-          m_MethodName: IncreaseAbility
+        - m_Target: {fileID: 4544550978808934478}
+          m_TargetAssemblyTypeName: PlayerCTRL, Assembly-CSharp
+          m_MethodName: LevelUpAbility
           m_Mode: 5
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 4
+            m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: CRID
             m_BoolArgument: 0
@@ -12686,16 +12875,16 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 43927164}
-          m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-          m_MethodName: set_doIncreaseAbillity
+        - m_Target: {fileID: 4544550978808934478}
+          m_TargetAssemblyTypeName: PlayerCTRL, Assembly-CSharp
+          m_MethodName: set_isHoldButton
           m_Mode: 6
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
             m_FloatArgument: 0
-            m_StringArgument: 0
+            m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
 --- !u!114 &1791533098
@@ -13949,14 +14138,14 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 43927164}
-          m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-          m_MethodName: IncreaseAbility
+        - m_Target: {fileID: 4544550978808934478}
+          m_TargetAssemblyTypeName: PlayerCTRL, Assembly-CSharp
+          m_MethodName: LevelUpAbility
           m_Mode: 5
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 3
+            m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: LUK
             m_BoolArgument: 0
@@ -13965,16 +14154,16 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 43927164}
-          m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-          m_MethodName: set_doIncreaseAbillity
+        - m_Target: {fileID: 4544550978808934478}
+          m_TargetAssemblyTypeName: PlayerCTRL, Assembly-CSharp
+          m_MethodName: set_isHoldButton
           m_Mode: 6
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
             m_FloatArgument: 0
-            m_StringArgument: 0
+            m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
 --- !u!114 &1945880320
@@ -14202,7 +14391,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1984301589}
-  - component: {fileID: 1984301590}
   m_Layer: 0
   m_Name: UI
   m_TagString: Untagged
@@ -14229,82 +14417,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1984301590
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1984301588}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ee5079f9caac92047965c7e79f93fa2c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  highestStage: {fileID: 417655588}
-  stage: {fileID: 392103036}
-  player: {fileID: 1984596037}
-  taps:
-  - {fileID: 1429130466}
-  - {fileID: 636935485}
-  - {fileID: 456905675}
-  fade: {fileID: 456303357}
-  fadeSpeed: 1
-  abilityUI:
-  - title: "\uCCB4\uB825"
-    level: {fileID: 14159099}
-    description: {fileID: 535437213}
-    levelUpButton: {fileID: 629287352}
-    soul: {fileID: 822300656}
-  - title: "\uACF5\uACA9\uB825"
-    level: {fileID: 1821000333}
-    description: {fileID: 1828045513}
-    levelUpButton: {fileID: 1090508551}
-    soul: {fileID: 166145504}
-  - title: "\uBC29\uC5B4\uB825"
-    level: {fileID: 91625915}
-    description: {fileID: 1974293603}
-    levelUpButton: {fileID: 395524603}
-    soul: {fileID: 524588295}
-  - title: "\uD589\uC6B4"
-    level: {fileID: 298832076}
-    description: {fileID: 894841875}
-    levelUpButton: {fileID: 1945880320}
-    soul: {fileID: 102204864}
-  - title: "\uD06C\uB9AC\uD2F0\uCEEC \uB370\uBBF8\uC9C0"
-    level: {fileID: 1825952323}
-    description: {fileID: 1693872398}
-    levelUpButton: {fileID: 1791533098}
-    soul: {fileID: 1554276937}
-  - title: "\uD06C\uB9AC\uD2F0\uCEEC \uD655\uB960"
-    level: {fileID: 1334676690}
-    description: {fileID: 815251382}
-    levelUpButton: {fileID: 292796631}
-    soul: {fileID: 1785258890}
-  itemInfos:
-  - itemType: 0
-    group: {fileID: 78899503}
-    count: {fileID: 2086947192}
-    isActive: 1
-  - itemType: 1
-    group: {fileID: 95801393}
-    count: {fileID: 1011273062}
-    isActive: 1
-  - itemType: 2
-    group: {fileID: 112597978}
-    count: {fileID: 1917886951}
-    isActive: 1
---- !u!114 &1984596037 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1984596037, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
-  m_PrefabInstance: {fileID: 4544550978808934476}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0313b49def0c6cd42862b7e64bdcd8eb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1991643997
 GameObject:
   m_ObjectHideFlags: 0
@@ -20756,7 +20868,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2134201230}
   m_HandleRect: {fileID: 2134201229}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 1.0000006
   m_Size: 0.55565894
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -20811,6 +20923,7 @@ GameObject:
   - component: {fileID: 2129147261}
   - component: {fileID: 2129147263}
   - component: {fileID: 2129147262}
+  - component: {fileID: 2129147264}
   m_Layer: 5
   m_Name: HP
   m_TagString: Untagged
@@ -20879,6 +20992,24 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2129147260}
   m_CullTransparentMesh: 1
+--- !u!114 &2129147264
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2129147260}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59f36041bf821ab4ea77f575ac16d379, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  titleName: "\uCCB4\uB825"
+  abilityName: HP
+  title: {fileID: 14159099}
+  description: {fileID: 535437213}
+  requestSoul: {fileID: 822300656}
+  levelUpButton: {fileID: 629287352}
 --- !u!1 &2134201228
 GameObject:
   m_ObjectHideFlags: 0
@@ -21112,7 +21243,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2140163086}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 5, y: -3, z: 0}
+  m_LocalPosition: {x: 7, y: -3, z: 0}
   m_LocalScale: {x: -1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 43927163}
@@ -21235,18 +21366,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1165964865, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1984596037, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
-      propertyPath: isDead
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1984596037, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
-      propertyPath: playerData.soul
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 4544550979552234472, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
       propertyPath: m_Name
       value: Knight
@@ -21297,3 +21416,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+--- !u!114 &4544550978808934478 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+  m_PrefabInstance: {fileID: 4544550978808934476}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b087cf9b19065244a20f7266954d600, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
