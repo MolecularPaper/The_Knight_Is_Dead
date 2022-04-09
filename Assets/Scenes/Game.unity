@@ -548,7 +548,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 43927163}
+  - component: {fileID: 43927166}
   - component: {fileID: 43927165}
+  - component: {fileID: 43927167}
   - component: {fileID: 43927164}
   m_Layer: 0
   m_Name: GameManager
@@ -570,7 +572,7 @@ Transform:
   m_Children:
   - {fileID: 2140163087}
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &43927164
 MonoBehaviour:
@@ -584,9 +586,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2422ae6d4ece2974e9d01fad67387a2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fade: {fileID: 456303358}
   highestStageIndex: 0
   stageIndex: 0
+  fade: {fileID: 346833645}
 --- !u!114 &43927165
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -601,6 +603,40 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnList: {fileID: 11400000, guid: 9f6ca386c6c1867458313462fe155708, type: 2}
   spawnPoint: {fileID: 2140163087}
+--- !u!114 &43927166
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 43927162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1be91a5c07186d344b3ab4363a856032, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  saveFileName: GameData
+--- !u!114 &43927167
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 43927162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 731d46d6a51a2a94aa2663a1bee90743, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  adInfos:
+  - adName: DoubleSpeed
+    adUnitId: ca-app-pub-3940256099942544/5224354917
+    compensationSecond: 300
+    watingSecond: 1200
+    currentSecond: 0
+    canShowAd: 1
+    button: {fileID: 236202147}
+    buttonText: {fileID: 511801259}
 --- !u!1 &73629294
 GameObject:
   m_ObjectHideFlags: 0
@@ -2113,7 +2149,6 @@ GameObject:
   - component: {fileID: 236202149}
   - component: {fileID: 236202148}
   - component: {fileID: 236202147}
-  - component: {fileID: 236202146}
   m_Layer: 5
   m_Name: Watch
   m_TagString: Untagged
@@ -2141,35 +2176,6 @@ RectTransform:
   m_AnchoredPosition: {x: -35, y: -2.6}
   m_SizeDelta: {x: 160, y: 82}
   m_Pivot: {x: 1, y: 0.5}
---- !u!114 &236202146
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 236202144}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 3
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: RewardAD, Assembly-CSharp
-          m_MethodName: WatchDoubleSpeedRewardedAd
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
 --- !u!114 &236202147
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2213,7 +2219,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 236202148}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &236202148
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3378,6 +3396,7 @@ GameObject:
   - component: {fileID: 346833644}
   - component: {fileID: 346833643}
   - component: {fileID: 346833642}
+  - component: {fileID: 346833645}
   m_Layer: 0
   m_Name: GUI
   m_TagString: Untagged
@@ -3468,6 +3487,20 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 2
   m_TargetDisplay: 0
+--- !u!114 &346833645
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 346833640}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 149b390f5c6cbe945ad03e769b80ba9a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fadeSpeed: 1
+  fade: {fileID: 456303357}
 --- !u!1 &351272296
 GameObject:
   m_ObjectHideFlags: 0
@@ -3499,7 +3532,7 @@ Transform:
   - {fileID: 1195775328}
   - {fileID: 857499952}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &351272298
 MonoBehaviour:
@@ -4322,14 +4355,13 @@ GameObject:
   - component: {fileID: 456303356}
   - component: {fileID: 456303357}
   - component: {fileID: 456303355}
-  - component: {fileID: 456303358}
   m_Layer: 0
   m_Name: Fade
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &456303354
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4399,19 +4431,6 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
---- !u!114 &456303358
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 456303353}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 149b390f5c6cbe945ad03e769b80ba9a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fadeSpeed: 1
 --- !u!1 &456412572
 GameObject:
   m_ObjectHideFlags: 0
@@ -4678,7 +4697,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 43927166}
         m_TargetAssemblyTypeName: GameDataManager, Assembly-CSharp
         m_MethodName: DeleteSaveData
         m_Mode: 1
@@ -5123,7 +5142,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &524588293
 GameObject:
@@ -10648,36 +10667,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1390258246}
   m_CullTransparentMesh: 1
---- !u!1 &1392597316
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1392597317}
-  m_Layer: 0
-  m_Name: AdManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1392597317
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1392597316}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1394207219
 GameObject:
   m_ObjectHideFlags: 0
@@ -11410,7 +11399,7 @@ Transform:
   m_Children:
   - {fileID: 2145969794}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1484128075
 MonoBehaviour:
@@ -14415,7 +14404,7 @@ Transform:
   - {fileID: 1404976521}
   - {fileID: 1591750811}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1991643997
 GameObject:
@@ -21372,7 +21361,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4544550979552234475, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
       propertyPath: m_RootOrder
-      value: 6
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 4544550979552234475, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
       propertyPath: m_LocalPosition.x

@@ -30,9 +30,61 @@ public interface IMobCTRL
 
 public class MobInfo : MonoBehaviour
 {
-    [SerializeField] protected List<Item> items;
-    [SerializeField] protected List<Ability> abilities;
+    public List<Item> items;
+    public List<Ability> abilities;
     protected long currentHp;
+
+    public Ability this[string abilityName] {
+        get {
+            foreach (var item in abilities) {
+                if (item.abilityName == abilityName) {
+                    return item;
+                }
+            }
+            throw new System.ArgumentNullException();
+        }
+        set {
+            for (int i = 0; i < abilities.Count; i++) {
+                if (abilities[i].abilityName == abilityName) {
+                    abilities[i] = value;
+                    return;
+                }
+            }
+            throw new System.ArgumentNullException();
+        }
+    }
+
+    public Item GetItem(string itemName)
+    {
+        foreach (var item in items) {
+            if (item.itemName == itemName) {
+                return item;
+            }
+        }
+        throw new System.ArgumentNullException();
+    }
+
+    public void SetItem(Item item)
+    {
+        for (int i = 0; i < items.Count; i++) {
+            if(items[i].itemName == item.itemName) {
+                items[i] = item;
+                return;
+            }
+        }
+        throw new System.ArgumentNullException();
+    }
+
+    public void SetInfo(GameData gameData)
+    {
+        foreach (var item in gameData.abilityInfos) {
+            this[item.abilityName].SetAbility(item);
+        }
+
+        foreach (var item in gameData.itemInfos) {
+            SetItem(new Item(item));
+        }
+    }
 }
 
 public class MobExtension : MobInfo
@@ -50,27 +102,8 @@ public class MobExtension : MobInfo
 
 public class MobMethodExtension : MobExtension, IMobEffect, IMobCalculate, IMobCTRL
 {
-    public Ability this[string abilityName] {
-        get {
-            foreach (var item in abilities) {
-                if (item.abilityName == abilityName) {
-                    return item;
-                }
-            }
-            throw new System.ArgumentNullException();
-        }
-    }
+    
     public void AddAbility(Ability ability) => abilities.Add(ability);
-
-    public Item GetItem(string itemName)
-    {
-        foreach (var item in items) {
-            if (item.itemName == itemName) {
-                return item;
-            }
-        }
-        throw new System.ArgumentNullException();
-    }
     public void AddItem(Item item) => items.Add(item);
 
     public void AttackSound() => SoundManager.sound.PlaySE(attakSound);

@@ -2,23 +2,25 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class GameInstance : MonoBehaviour
-{
-    public static GameManager gm;
-    protected SpawnManager spawnManager;
-    protected PlayerCTRL playerCTRL;
-    protected EnemyCTRL enemyCTRL;
-    [SerializeField] protected Fade fade;
-}
-
-public class GameInfo : GameInstance
+[System.Serializable]
+public class GameInfo : MonoBehaviour
 {
     public int highestStageIndex;
 
     public int stageIndex;
 }
 
-public class GameInfoExtension : GameInfo
+public class GameInstance : GameInfo
+{
+    public static GameManager gm;
+    protected GameDataManager dataManager;
+    protected SpawnManager spawnManager;
+    protected PlayerCTRL playerCTRL;
+    protected EnemyCTRL enemyCTRL;
+    [SerializeField] protected Fade fade;
+}
+
+public class GameInfoExtension : GameInstance
 {
     public Vector3 PlayerPosition => playerCTRL.transform.position;
 }
@@ -34,10 +36,16 @@ public class GameManager : GameInfoExtension, IPlayerObserver, IEnemyObserver
         GameObject player = GameObject.FindWithTag("Player");
         playerCTRL = player.GetComponent<PlayerCTRL>();
         playerCTRL.Subscribe(this);
+
         spawnManager = GetComponent<SpawnManager>();
+        dataManager = GetComponent<GameDataManager>();
+
+        LoadData();
     }
 
     public void Start() => GameStart();
+
+    private void OnApplicationQuit() => SaveData();
 
     public async void GameStart()
     {
@@ -74,6 +82,7 @@ public class GameManager : GameInfoExtension, IPlayerObserver, IEnemyObserver
             stageIndex -= 10;
             stageIndex = Mathf.Clamp(stageIndex, 0, int.MaxValue);
 
+            SaveData();
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             return;
         }
@@ -87,6 +96,7 @@ public class GameManager : GameInfoExtension, IPlayerObserver, IEnemyObserver
             playerCTRL.IsAttack = false;
             playerCTRL.GetItem("Soul").Count += enemyInfo.GetItem("Soul").Count;
             await Task.Delay(1000);
+            playerCTRL.CalculateHpBar();
             playerCTRL.IsMove = true;
             await Task.Delay(2000);
             SpawnEnemy();
@@ -115,4 +125,18 @@ public class GameManager : GameInfoExtension, IPlayerObserver, IEnemyObserver
         }
         stageChanged.Invoke(this);
     }
+
+    private void LoadData()
+    {
+        try {
+            GameData gameData = dataManager.LoadData();
+            playerCTRL.SetInfo(gameData);
+            GetComponent<AdManager>().SetAdInfos(gameData.adInfos);
+            this.highestStageIndex = gameData.highestStageIndex;
+            this.stageIndex = gameData.stageIndex;
+        }
+        catch (System.IO.DirectoryNotFoundException) { }
+    }
+
+    private void SaveData() => dataManager.SaveData(playerCTRL, this, GetComponent<AdManager>().adCollection);
 }

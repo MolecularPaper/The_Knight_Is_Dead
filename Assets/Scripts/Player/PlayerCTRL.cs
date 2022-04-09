@@ -93,6 +93,11 @@ public class PlayerCTRL : PlayerObservable, IPlayerCalculate, IMobAction
         SetCurrentHP();
         hpBarScale = hpBar.localScale;
 
+        PlayerUpdated();
+    }
+
+    public void Start()
+    {
         Item item = GetItem("Soul");
         foreach (var ability in abilities) {
             item.Subscribe(ability);
@@ -101,8 +106,6 @@ public class PlayerCTRL : PlayerObservable, IPlayerCalculate, IMobAction
         foreach (var _item in items) {
             _item.ItemUpdate();
         }
-
-        PlayerUpdated();
     }
 
     public void Attack()
@@ -127,6 +130,8 @@ public class PlayerCTRL : PlayerObservable, IPlayerCalculate, IMobAction
         if (currentHp <= 0) {
             IsDead = true;
         }
+
+        CalculateHpBar();
     }
 
     public void Dead() => IsDead = true;

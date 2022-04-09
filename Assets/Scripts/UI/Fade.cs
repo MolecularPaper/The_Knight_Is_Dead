@@ -4,13 +4,12 @@ using UnityEngine;
 public class Fade : MonoBehaviour
 {
     [SerializeField] float fadeSpeed;
-    private CanvasGroup fade;
+    [SerializeField] private CanvasGroup fade;
 
     public bool isFadeOut => fade.alpha == 1;
 
     private void Awake()
     {
-        fade = GetComponent<CanvasGroup>();
         FadeOut(false);
     }
 

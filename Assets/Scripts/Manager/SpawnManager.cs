@@ -12,7 +12,10 @@ public class SpawnManager : MonoBehaviour
         if (index >= spawnList.enemyPrefabs.Count)
             index = spawnList.enemyPrefabs.Count - 1;
 
-        GameObject enemy = Instantiate(spawnList.enemyPrefabs[index], spawnPoint.position, spawnPoint.rotation, spawnPoint);
+        GameObject enemy;
+        try { enemy = Instantiate(spawnList.enemyPrefabs[index], spawnPoint.position, spawnPoint.rotation, spawnPoint); }
+        catch { return null; }
+
         EnemyCTRL enemyCTRL = enemy.GetComponent<EnemyCTRL>();
 
         ulong hp = (ulong)Mathf.Pow(spawnList.hpIncrease * (index + 1), 2) + 10;

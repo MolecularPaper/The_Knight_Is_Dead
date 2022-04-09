@@ -3,22 +3,26 @@ using UnityEngine.Events;
 using UnityEngine;
 
 [System.Serializable]
-public abstract class AbilityInfo
+public class AbilityInfo
 {
     [HideInInspector]
-    public bool canLevelUp;
-    public string abilityName;
-    public string sign;
-    public uint level;
-    public ulong point;
+    public bool canLevelUp = false;
+    public string abilityName = "";
+    public string sign = "";
+    public uint level = 0;
+    public ulong point = 0;
 
-    public abstract ulong UpPoint { get; }
-
-    public abstract ulong RequestSoul { get; }
-
-    public abstract ulong NextPoint { get; }
+    public void SetAbility(AbilityInfo abilityInfo)
+    {
+        this.canLevelUp = abilityInfo.canLevelUp;
+        this.abilityName = abilityInfo.abilityName;
+        this.sign = abilityInfo.sign;
+        this.level = abilityInfo.level;
+        this.point = abilityInfo.point;
+    }
 }
 
+[System.Serializable]
 public class AbilityExtension : AbilityInfo
 {
     [SerializeField] protected ulong maxPoint;
@@ -28,7 +32,7 @@ public class AbilityExtension : AbilityInfo
     [SerializeField] protected float soulInc;
     [SerializeField] protected bool isFixInc;
 
-    public override ulong UpPoint {
+    public ulong UpPoint {
         get {
             if (isFixInc) {
                 return (ulong)pointInc;
@@ -39,9 +43,9 @@ public class AbilityExtension : AbilityInfo
         }
     }
 
-    public override ulong NextPoint => point + UpPoint;
+    public ulong NextPoint => point + UpPoint;
 
-    public override ulong RequestSoul => (ulong)Mathf.Pow(soulInc * level, 2);
+    public ulong RequestSoul => (ulong)Mathf.Pow(soulInc * level, 2);
 }
 
 public interface AbilityCalculate
@@ -60,7 +64,7 @@ public interface IAbilityObservable
 
 public interface IAbilityObserver
 {
-    public void AbilityUpdated(AbilityInfo abilityInfo);
+    public void AbilityUpdated(AbilityExtension abilityInfo);
 }
 
 [System.Serializable]
@@ -71,8 +75,16 @@ public class Ability : AbilityExtension, AbilityCalculate, IAbilityObservable, I
         this.abilityName = abilityName;
         this.point = point;
     }
+    public Ability(AbilityInfo abilityInfo)
+    {
+        this.canLevelUp = abilityInfo.canLevelUp;
+        this.abilityName = abilityInfo.abilityName;
+        this.sign = abilityInfo.sign;
+        this.level = abilityInfo.level;
+        this.point = abilityInfo.point;
+    }
 
-    private delegate void AbilityUpdatedDel(AbilityInfo abilityInfo);
+    private delegate void AbilityUpdatedDel(AbilityExtension abilityInfo);
     private AbilityUpdatedDel abilityUpdatedDel;
 
     public void LevelUp()
@@ -83,7 +95,7 @@ public class Ability : AbilityExtension, AbilityCalculate, IAbilityObservable, I
 
     public void AbilityUpdated()
     {
-        abilityUpdatedDel.Invoke(this);
+        if(abilityUpdatedDel != null) abilityUpdatedDel.Invoke(this);
     }
 
     public void Subscribe(IAbilityObserver observer)
@@ -106,7 +118,6 @@ public class Ability : AbilityExtension, AbilityCalculate, IAbilityObservable, I
     {
         if (item.itemName == "Soul") {
             canLevelUp = item.Count >= RequestSoul;
-            Debug.Log($"{abilityName}, {canLevelUp}");
             AbilityUpdated();
         }
         else throw new System.ArgumentException();

@@ -19,10 +19,16 @@ public interface IItemObservable
 [System.Serializable]
 public class ItemInfo
 {
-    public string itemName;
+    public string itemName = "";
+    public ulong count = 0;
 
-    [SerializeField] 
-    protected ulong count;
+    public ItemInfo() { }
+
+    public ItemInfo(ItemInfo itemInfo)
+    {
+        this.itemName = itemInfo.itemName;
+        this.count = itemInfo.count;
+    }
 }
 
 [System.Serializable]
@@ -42,6 +48,12 @@ public class Item : ItemInfo, IItemObservable
     {
         this.itemName = itemName;
         Count = count;
+    }
+
+    public Item(ItemInfo itemInfo)
+    {
+        this.itemName = itemInfo.itemName;
+        Count = itemInfo.count;
     }
 
     public void ItemUpdate()
