@@ -92,7 +92,7 @@ public class PlayerCTRL : PlayerObservable, IPlayerCalculate, IMobAction
 
         SetCurrentHP();
         hpBarScale = hpBar.localScale;
-
+        
         PlayerUpdated();
     }
 
@@ -147,7 +147,8 @@ public class PlayerCTRL : PlayerObservable, IPlayerCalculate, IMobAction
             item.Count -= ability.RequestSoul;
             ability.LevelUp();
             item.ItemUpdate();
-            await Task.Delay(100);
+            try { await Task.Delay(100, GameManager.gm.tokenSource.Token); }
+            catch (TaskCanceledException) { return; }
         }
 
         PlayerUpdated();

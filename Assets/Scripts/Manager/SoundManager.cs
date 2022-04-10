@@ -16,10 +16,19 @@ public class SoundManager : MonoBehaviour
     [SerializeField] Slider bgmSilder;
     [SerializeField] Slider seSilder;
 
+    private void ResetVolume()
+    {
+        bgmSilder.value = GameManager.gm.bgmVolume;
+        bgmSource.volume = GameManager.gm.bgmVolume;
+        seSilder.value = GameManager.gm.seVolume;
+        seSource.volume = GameManager.gm.seVolume;
+    }
+
     void Awake()
     {
         sound = this;
         AddButtonSoundEffect();
+        ResetVolume();
     }
 
     public void PlaySE(AudioClip audioClip)
@@ -36,5 +45,17 @@ public class SoundManager : MonoBehaviour
             entry.callback.AddListener((data) => { PlaySE(buttonClickSound); });
             eventTrigger.triggers.Add(entry);
         }
+    }
+
+    public void ChangeBGMVolume()
+    {
+        bgmSource.volume = bgmSilder.value;
+        GameManager.gm.bgmVolume = bgmSilder.value;
+    }
+
+    public void ChangeSEVolume()
+    {
+        seSource.volume = seSilder.value;
+        GameManager.gm.seVolume = seSilder.value;
     }
 }

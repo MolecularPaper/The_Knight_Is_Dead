@@ -36,6 +36,7 @@ public class Item : ItemInfo, IItemObservable
 {
     private delegate void ItemUpdateDel(Item item);
     private ItemUpdateDel itemUpdateDel;
+
     public ulong Count {
         get => count;
         set {
@@ -53,12 +54,12 @@ public class Item : ItemInfo, IItemObservable
     public Item(ItemInfo itemInfo)
     {
         this.itemName = itemInfo.itemName;
-        Count = itemInfo.count;
+        this.count = itemInfo.count;
     }
 
     public void ItemUpdate()
     {
-        if(itemUpdateDel != null) itemUpdateDel.Invoke(this);
+        if (itemUpdateDel != null) itemUpdateDel.Invoke(this);
     }
 
     public void Subscribe(IItemObserver observer)

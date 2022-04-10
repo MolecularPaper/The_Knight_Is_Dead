@@ -69,6 +69,7 @@ public class MobInfo : MonoBehaviour
         for (int i = 0; i < items.Count; i++) {
             if(items[i].itemName == item.itemName) {
                 items[i] = item;
+                //여기 오류남
                 return;
             }
         }
@@ -111,8 +112,10 @@ public class MobMethodExtension : MobExtension, IMobEffect, IMobCalculate, IMobC
     public async void HitEffect()
     {
         spriteRenderer.color = hitColor;
-        await Task.Delay(100);
-        spriteRenderer.color = Color.white;
+        try { await Task.Delay(100, GameManager.gm.tokenSource.Token); }
+        catch (TaskCanceledException) { return; }
+        try { spriteRenderer.color = Color.white; }
+        catch { return; }
     }
 
     public void HitSound() => SoundManager.sound.PlaySE(hitSound);

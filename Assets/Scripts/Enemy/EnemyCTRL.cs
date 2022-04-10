@@ -90,6 +90,12 @@ public class EnemyCTRL : EnemyObservable, IEnemyAction
         hpBarScale = hpBar.localScale;
     }
 
+    private void OnApplicationQuit()
+    {
+        try { Destroy(this.gameObject); }
+        catch { return; }
+    }
+
     public void Attack()
     {
         AttackSound();
@@ -114,7 +120,8 @@ public class EnemyCTRL : EnemyObservable, IEnemyAction
         Vector3 playerPostion = GameManager.gm.PlayerPosition;
         while (Vector3.Distance(playerPostion, transform.position) > stopDistance) {
             transform.Translate(moveSpeed * Time.deltaTime * Vector3.right);
-            await Task.Delay(1);
+            try { await Task.Delay(1, GameManager.gm.tokenSource.Token); }
+            catch (TaskCanceledException) { return; }
         }
 
         IsStop = true;
@@ -122,7 +129,8 @@ public class EnemyCTRL : EnemyObservable, IEnemyAction
 
     public async void Dead()
     {
-        await Task.Delay(500);
+        try { await Task.Delay(500, GameManager.gm.tokenSource.Token); }
+        catch (TaskCanceledException) { return; }
         Destroy(this.gameObject);
     }
 }

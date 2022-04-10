@@ -8,7 +8,7 @@ public class Fade : MonoBehaviour
 
     public bool isFadeOut => fade.alpha == 1;
 
-    private void Awake()
+    public void Awake()
     {
         FadeOut(false);
     }
@@ -30,7 +30,8 @@ public class Fade : MonoBehaviour
                 }
             }
 
-            await Task.Delay(1);
+            try { await Task.Delay(1, GameManager.gm.tokenSource.Token); }
+            catch (TaskCanceledException) { return; }
         }
     }
 }

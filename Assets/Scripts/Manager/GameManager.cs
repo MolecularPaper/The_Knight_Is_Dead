@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -6,30 +7,48 @@ using UnityEngine.SceneManagement;
 public class GameInfo : MonoBehaviour
 {
     public int highestStageIndex;
-
     public int stageIndex;
+    public float bgmVolume;
+    public float seVolume;
+    public bool adDeleted { get; set; }
+
+    public GameInfo() { }
+
+    public GameInfo(GameData gameData) => SetInfo(gameData);
+
+    public void SetInfo(GameData gameData)
+    {
+        this.highestStageIndex = gameData.highestStageIndex;
+        this.stageIndex = gameData.stageIndex;
+        this.bgmVolume = gameData.bgmVolume;
+        this.seVolume = gameData.seVolume;
+        this.adDeleted = gameData.adDeleted;
+    }
 }
 
 public class GameInstance : GameInfo
 {
     public static GameManager gm;
-    protected GameDataManager dataManager;
     protected SpawnManager spawnManager;
     protected PlayerCTRL playerCTRL;
     protected EnemyCTRL enemyCTRL;
-    [SerializeField] protected Fade fade;
+    [SerializeField] 
+    protected Fade fade;
 }
 
 public class GameInfoExtension : GameInstance
 {
+    public float currentTimeScale;
     public Vector3 PlayerPosition => playerCTRL.transform.position;
+
+    public CancellationTokenSource tokenSource;
+
+    public delegate void StageChangedDel(GameInfo gameInfo);
+    public StageChangedDel stageChanged;
 }
 
 public class GameManager : GameInfoExtension, IPlayerObserver, IEnemyObserver
 {
-    public delegate void StageChangedDel(GameInfo gameInfo);
-    public StageChangedDel stageChanged;
-
     public void Awake()
     {
         gm = this;
@@ -38,22 +57,35 @@ public class GameManager : GameInfoExtension, IPlayerObserver, IEnemyObserver
         playerCTRL.Subscribe(this);
 
         spawnManager = GetComponent<SpawnManager>();
-        dataManager = GetComponent<GameDataManager>();
-
-        LoadData();
+        tokenSource = new CancellationTokenSource();
     }
 
-    public void Start() => GameStart();
+    public void Start()
+    {
+        LoadData();
+        GameStart();
+
+        Time.timeScale = 4f;
+    }
 
     private void OnApplicationQuit() => SaveData();
 
     public async void GameStart()
     {
         stageChanged.Invoke(this);
-        await Task.Delay(1000);
+        try { await Task.Delay(1000, tokenSource.Token); }
+        catch (TaskCanceledException) { return; }
         playerCTRL.IsMove = true;
         SpawnEnemy();
     }
+
+    public void PauseGame()
+    {
+        currentTimeScale = Time.timeScale;
+        Time.timeScale = 0.0f;
+    }
+
+    public void ResumeGame() => Time.timeScale = currentTimeScale;
 
     public void AttackEnemy(ulong damage)
     {
@@ -77,12 +109,15 @@ public class GameManager : GameInfoExtension, IPlayerObserver, IEnemyObserver
     {
         if (playerInfo.IsDead) {
             fade.FadeOut(true);
-            while (!fade.isFadeOut) await Task.Delay(1);
+            while (!fade.isFadeOut) {
+                try { await Task.Delay(1, tokenSource.Token); }
+                catch (TaskCanceledException) { return; }
+            }
 
-            stageIndex -= 10;
-            stageIndex = Mathf.Clamp(stageIndex, 0, int.MaxValue);
+            stageIndex = 0;
 
             SaveData();
+            tokenSource.Cancel();
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             return;
         }
@@ -95,17 +130,25 @@ public class GameManager : GameInfoExtension, IPlayerObserver, IEnemyObserver
             playerCTRL.SetCurrentHP();
             playerCTRL.IsAttack = false;
             playerCTRL.GetItem("Soul").Count += enemyInfo.GetItem("Soul").Count;
-            await Task.Delay(1000);
+
+            try { await Task.Delay(1000, tokenSource.Token); }
+            catch (TaskCanceledException) { return; }
+
             playerCTRL.CalculateHpBar();
             playerCTRL.IsMove = true;
-            await Task.Delay(2000);
+
+            try { await Task.Delay(2000, tokenSource.Token); }
+            catch (TaskCanceledException) { return; }
+
             SpawnEnemy();
             return;
         }
-
-        if (enemyInfo.IsStop) {
+        else if (enemyInfo.IsStop) {
             playerCTRL.IsMove = false;
-            await Task.Delay(100);
+
+            try { await Task.Delay(100, tokenSource.Token); }
+            catch (TaskCanceledException) { return; }
+
             playerCTRL.IsAttack = true;
             enemyCTRL.IsAttack = true;
         }
@@ -129,14 +172,13 @@ public class GameManager : GameInfoExtension, IPlayerObserver, IEnemyObserver
     private void LoadData()
     {
         try {
-            GameData gameData = dataManager.LoadData();
+            GameData gameData = GameDataManager.dataManager.LoadGameData();
             playerCTRL.SetInfo(gameData);
             GetComponent<AdManager>().SetAdInfos(gameData.adInfos);
-            this.highestStageIndex = gameData.highestStageIndex;
-            this.stageIndex = gameData.stageIndex;
+            this.SetInfo(gameData);
         }
         catch (System.IO.DirectoryNotFoundException) { }
     }
 
-    private void SaveData() => dataManager.SaveData(playerCTRL, this, GetComponent<AdManager>().adCollection);
+    private void SaveData() => GameDataManager.dataManager.SaveGameData(playerCTRL, this, GetComponent<AdManager>().adCollection);
 }

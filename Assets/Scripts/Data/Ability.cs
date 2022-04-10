@@ -12,6 +12,10 @@ public class AbilityInfo
     public uint level = 0;
     public ulong point = 0;
 
+    public AbilityInfo() { }
+
+    public AbilityInfo(AbilityInfo abilityInfo) => SetAbility(abilityInfo);
+
     public void SetAbility(AbilityInfo abilityInfo)
     {
         this.canLevelUp = abilityInfo.canLevelUp;

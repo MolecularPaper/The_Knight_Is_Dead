@@ -8,11 +8,12 @@ public class ItemUI : MonoBehaviour, IItemObserver
     [SerializeField] private string itemName;
     [SerializeField] private TextMeshProUGUI count;
 
-    private void Awake()
+    private void Start()
     {
         GameObject player = GameObject.FindWithTag("Player");
         PlayerCTRL playerCTRL = player.GetComponent<PlayerCTRL>();
-        playerCTRL.GetItem(itemName).Subscribe(this);
+        Item item = playerCTRL.GetItem(itemName);
+        item.Subscribe(this);
     }
 
     public void ItemUpdate(Item item)

@@ -20,6 +20,4 @@ public class AdManager : MonoBehaviour
             this.adInfos[i].SetInfo(adInfos[i]);
         }
     }
-
-    public void ExecutionAd(string adName) => adCollection[adName].ShowAd();
 }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Threading;
 using System;
 using UnityEngine.UI;
 using UnityEngine;
@@ -15,6 +16,10 @@ public class AdInfo
     public int watingSecond;
     public int currentSecond;
     public bool canShowAd = true;
+
+    public AdInfo() { }
+
+    public AdInfo(AdInfo adInfo) => SetInfo(adInfo);
 
     public void SetInfo(AdInfo adInfo)
     {
@@ -49,14 +54,19 @@ public abstract class AdExtension : AdUI
         this.button = adUI.button;
         this.buttonText = adUI.buttonText;
         button.onClick.AddListener(() => {
-            if (canShowAd) {
+            if (GameManager.gm.adDeleted) {
+                AdEnd();
+            }
+            else if (canShowAd) {
+                GameManager.gm.PauseGame();
                 ShowAd();
             }
         });
         Reset();
 
         if (!canShowAd) {
-            CalculateTime();
+            try { CalculateTime(); }
+            catch (TaskCanceledException) { return; }
         }
     }
 
@@ -91,7 +101,9 @@ public abstract class AdExtension : AdUI
         this.CreateAndLoadRewardedAd();
     }
 
-    protected void HandleUserEarnedReward(object sender, Reward args)
+    protected void HandleUserEarnedReward(object sender, Reward args) => AdEnd();
+
+    public void AdEnd()
     {
         currentSecond = compensationSecond + watingSecond;
         CalculateTime();
@@ -112,7 +124,8 @@ public abstract class AdExtension : AdUI
                 displayTime = currentSecond - watingSecond;
             }
             buttonText.text = $"{string.Format("{0:D2}", (displayTime % 3600) / 60)}:{string.Format("{0:D2}", (displayTime % 3600) % 60)}";
-            await Task.Delay(1000);
+            try { await Task.Delay(1000, GameManager.gm.tokenSource.Token); }
+            catch (TaskCanceledException) { return; }
             currentSecond--;
         }
 

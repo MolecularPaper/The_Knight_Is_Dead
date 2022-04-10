@@ -13,8 +13,7 @@ public class SpawnManager : MonoBehaviour
             index = spawnList.enemyPrefabs.Count - 1;
 
         GameObject enemy;
-        try { enemy = Instantiate(spawnList.enemyPrefabs[index], spawnPoint.position, spawnPoint.rotation, spawnPoint); }
-        catch { return null; }
+        enemy = Instantiate(spawnList.enemyPrefabs[index], spawnPoint.position, spawnPoint.rotation, spawnPoint);
 
         EnemyCTRL enemyCTRL = enemy.GetComponent<EnemyCTRL>();
 
