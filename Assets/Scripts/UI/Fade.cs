@@ -30,7 +30,7 @@ public class Fade : MonoBehaviour
                 }
             }
 
-            try { await Task.Delay(1, GameManager.gm.tokenSource.Token); }
+            try { await Task.Delay(1, GameManager.tokenSource.Token); }
             catch (TaskCanceledException) { return; }
         }
     }

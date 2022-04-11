@@ -101,7 +101,11 @@ public abstract class AdExtension : AdUI
         this.CreateAndLoadRewardedAd();
     }
 
-    protected void HandleUserEarnedReward(object sender, Reward args) => AdEnd();
+    protected void HandleUserEarnedReward(object sender, Reward args)
+    {
+        GameManager.gm.ResumeGame();
+        AdEnd();
+    }
 
     public void AdEnd()
     {
@@ -122,14 +126,16 @@ public abstract class AdExtension : AdUI
             int displayTime = currentSecond;
             if (0 <= displayTime - watingSecond) {
                 displayTime = currentSecond - watingSecond;
+                RewardEnd();
             }
             buttonText.text = $"{string.Format("{0:D2}", (displayTime % 3600) / 60)}:{string.Format("{0:D2}", (displayTime % 3600) % 60)}";
-            try { await Task.Delay(1000, GameManager.gm.tokenSource.Token); }
+            try { await GameManager.Delay(1000); }
             catch (TaskCanceledException) { return; }
             currentSecond--;
         }
 
-        RewardEnd();
+        buttonText.text = "±¤°í ½ÃÃ»";
+
         canShowAd = true;
         button.interactable = true;
     }

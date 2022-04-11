@@ -113,7 +113,7 @@ public class PlayerCTRL : PlayerObservable, IPlayerCalculate, IMobAction
         ulong damage = this["ATK"].point;
 
         if (Random.Range(0f, 10000f) < this["CRIP"].point) {
-            damage += (ulong)(damage * (this["CRID"].point / 100f));
+            damage += (ulong)(damage * (this["CRID"].point / 10000f));
         }
 
         AttackSound();
@@ -147,7 +147,7 @@ public class PlayerCTRL : PlayerObservable, IPlayerCalculate, IMobAction
             item.Count -= ability.RequestSoul;
             ability.LevelUp();
             item.ItemUpdate();
-            try { await Task.Delay(100, GameManager.gm.tokenSource.Token); }
+            try { await GameManager.Delay(100); }
             catch (TaskCanceledException) { return; }
         }
 

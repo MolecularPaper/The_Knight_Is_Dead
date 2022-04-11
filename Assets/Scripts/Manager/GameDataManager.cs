@@ -13,6 +13,20 @@ public class TitleData
     public bool introEnd;
 }
 
+public class NoDeletedData
+{
+    public bool adDeleted;
+    public float bgmVolume;
+    public float seVolume;
+
+    public NoDeletedData(GameInfo gameInfo)
+    {
+        this.adDeleted = gameInfo.adDeleted;
+        this.bgmVolume = gameInfo.bgmVolume;
+        this.seVolume = gameInfo.seVolume;
+    }
+}
+
 [Serializable]
 public class GameData
 {
@@ -22,9 +36,6 @@ public class GameData
 
     public int highestStageIndex;
     public int stageIndex;
-    public float bgmVolume;
-    public float seVolume;
-    public bool adDeleted;
 
     public GameData(MobInfo playerInfo, GameInfo gameInfo, AdCollection adCollection)
     {
@@ -42,9 +53,6 @@ public class GameData
 
         this.highestStageIndex = gameInfo.highestStageIndex;
         this.stageIndex = gameInfo.stageIndex;
-        this.bgmVolume = gameInfo.bgmVolume;
-        this.seVolume = gameInfo.seVolume;
-        this.adDeleted = gameInfo.adDeleted;
     }
 }
 
@@ -53,6 +61,7 @@ public class GameDataManager : MonoBehaviour
     public static GameDataManager dataManager;
 
     [SerializeField] private string gameDataFileName;
+    [SerializeField] private string noDeletedDataFileName;
     [SerializeField] private string titleDataFileName;
     private readonly string privateKey = "7ZWY64KY7IS47Z6I64KY7IS47J207JW86rCA652866eI7IKs67mE";
 
@@ -66,11 +75,18 @@ public class GameDataManager : MonoBehaviour
     public void SaveGameData(MobInfo playerInfo, GameInfo gameInfo, AdCollection adCollection)
     {
         GameData saveData = new GameData(playerInfo, gameInfo, adCollection);
+        NoDeletedData noDeletedData = new NoDeletedData(gameInfo);
         SaveFile(saveData, gameDataFileName);
+        SaveFile(noDeletedData, noDeletedDataFileName);
     }
 
     public TitleData LoadTitleData() => LoadData<TitleData>(titleDataFileName);
-    public GameData LoadGameData() => LoadData<GameData>(gameDataFileName);
+    public (GameData, NoDeletedData) LoadGameData()
+    {
+        GameData gameData = LoadData<GameData>(gameDataFileName);
+        NoDeletedData noDeletedData = LoadData<NoDeletedData>(noDeletedDataFileName);
+        return (gameData, noDeletedData);
+    }
 
     public void SaveFile<T>(T saveData, string fileName)
     {
@@ -111,7 +127,7 @@ public class GameDataManager : MonoBehaviour
     {
         string path = Application.persistentDataPath + $"/{gameDataFileName}.sav";
         if (File.Exists(path)) File.Delete(path);
-        GameManager.gm.tokenSource.Cancel();
+        GameManager.tokenSource.Cancel();
         SceneManager.LoadScene(gameObject.scene.name);
         Time.timeScale = 1.0f;
     }

@@ -23,14 +23,14 @@ public class AbilityUI : MonoBehaviour, IAbilityObserver
 
     public void AbilityUpdated(AbilityExtension abilityInfo)
     {
-        this.title.text = $"{titleName} {abilityInfo.level}LV";
+        title.text = $"{titleName} {abilityInfo.level}LV";
         if (string.IsNullOrEmpty(abilityInfo.sign)) {
-            this.description.text = $"{abilityInfo.point} -> {abilityInfo.NextPoint}";
+            description.text = $"{abilityInfo.point} -> {abilityInfo.NextPoint}";
         }
         else {
-            this.description.text = $"{string.Format("{0:0.00}",abilityInfo.point / 100f)}{abilityInfo.sign} -> {string.Format("{0:0.00}", abilityInfo.NextPoint / 100f)}{abilityInfo.sign}";
+            description.text = $"{string.Format("{0:0.00}",abilityInfo.point / 100f)}{abilityInfo.sign} -> {string.Format("{0:0.00}", abilityInfo.NextPoint / 100f)}{abilityInfo.sign}";
         }
-        this.requestSoul.text = $"{abilityInfo.RequestSoul}소울";
-        this.levelUpButton.interactable = abilityInfo.canLevelUp;
+        requestSoul.text = $"{abilityInfo.RequestSoul}소울";
+        levelUpButton.interactable = abilityInfo.canLevelUp;
     }
 }

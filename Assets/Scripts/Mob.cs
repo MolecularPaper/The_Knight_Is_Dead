@@ -112,7 +112,7 @@ public class MobMethodExtension : MobExtension, IMobEffect, IMobCalculate, IMobC
     public async void HitEffect()
     {
         spriteRenderer.color = hitColor;
-        try { await Task.Delay(100, GameManager.gm.tokenSource.Token); }
+        try { await GameManager.Delay(100); }
         catch (TaskCanceledException) { return; }
         try { spriteRenderer.color = Color.white; }
         catch { return; }

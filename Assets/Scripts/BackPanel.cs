@@ -31,7 +31,7 @@ public class BackPanel : MonoBehaviour, IPlayerObserver
                 foreach (Animator backAnimator in backAnimators) {
                     backAnimator.speed = Mathf.MoveTowards(backAnimator.speed, 0, backRampRate * Time.deltaTime);
                 }
-                try { await Task.Delay(1, GameManager.gm.tokenSource.Token); }
+                try { await Task.Delay(1, GameManager.tokenSource.Token); }
                 catch (TaskCanceledException) { return; }
             }
         }
@@ -40,7 +40,7 @@ public class BackPanel : MonoBehaviour, IPlayerObserver
                 foreach (Animator backAnimator in backAnimators) {
                     backAnimator.speed = Mathf.MoveTowards(backAnimator.speed, 1, backRampRate * Time.deltaTime);
                 }
-                try { await Task.Delay(1, GameManager.gm.tokenSource.Token); }
+                try { await Task.Delay(1, GameManager.tokenSource.Token); }
                 catch (TaskCanceledException) { return; }
             }
         }

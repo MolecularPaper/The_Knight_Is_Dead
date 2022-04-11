@@ -14,15 +14,15 @@ public class GameInfo : MonoBehaviour
 
     public GameInfo() { }
 
-    public GameInfo(GameData gameData) => SetInfo(gameData);
+    public GameInfo(GameData gameData, NoDeletedData noDeletedData) => SetInfo(gameData, noDeletedData);
 
-    public void SetInfo(GameData gameData)
+    public void SetInfo(GameData gameData, NoDeletedData noDeletedData)
     {
         this.highestStageIndex = gameData.highestStageIndex;
         this.stageIndex = gameData.stageIndex;
-        this.bgmVolume = gameData.bgmVolume;
-        this.seVolume = gameData.seVolume;
-        this.adDeleted = gameData.adDeleted;
+        this.bgmVolume = noDeletedData.bgmVolume;
+        this.seVolume = noDeletedData.seVolume;
+        this.adDeleted = noDeletedData.adDeleted;
     }
 }
 
@@ -39,9 +39,12 @@ public class GameInstance : GameInfo
 public class GameInfoExtension : GameInstance
 {
     public float currentTimeScale;
+
+    public static bool isPause;
+
     public Vector3 PlayerPosition => playerCTRL.transform.position;
 
-    public CancellationTokenSource tokenSource;
+    public static CancellationTokenSource tokenSource;
 
     public delegate void StageChangedDel(GameInfo gameInfo);
     public StageChangedDel stageChanged;
@@ -64,8 +67,6 @@ public class GameManager : GameInfoExtension, IPlayerObserver, IEnemyObserver
     {
         LoadData();
         GameStart();
-
-        Time.timeScale = 4f;
     }
 
     private void OnApplicationQuit() => SaveData();
@@ -73,7 +74,7 @@ public class GameManager : GameInfoExtension, IPlayerObserver, IEnemyObserver
     public async void GameStart()
     {
         stageChanged.Invoke(this);
-        try { await Task.Delay(1000, tokenSource.Token); }
+        try { await Delay(1000); }
         catch (TaskCanceledException) { return; }
         playerCTRL.IsMove = true;
         SpawnEnemy();
@@ -83,9 +84,22 @@ public class GameManager : GameInfoExtension, IPlayerObserver, IEnemyObserver
     {
         currentTimeScale = Time.timeScale;
         Time.timeScale = 0.0f;
+        isPause = true;
     }
 
-    public void ResumeGame() => Time.timeScale = currentTimeScale;
+    public void ResumeGame()
+    {
+        Time.timeScale = currentTimeScale;
+        isPause = false;
+    }
+
+    public static async Task Delay(int millisecondsDelay)
+    {
+        await Task.Delay(millisecondsDelay, tokenSource.Token);
+        while (isPause) {
+            await Task.Delay(1);
+        }
+    }
 
     public void AttackEnemy(ulong damage)
     {
@@ -131,13 +145,13 @@ public class GameManager : GameInfoExtension, IPlayerObserver, IEnemyObserver
             playerCTRL.IsAttack = false;
             playerCTRL.GetItem("Soul").Count += enemyInfo.GetItem("Soul").Count;
 
-            try { await Task.Delay(1000, tokenSource.Token); }
+            try { await Delay(1500); }
             catch (TaskCanceledException) { return; }
 
             playerCTRL.CalculateHpBar();
             playerCTRL.IsMove = true;
 
-            try { await Task.Delay(2000, tokenSource.Token); }
+            try { await Delay(1000); }
             catch (TaskCanceledException) { return; }
 
             SpawnEnemy();
@@ -146,7 +160,7 @@ public class GameManager : GameInfoExtension, IPlayerObserver, IEnemyObserver
         else if (enemyInfo.IsStop) {
             playerCTRL.IsMove = false;
 
-            try { await Task.Delay(100, tokenSource.Token); }
+            try { await Delay(100); }
             catch (TaskCanceledException) { return; }
 
             playerCTRL.IsAttack = true;
@@ -172,10 +186,10 @@ public class GameManager : GameInfoExtension, IPlayerObserver, IEnemyObserver
     private void LoadData()
     {
         try {
-            GameData gameData = GameDataManager.dataManager.LoadGameData();
-            playerCTRL.SetInfo(gameData);
-            GetComponent<AdManager>().SetAdInfos(gameData.adInfos);
-            this.SetInfo(gameData);
+            (GameData, NoDeletedData) datas = GameDataManager.dataManager.LoadGameData();
+            playerCTRL.SetInfo(datas.Item1);
+            GetComponent<AdManager>().SetAdInfos(datas.Item1);
+            this.SetInfo(datas.Item1, datas.Item2);
         }
         catch (System.IO.DirectoryNotFoundException) { }
     }

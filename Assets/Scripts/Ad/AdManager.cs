@@ -14,10 +14,10 @@ public class AdManager : MonoBehaviour
         adCollection = new AdCollection(adInfos);
     }
 
-    public void SetAdInfos(List<AdInfo> adInfos)
+    public void SetAdInfos(GameData gameData)
     {
-        for (int i = 0; i < adInfos.Count; i++) {
-            this.adInfos[i].SetInfo(adInfos[i]);
+        for (int i = 0; i < gameData.adInfos.Count; i++) {
+            this.adInfos[i].SetInfo(gameData.adInfos[i]);
         }
     }
 }
