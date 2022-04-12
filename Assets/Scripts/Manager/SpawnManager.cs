@@ -20,10 +20,12 @@ public class SpawnManager : MonoBehaviour
         ulong hp = (ulong)Mathf.Pow(spawnList.hpIncrease * (index + 1), 2) + 10;
         ulong atk = (ulong)Mathf.Pow(spawnList.atkIncrease * (index + 1), 2) + 5;
         ulong soul = (ulong)(Mathf.Pow(spawnList.soulIncrease * (index + 1), 2)) + 5;
+        ulong exp = (ulong)(Mathf.Pow(spawnList.expIncrease * (index + 1), 2)) + 1;
 
         enemyCTRL.AddAbility(new Ability("HP", hp));
         enemyCTRL.AddAbility(new Ability("ATK", atk));
         enemyCTRL.AddItem(new Item("Soul", soul));
+        enemyCTRL.exp = exp;
         enemyCTRL.SetCurrentHP();
         enemyCTRL.Move();
 

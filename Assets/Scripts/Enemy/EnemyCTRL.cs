@@ -99,7 +99,7 @@ public class EnemyCTRL : EnemyObservable, IEnemyAction
     public void Attack()
     {
         AttackSound();
-        GameManager.gm.AttackPlayer(this["ATK"].point);
+        GameManager.gm.AttackPlayer(((Ability)this["ATK"]).point);
     }
 
     public void Damage(ulong damage)

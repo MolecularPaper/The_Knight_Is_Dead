@@ -6,21 +6,21 @@ using System.IO;
 using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
-[Serializable]
-public class TitleData
-{
-    public bool introEnd;
-}
-
 public class NoDeletedData
 {
+    public string nickName;
     public bool adDeleted;
     public float bgmVolume;
     public float seVolume;
 
-    public NoDeletedData(GameInfo gameInfo)
+    public NoDeletedData(string nickName)
     {
+        this.nickName = nickName;
+    }
+
+    public NoDeletedData(PlayerInfo playerInfo, GameInfo gameInfo)
+    {
+        this.nickName = playerInfo.nickName;
         this.adDeleted = gameInfo.adDeleted;
         this.bgmVolume = gameInfo.bgmVolume;
         this.seVolume = gameInfo.seVolume;
@@ -32,12 +32,17 @@ public class GameData
 {
     public List<ItemInfo> itemInfos = new List<ItemInfo>();
     public List<AbilityInfo> abilityInfos = new List<AbilityInfo>();
+    public List<SkillInfo> skillInfos = new List<SkillInfo>();
     public List<AdInfo> adInfos = new List<AdInfo>();
+
+    public uint playerLevel;
+    public uint playerSkillPoint;
+    public ulong playerExp;
 
     public int highestStageIndex;
     public int stageIndex;
 
-    public GameData(MobInfo playerInfo, GameInfo gameInfo, AdCollection adCollection)
+    public GameData(PlayerInfo playerInfo, GameInfo gameInfo, AdCollection adCollection)
     {
         foreach (var item in playerInfo.abilities) {
             this.abilityInfos.Add(new AbilityInfo(item));
@@ -47,9 +52,17 @@ public class GameData
             this.itemInfos.Add(new ItemInfo(item));
         }
 
+        foreach (var item in skillInfos) {
+            this.skillInfos.Add(new SkillInfo(item));
+        }
+
         foreach (var item in adCollection.ads) {
             adInfos.Add(new AdInfo(item));
         }
+
+        this.playerLevel = playerInfo.level;
+        this.playerSkillPoint = playerInfo.skillPoint;
+        this.playerExp = playerInfo.exp;
 
         this.highestStageIndex = gameInfo.highestStageIndex;
         this.stageIndex = gameInfo.stageIndex;
@@ -70,23 +83,19 @@ public class GameDataManager : MonoBehaviour
         dataManager = this;
     }
 
-    public void SaveTitleData(TitleData titleData) => SaveFile(titleData, titleDataFileName);
+    public void SaveNoDeletedData(NoDeletedData noDeletedData) => SaveFile(noDeletedData, noDeletedDataFileName);
 
-    public void SaveGameData(MobInfo playerInfo, GameInfo gameInfo, AdCollection adCollection)
+    public void SaveGameData(PlayerInfo playerInfo, GameInfo gameInfo, AdCollection adCollection)
     {
         GameData saveData = new GameData(playerInfo, gameInfo, adCollection);
-        NoDeletedData noDeletedData = new NoDeletedData(gameInfo);
+        NoDeletedData noDeletedData = new NoDeletedData(playerInfo, gameInfo);
         SaveFile(saveData, gameDataFileName);
         SaveFile(noDeletedData, noDeletedDataFileName);
     }
 
-    public TitleData LoadTitleData() => LoadData<TitleData>(titleDataFileName);
-    public (GameData, NoDeletedData) LoadGameData()
-    {
-        GameData gameData = LoadData<GameData>(gameDataFileName);
-        NoDeletedData noDeletedData = LoadData<NoDeletedData>(noDeletedDataFileName);
-        return (gameData, noDeletedData);
-    }
+    public NoDeletedData LoadNoDeletedData() => LoadData<NoDeletedData>(noDeletedDataFileName);
+
+    public GameData LoadGameData() => LoadData<GameData>(gameDataFileName);
 
     public void SaveFile<T>(T saveData, string fileName)
     {

@@ -12,7 +12,7 @@ public class ItemUI : MonoBehaviour, IItemObserver
     {
         GameObject player = GameObject.FindWithTag("Player");
         PlayerCTRL playerCTRL = player.GetComponent<PlayerCTRL>();
-        Item item = playerCTRL.GetItem(itemName);
+        Item item = (Item)playerCTRL[itemName];
         item.Subscribe(this);
     }
 

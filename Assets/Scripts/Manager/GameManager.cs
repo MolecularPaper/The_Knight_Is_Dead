@@ -119,7 +119,7 @@ public class GameManager : GameInfoExtension, IPlayerObserver, IEnemyObserver
         }
     }
 
-    public async void PlayerUpdated(PlayerInfo playerInfo)
+    public async void PlayerUpdated(PlayerInfoExtension playerInfo)
     {
         if (playerInfo.IsDead) {
             fade.FadeOut(true);
@@ -143,7 +143,9 @@ public class GameManager : GameInfoExtension, IPlayerObserver, IEnemyObserver
             UpdateStageIndex();
             playerCTRL.SetCurrentHP();
             playerCTRL.IsAttack = false;
-            playerCTRL.GetItem("Soul").Count += enemyInfo.GetItem("Soul").Count;
+            ((Item)playerCTRL["Soul"]).Count += ((Item)enemyInfo["Soul"]).Count;
+            playerCTRL.exp += enemyInfo.exp;
+            if (playerCTRL.CanLevelUp) playerCTRL.LevelUp();
 
             try { await Delay(1500); }
             catch (TaskCanceledException) { return; }
@@ -185,11 +187,21 @@ public class GameManager : GameInfoExtension, IPlayerObserver, IEnemyObserver
 
     private void LoadData()
     {
+        NoDeletedData noDeletedData = null;
+
         try {
-            (GameData, NoDeletedData) datas = GameDataManager.dataManager.LoadGameData();
-            playerCTRL.SetInfo(datas.Item1);
-            GetComponent<AdManager>().SetAdInfos(datas.Item1);
-            this.SetInfo(datas.Item1, datas.Item2);
+            noDeletedData = GameDataManager.dataManager.LoadNoDeletedData();
+            playerCTRL.nickName = noDeletedData.nickName;
+        }
+        catch (System.IO.DirectoryNotFoundException) { }
+
+        try {
+            GameData gameData = GameDataManager.dataManager.LoadGameData();
+            GetComponent<AdManager>().SetAdInfos(gameData);
+            playerCTRL.SetInfo(gameData);
+
+            if (noDeletedData != null) 
+                this.SetInfo(gameData, noDeletedData);
         }
         catch (System.IO.DirectoryNotFoundException) { }
     }

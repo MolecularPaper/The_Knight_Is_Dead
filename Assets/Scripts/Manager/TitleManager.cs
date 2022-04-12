@@ -2,40 +2,32 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using UnityEngine;
+using TMPro;
 
 public class TitleManager : MonoBehaviour
 {
-    [SerializeField] private GameDataManager dataManager;
-    [SerializeField] private TitleData titleData;
+    [SerializeField] private SetInfoUI setInfoUI;
+    
+    private bool noData;
 
-    public bool IntroEnd {
-        get => titleData.introEnd;
-        set {
-            titleData.introEnd = value;
-            SaveData();
-        }
-    }
 
-    void Awake()
+    void Start()
     {
         try {
-            titleData = dataManager.LoadTitleData();
+            GameDataManager.dataManager.LoadGameData();
         }
-        catch { }
+        catch(System.IO.DirectoryNotFoundException) {
+            noData = true;
+        }
     }
 
     public void GameStart()
     {
-        if (titleData.introEnd) {
-            SceneManager.LoadScene(1);
+        if (noData) {
+            setInfoUI.gameObject.SetActive(true);
         }
         else {
             SceneManager.LoadScene(2);
         }
-    }
-
-    public void SaveData()
-    {
-        dataManager.SaveTitleData(titleData);
     }
 }

@@ -3,6 +3,9 @@ using UnityEngine;
 
 public interface IPlayerCalculate
 {
+    public void LevelUp();
+
+    public void LevelUpSkill(string skillName);
     public void LevelUpAbility(string abilityName);
 }
 
@@ -17,13 +20,46 @@ public interface IPlayerObservable
 
 public interface IPlayerObserver
 {
-    public void PlayerUpdated(PlayerInfo playerInfo);
+    public void PlayerUpdated(PlayerInfoExtension playerInfo);
 }
 
-public abstract class PlayerInfo : MobMethodExtension
+public class PlayerInfo : MobMethodExtension
 {
-    [SerializeField] 
-    protected float defConst;
+    [Space(10)]
+    public string nickName;
+    public uint level;
+    public uint skillPoint;
+
+    public void SetInfo(GameData gameData)
+    {
+        this.level = gameData.playerLevel;
+        this.skillPoint = gameData.playerSkillPoint;
+
+        foreach (var item in gameData.abilityInfos) {
+            ((Ability)this[item.abilityName]).SetAbility(item);
+        }
+
+        foreach (var item in gameData.itemInfos) {
+            this[item.itemName] = new Item(item);
+        }
+
+        foreach (var item in gameData.skillInfos) {
+            ((Skill)this[item.skillName]).SetSkill(item);
+        }
+    }
+}
+
+public abstract class PlayerInfoExtension : PlayerInfo
+{
+    [Space(10)]
+    [SerializeField] protected float defConst;
+    [SerializeField] protected float expInc;
+
+    protected Skill enbledSkill;
+
+    public ulong RequestExp => (ulong)Mathf.Pow(expInc * level, 2);
+
+    public bool CanLevelUp => exp >= RequestExp;
 
     protected bool isDead;
     public abstract bool IsDead { get; set; }
@@ -31,9 +67,9 @@ public abstract class PlayerInfo : MobMethodExtension
     public abstract bool IsMove { get; set; }
 }
 
-public class PlayerObservable : PlayerInfo, IPlayerObservable
+public class PlayerObservable : PlayerInfoExtension, IPlayerObservable
 {
-    private delegate void PlayerUpdatedDel(PlayerInfo playerInfo);
+    private delegate void PlayerUpdatedDel(PlayerInfoExtension playerInfo);
     private PlayerUpdatedDel playerUpdatedDel;
     
     public override bool IsDead {
@@ -98,7 +134,7 @@ public class PlayerCTRL : PlayerObservable, IPlayerCalculate, IMobAction
 
     public void Start()
     {
-        Item item = GetItem("Soul");
+        Item item = (Item)this["Soul"];
         foreach (var ability in abilities) {
             item.Subscribe(ability);
         }
@@ -106,14 +142,19 @@ public class PlayerCTRL : PlayerObservable, IPlayerCalculate, IMobAction
         foreach (var _item in items) {
             _item.ItemUpdate();
         }
+
+        foreach (var skill in skills) {
+            skill.SkillUpdated();
+            Subscribe(skill);
+        }
     }
 
     public void Attack()
     {
-        ulong damage = this["ATK"].point;
+        ulong damage = ((Ability)this["ATK"]).point;
 
-        if (Random.Range(0f, 10000f) < this["CRIP"].point) {
-            damage += (ulong)(damage * (this["CRID"].point / 10000f));
+        if (Random.Range(0f, 10000f) < ((Ability)this["CRIP"]).point) {
+            damage += (ulong)(damage * (((Ability)this["CRID"]).point / 10000f));
         }
 
         AttackSound();
@@ -124,7 +165,7 @@ public class PlayerCTRL : PlayerObservable, IPlayerCalculate, IMobAction
     {
         if (IsDead) return;
 
-        float def = this["DEF"].point;
+        float def = ((Ability)this["DEF"]).point;
         currentHp -= (long)((1 - def / (def + defConst)) * damage);
 
         if (currentHp <= 0) {
@@ -136,11 +177,43 @@ public class PlayerCTRL : PlayerObservable, IPlayerCalculate, IMobAction
 
     public void Dead() => IsDead = true;
 
+    public void LevelUp()
+    {
+        level++;
+        skillPoint += 3;
+        PlayerUpdated();
+    }
+
+    public void EnbledSkill(string skillName)
+    {
+        if (enbledSkill != null) {
+            enbledSkill.DisableSkill();
+            if (enbledSkill.skillName != skillName) return;
+        }
+
+        enbledSkill = (Skill)this[skillName];
+        enbledSkill.EnbledSkill();
+    }
+
+    public async void LevelUpSkill(string skillName)
+    {
+        Skill skill = (Skill)this[skillName];
+
+        isHoldButton = true;
+        while (skill.canLevelUp && isHoldButton) {
+            skillPoint -= skill.RequestSkillPoint;
+            skill.LevelUp();
+            PlayerUpdated();
+            try { await GameManager.Delay(100); }
+            catch (TaskCanceledException) { return; }
+        }
+    }
+
     public bool isHoldButton { get; set; }
     public async void LevelUpAbility(string abilityName)
     {
-        Ability ability = this[abilityName];
-        Item item = GetItem("Soul");
+        Ability ability = (Ability)this[abilityName];
+        Item item = (Item)this["Soul"];
 
         isHoldButton = true;
         while (ability.canLevelUp && isHoldButton) {

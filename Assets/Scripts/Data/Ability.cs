@@ -8,9 +8,9 @@ public class AbilityInfo
     [HideInInspector]
     public bool canLevelUp = false;
     public string abilityName = "";
-    public string sign = "";
-    public uint level = 0;
+    public uint level = 1;
     public ulong point = 0;
+    public ulong startSoul = 0;
 
     public AbilityInfo() { }
 
@@ -20,7 +20,6 @@ public class AbilityInfo
     {
         this.canLevelUp = abilityInfo.canLevelUp;
         this.abilityName = abilityInfo.abilityName;
-        this.sign = abilityInfo.sign;
         this.level = abilityInfo.level;
         this.point = abilityInfo.point;
     }
@@ -49,7 +48,7 @@ public class AbilityExtension : AbilityInfo
 
     public ulong NextPoint => point + UpPoint;
 
-    public ulong RequestSoul => (ulong)Mathf.Pow(soulInc * level, 2);
+    public ulong RequestSoul => (ulong)Mathf.Pow(soulInc * level, 2) + startSoul;
 }
 
 public interface AbilityCalculate
@@ -71,35 +70,14 @@ public interface IAbilityObserver
     public void AbilityUpdated(AbilityExtension abilityInfo);
 }
 
-[System.Serializable]
-public class Ability : AbilityExtension, AbilityCalculate, IAbilityObservable, IItemObserver
+public class AbilityObservable : AbilityExtension, IAbilityObservable
 {
-    public Ability(string abilityName, ulong point)
-    {
-        this.abilityName = abilityName;
-        this.point = point;
-    }
-    public Ability(AbilityInfo abilityInfo)
-    {
-        this.canLevelUp = abilityInfo.canLevelUp;
-        this.abilityName = abilityInfo.abilityName;
-        this.sign = abilityInfo.sign;
-        this.level = abilityInfo.level;
-        this.point = abilityInfo.point;
-    }
-
     private delegate void AbilityUpdatedDel(AbilityExtension abilityInfo);
     private AbilityUpdatedDel abilityUpdatedDel;
 
-    public void LevelUp()
-    {
-        level++;
-        point += UpPoint;
-    }
-
     public void AbilityUpdated()
     {
-        if(abilityUpdatedDel != null) abilityUpdatedDel.Invoke(this);
+        if (abilityUpdatedDel != null) abilityUpdatedDel.Invoke(this);
     }
 
     public void Subscribe(IAbilityObserver observer)
@@ -116,6 +94,22 @@ public class Ability : AbilityExtension, AbilityCalculate, IAbilityObservable, I
             throw new System.NullReferenceException();
 
         abilityUpdatedDel -= observer.AbilityUpdated;
+    }
+}
+
+[System.Serializable]
+public class Ability : AbilityObservable, AbilityCalculate, IItemObserver
+{
+    public Ability(string abilityName, ulong point)
+    {
+        this.abilityName = abilityName;
+        this.point = point;
+    }
+
+    public void LevelUp()
+    {
+        level++;
+        point += UpPoint;
     }
 
     public void ItemUpdate(Item item)

@@ -24,7 +24,7 @@ public class BackPanel : MonoBehaviour, IPlayerObserver
         }
     }
 
-    public async void PlayerUpdated(PlayerInfo playerInfo)
+    public async void PlayerUpdated(PlayerInfoExtension playerInfo)
     {
         if (!playerInfo.IsMove) {
             while (backAnimators[0].speed != 0) {

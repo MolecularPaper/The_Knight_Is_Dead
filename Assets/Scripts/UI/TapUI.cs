@@ -9,8 +9,12 @@ public class TapUI : MonoBehaviour
 
     public void TapControl(int _activeTapIndex)
     {
-        taps[activeTapIndex].gameObject.SetActive(false);
-        taps[_activeTapIndex].gameObject.SetActive(true);
+        taps[activeTapIndex].alpha = 0.0f;
+        taps[activeTapIndex].blocksRaycasts = false;
+
+        taps[_activeTapIndex].alpha = 1.0f;
+        taps[_activeTapIndex].blocksRaycasts = true;
+
         activeTapIndex = _activeTapIndex;
     }
 }
