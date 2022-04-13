@@ -30,7 +30,7 @@ public class SkillInfo
     public string skillName = "";
     public uint level = 1;
     public ulong point = 0;
-    protected bool enbled;
+    public bool skillEnbled;
 
     public SkillInfo() { }
 
@@ -42,7 +42,7 @@ public class SkillInfo
         this.skillName = skillInfo.skillName;
         this.level = skillInfo.level;
         this.point = skillInfo.point;
-        this.enbled = skillInfo.enbled;
+        this.skillEnbled = skillInfo.skillEnbled;
     }
 }
 
@@ -60,6 +60,10 @@ public class SkillExtension : SkillInfo
 
     [Space(10)]
     [SerializeField] protected SkillObject skillObject;
+    
+    public Sprite skillIcon;
+
+    protected bool canExcute;
 
     public ulong NextPoint => point + pointInc;
 
@@ -106,22 +110,24 @@ public class Skill : SkillObservable, IPlayerObserver, SkillCalculate
     public void PlayerUpdated(PlayerInfoExtension playerInfo)
     {
         canLevelUp = playerInfo.skillPoint >= RequestSkillPoint;
+        canExcute = playerInfo.IsAttack;
         SkillUpdated();
     }
 
     public void EnbledSkill()
     {
-        enbled = true;
+        skillEnbled = true;
         SkillLoop();
     }
 
-    public void DisableSkill() => enbled = false; 
+    public void DisableSkill() => skillEnbled = false; 
 
     public async void SkillLoop()
     {
-        while (enbled) {
+        while (skillEnbled) {
+            while (!canExcute) await Task.Delay(1);
             skillObject.Execute(this);
-            await Task.Delay(coolTimeSecond * 1000);
+            await Task.Delay(coolTimeSecond * (int)(1000f / Time.timeScale));
         }
     }
 }

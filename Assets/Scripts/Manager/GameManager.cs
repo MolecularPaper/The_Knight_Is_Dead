@@ -38,8 +38,7 @@ public class GameInstance : GameInfo
 
 public class GameInfoExtension : GameInstance
 {
-    public float currentTimeScale;
-
+    protected float currentTimeScale;
     public static bool isPause;
 
     public Vector3 PlayerPosition => playerCTRL.transform.position;
@@ -61,11 +60,19 @@ public class GameManager : GameInfoExtension, IPlayerObserver, IEnemyObserver
 
         spawnManager = GetComponent<SpawnManager>();
         tokenSource = new CancellationTokenSource();
+
+        EnemyCTRL[] enemies = GameObject.FindObjectsOfType<EnemyCTRL>();
+
+        int enemiesLength = enemies.Length;
+        for (int i = 0; i < enemiesLength; i++) {
+            Destroy(enemies[i]);
+        }
+
+        LoadData();
     }
 
     public void Start()
     {
-        LoadData();
         GameStart();
     }
 
@@ -147,22 +154,19 @@ public class GameManager : GameInfoExtension, IPlayerObserver, IEnemyObserver
             playerCTRL.exp += enemyInfo.exp;
             if (playerCTRL.CanLevelUp) playerCTRL.LevelUp();
 
-            try { await Delay(1500); }
+            try { await Delay((int)(1500 / Time.timeScale)); }
             catch (TaskCanceledException) { return; }
 
             playerCTRL.CalculateHpBar();
             playerCTRL.IsMove = true;
-
-            try { await Delay(1000); }
-            catch (TaskCanceledException) { return; }
-
             SpawnEnemy();
+
             return;
         }
         else if (enemyInfo.IsStop) {
             playerCTRL.IsMove = false;
 
-            try { await Delay(100); }
+            try { await Delay((int)(100 / Time.timeScale)); }
             catch (TaskCanceledException) { return; }
 
             playerCTRL.IsAttack = true;
@@ -192,6 +196,7 @@ public class GameManager : GameInfoExtension, IPlayerObserver, IEnemyObserver
         try {
             noDeletedData = GameDataManager.dataManager.LoadNoDeletedData();
             playerCTRL.nickName = noDeletedData.nickName;
+            adDeleted = noDeletedData.adDeleted;
         }
         catch (System.IO.DirectoryNotFoundException) { }
 

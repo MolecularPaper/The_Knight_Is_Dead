@@ -1,18 +1,31 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 using UnityEngine;
 
-public class SkillQuickSlotUI : MonoBehaviour
+public class SkillQuickSlotUI : MonoBehaviour, IPlayerObserver
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] private Image enbledSkillIcon;
+
+    public void Awake()
     {
-        
+        GameObject player = GameObject.FindWithTag("Player");
+        PlayerCTRL playerCTRL = player.GetComponent<PlayerCTRL>();
+        playerCTRL.Subscribe(this);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void PlayerUpdated(PlayerInfoExtension playerInfo)
     {
+        print(playerInfo.enbledSkill != null);
+
+        if(playerInfo.enbledSkill != null) {
+            enbledSkillIcon.gameObject.SetActive(true);
+            enbledSkillIcon.sprite = playerInfo.enbledSkill.skillIcon;
+        }
+        else {
+            enbledSkillIcon.gameObject.SetActive(false);
+            enbledSkillIcon.sprite = null;
+        }
         
     }
 }

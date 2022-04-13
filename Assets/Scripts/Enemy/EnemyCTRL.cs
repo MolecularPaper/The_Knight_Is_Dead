@@ -119,7 +119,7 @@ public class EnemyCTRL : EnemyObservable, IEnemyAction
     {
         Vector3 playerPostion = GameManager.gm.PlayerPosition;
         while (Vector3.Distance(playerPostion, transform.position) > stopDistance) {
-            transform.Translate(moveSpeed * Time.deltaTime * Vector3.right);
+            transform.Translate(moveSpeed * Time.deltaTime * Vector3.left);
             try { await Task.Delay(1, GameManager.tokenSource.Token); }
             catch (TaskCanceledException) { return; }
         }
@@ -129,7 +129,7 @@ public class EnemyCTRL : EnemyObservable, IEnemyAction
 
     public async void Dead()
     {
-        try { await GameManager.Delay(500); }
+        try { await GameManager.Delay((int)(500 / Time.timeScale)); }
         catch (TaskCanceledException) { return; }
         Destroy(this.gameObject);
     }

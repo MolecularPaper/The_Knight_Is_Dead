@@ -25,7 +25,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7758084399371086208}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.3, y: 4.3, z: 0}
+  m_LocalPosition: {x: 0, y: 4.3, z: 0}
   m_LocalScale: {x: 2, y: 0.2, z: 1}
   m_Children: []
   m_Father: {fileID: 7758084400519629753}
@@ -107,7 +107,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7758084400124297690}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.6, z: 0}
+  m_LocalPosition: {x: 0.5, y: 2.6, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7758084400519629753}
@@ -155,7 +155,7 @@ SpriteRenderer:
   m_SortingOrder: 0
   m_Sprite: {fileID: -4795363162621231457, guid: da77b213b78cd3a4e89370bb52fd0590, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_FlipX: 0
+  m_FlipX: 1
   m_FlipY: 0
   m_DrawMode: 0
   m_Size: {x: 8.333333, y: 8.333333}
@@ -232,6 +232,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   items: []
   abilities: []
+  skills: []
+  exp: 0
   hpBar: {fileID: 7758084399371086209}
   hitColor: {r: 1, g: 0, b: 0, a: 1}
   attakSound: {fileID: 8300000, guid: 01cfde3b31ad19d41adccd4ad06a970b, type: 3}
@@ -264,14 +266,14 @@ RectTransform:
   m_GameObject: {fileID: 8849803885995599337}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: -1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7758084400519629753}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.3, y: 4.7}
+  m_AnchoredPosition: {x: 0, y: 4.7}
   m_SizeDelta: {x: 5, y: 0.35}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!23 &8378293678678172032

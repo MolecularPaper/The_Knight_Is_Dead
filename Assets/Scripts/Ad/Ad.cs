@@ -11,9 +11,6 @@ using TMPro;
 public class AdInfo
 {
     public string adName;
-    public string adUnitId;
-    public int compensationSecond;
-    public int watingSecond;
     public int currentSecond;
     public bool canShowAd = true;
 
@@ -24,16 +21,22 @@ public class AdInfo
     public void SetInfo(AdInfo adInfo)
     {
         this.adName = adInfo.adName;
-        this.adUnitId = adInfo.adUnitId;
-        this.compensationSecond = adInfo.compensationSecond;
-        this.watingSecond = adInfo.watingSecond;
         this.currentSecond = adInfo.currentSecond;
         this.canShowAd = adInfo.canShowAd;
     }
 }
 
+public class AdExtension : AdInfo
+{
+    public string adUnitId;
+
+    [Space(10)]
+    public int compensationSecond;
+    public int maxAdNestingCount;
+}
+
 [System.Serializable]
-public class AdUI : AdInfo
+public class AdUI : AdExtension
 {
     [Space(10)]
     public Button button;
@@ -41,18 +44,21 @@ public class AdUI : AdInfo
 }
 
 [System.Serializable]
-public abstract class AdExtension : AdUI
+public abstract class AdMethodExtension : AdUI
 {
-    public AdExtension(AdUI adUI)
+    public AdMethodExtension(AdUI adUI)
     {
         this.adName = adUI.adName;
-        this.adUnitId = adUI.adUnitId;
-        this.compensationSecond = adUI.compensationSecond;
-        this.watingSecond = adUI.watingSecond;
         this.currentSecond = adUI.currentSecond;
+        this.adUnitId = adUI.adUnitId;
         this.canShowAd = adUI.canShowAd;
+
+        this.compensationSecond = adUI.compensationSecond;
+        this.maxAdNestingCount = adUI.maxAdNestingCount;
+
         this.button = adUI.button;
         this.buttonText = adUI.buttonText;
+
         button.onClick.AddListener(() => {
             if (GameManager.gm.adDeleted) {
                 AdEnd();
@@ -64,10 +70,7 @@ public abstract class AdExtension : AdUI
         });
         Reset();
 
-        if (!canShowAd) {
-            try { CalculateTime(); }
-            catch (TaskCanceledException) { return; }
-        }
+        CalculateTime();
     }
 
     public abstract void Reset();
@@ -109,37 +112,42 @@ public abstract class AdExtension : AdUI
 
     public void AdEnd()
     {
-        currentSecond = compensationSecond + watingSecond;
-        CalculateTime();
+        if(currentSecond <= 0) {
+            currentSecond = compensationSecond;
+            CalculateTime();
+        }
+        else if(currentSecond < compensationSecond * maxAdNestingCount) {
+            currentSecond += compensationSecond;
+            UpdateTime();
+        }
+        
+        if(currentSecond > compensationSecond * maxAdNestingCount) {
+            canShowAd = false;
+            button.interactable = false;
+        }
     }
 
     public async void CalculateTime()
     {
-        canShowAd = false;
-        button.interactable = false;
-
-        if(0 <= currentSecond - watingSecond) {
+        if(0 <= currentSecond) {
             Reward();
         }
 
-        while (currentSecond > 0) {
-            int displayTime = currentSecond;
-            if (0 <= displayTime - watingSecond) {
-                displayTime = currentSecond - watingSecond;
-                RewardEnd();
-            }
-            buttonText.text = $"{string.Format("{0:D2}", (displayTime % 3600) / 60)}:{string.Format("{0:D2}", (displayTime % 3600) % 60)}";
+        while (currentSecond >= 0) {
+            UpdateTime();
             try { await GameManager.Delay(1000); }
             catch (TaskCanceledException) { return; }
             currentSecond--;
         }
 
-        buttonText.text = "±¤°í ½ÃÃ»";
+        RewardEnd();
 
         canShowAd = true;
+        buttonText.text = "±¤°í ½ÃÃ»";
         button.interactable = true;
     }
 
+    private void UpdateTime() => buttonText.text = $"{string.Format("{0:D2}", (currentSecond % 3600) / 60)}:{string.Format("{0:D2}", (currentSecond % 3600) % 60)}";
     protected abstract void Reward();
     protected abstract void RewardEnd();
 }
@@ -147,7 +155,7 @@ public abstract class AdExtension : AdUI
 [System.Serializable]
 public class AdCollection
 {
-    public readonly List<AdExtension> ads = new List<AdExtension>();
+    public List<AdUI> ads = new List<AdUI>();
     public AdExtension this[string adName] {
         get {
             foreach (var item in ads) {
@@ -172,7 +180,7 @@ public class AdCollection
     }
 }
 
-public abstract class RewardAd : AdExtension
+public abstract class RewardAd : AdMethodExtension
 {
     protected RewardedAd rewardedAd;
 
@@ -219,5 +227,9 @@ public class DoubleSpeedAd : RewardAd
 
     protected override void Reward() => Time.timeScale = 2.0f;
 
-    protected override void RewardEnd() => Time.timeScale = 1.0f;
+    protected override void RewardEnd()
+    {
+        Debug.Log("RewardEnd");
+        Time.timeScale = 1.0f;
+    }
 }

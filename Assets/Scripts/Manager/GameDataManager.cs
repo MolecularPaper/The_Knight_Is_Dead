@@ -52,7 +52,7 @@ public class GameData
             this.itemInfos.Add(new ItemInfo(item));
         }
 
-        foreach (var item in skillInfos) {
+        foreach (var item in playerInfo.skills) {
             this.skillInfos.Add(new SkillInfo(item));
         }
 
@@ -138,7 +138,6 @@ public class GameDataManager : MonoBehaviour
         if (File.Exists(path)) File.Delete(path);
         GameManager.tokenSource.Cancel();
         SceneManager.LoadScene(gameObject.scene.name);
-        Time.timeScale = 1.0f;
     }
 
     private string Encrypt(string data)

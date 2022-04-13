@@ -34,6 +34,7 @@ public class PlayerInfo : MobMethodExtension
     {
         this.level = gameData.playerLevel;
         this.skillPoint = gameData.playerSkillPoint;
+        
 
         foreach (var item in gameData.abilityInfos) {
             ((Ability)this[item.abilityName]).SetAbility(item);
@@ -43,6 +44,7 @@ public class PlayerInfo : MobMethodExtension
             this[item.itemName] = new Item(item);
         }
 
+        Debug.Log(gameData.skillInfos.Count);
         foreach (var item in gameData.skillInfos) {
             ((Skill)this[item.skillName]).SetSkill(item);
         }
@@ -55,7 +57,8 @@ public abstract class PlayerInfoExtension : PlayerInfo
     [SerializeField] protected float defConst;
     [SerializeField] protected float expInc;
 
-    protected Skill enbledSkill;
+    [HideInInspector]
+    public Skill enbledSkill = null;
 
     public ulong RequestExp => (ulong)Mathf.Pow(expInc * level, 2);
 
@@ -86,6 +89,7 @@ public class PlayerObservable : PlayerInfoExtension, IPlayerObservable
         get => animator.GetBool("IsAttack");
         set {
             animator.SetBool("IsAttack", value);
+            PlayerUpdated();
         }
     }
 
@@ -128,8 +132,6 @@ public class PlayerCTRL : PlayerObservable, IPlayerCalculate, IMobAction
 
         SetCurrentHP();
         hpBarScale = hpBar.localScale;
-        
-        PlayerUpdated();
     }
 
     public void Start()
@@ -143,10 +145,15 @@ public class PlayerCTRL : PlayerObservable, IPlayerCalculate, IMobAction
             _item.ItemUpdate();
         }
 
+        enbledSkill = null;
         foreach (var skill in skills) {
+            if (skill.skillEnbled)
+                enbledSkill = skill;
             skill.SkillUpdated();
             Subscribe(skill);
         }
+
+        PlayerUpdated();
     }
 
     public void Attack()
@@ -186,13 +193,18 @@ public class PlayerCTRL : PlayerObservable, IPlayerCalculate, IMobAction
 
     public void EnbledSkill(string skillName)
     {
-        if (enbledSkill != null) {
-            enbledSkill.DisableSkill();
-            if (enbledSkill.skillName != skillName) return;
+        if (enbledSkill != null) enbledSkill.DisableSkill();
+
+        Skill skill = (Skill)this[skillName];
+        if (skill.level == 0 || string.IsNullOrEmpty(skillName)) {
+            enbledSkill = null;
+            PlayerUpdated();
+            return;
         }
 
-        enbledSkill = (Skill)this[skillName];
+        enbledSkill = skill;
         enbledSkill.EnbledSkill();
+        PlayerUpdated();
     }
 
     public async void LevelUpSkill(string skillName)
