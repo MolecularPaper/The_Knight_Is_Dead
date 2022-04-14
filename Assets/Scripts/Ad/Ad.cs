@@ -59,6 +59,7 @@ public abstract class AdMethodExtension : AdUI
         this.button = adUI.button;
         this.buttonText = adUI.buttonText;
 
+        button.interactable = canShowAd;
         button.onClick.AddListener(() => {
             if (GameManager.gm.adDeleted) {
                 AdEnd();

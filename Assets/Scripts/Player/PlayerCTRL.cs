@@ -145,10 +145,11 @@ public class PlayerCTRL : PlayerObservable, IPlayerCalculate, IMobAction
             _item.ItemUpdate();
         }
 
-        enbledSkill = null;
         foreach (var skill in skills) {
-            if (skill.skillEnbled)
+            if (skill.skillEnbled) {
                 enbledSkill = skill;
+                enbledSkill.EnbledSkill();
+            }
             skill.SkillUpdated();
             Subscribe(skill);
         }
@@ -194,15 +195,14 @@ public class PlayerCTRL : PlayerObservable, IPlayerCalculate, IMobAction
     public void EnbledSkill(string skillName)
     {
         if (enbledSkill != null) enbledSkill.DisableSkill();
-
-        Skill skill = (Skill)this[skillName];
-        if (skill.level == 0 || string.IsNullOrEmpty(skillName)) {
+        
+        if (string.IsNullOrEmpty(skillName) || ((Skill)this[skillName]).level == 0) {
             enbledSkill = null;
             PlayerUpdated();
             return;
         }
 
-        enbledSkill = skill;
+        enbledSkill = (Skill)this[skillName];
         enbledSkill.EnbledSkill();
         PlayerUpdated();
     }

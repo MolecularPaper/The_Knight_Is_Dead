@@ -16,15 +16,12 @@ public class SkillQuickSlotUI : MonoBehaviour, IPlayerObserver
 
     public void PlayerUpdated(PlayerInfoExtension playerInfo)
     {
-        print(playerInfo.enbledSkill != null);
-
         if(playerInfo.enbledSkill != null) {
-            enbledSkillIcon.gameObject.SetActive(true);
+            enbledSkillIcon.gameObject.SetActive(playerInfo.enbledSkill.skillIcon != null);
             enbledSkillIcon.sprite = playerInfo.enbledSkill.skillIcon;
         }
         else {
             enbledSkillIcon.gameObject.SetActive(false);
-            enbledSkillIcon.sprite = null;
         }
         
     }

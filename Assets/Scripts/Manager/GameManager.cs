@@ -67,12 +67,11 @@ public class GameManager : GameInfoExtension, IPlayerObserver, IEnemyObserver
         for (int i = 0; i < enemiesLength; i++) {
             Destroy(enemies[i]);
         }
-
-        LoadData();
     }
 
     public void Start()
     {
+        LoadData();
         GameStart();
     }
 

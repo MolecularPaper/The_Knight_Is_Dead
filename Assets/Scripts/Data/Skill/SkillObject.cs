@@ -15,5 +15,3 @@ public abstract class SkillObject : MonoBehaviour
 
     public abstract void Result();
 }
-
-

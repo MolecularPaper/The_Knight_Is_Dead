@@ -125,7 +125,7 @@ public class Skill : SkillObservable, IPlayerObserver, SkillCalculate
     public async void SkillLoop()
     {
         while (skillEnbled) {
-            while (!canExcute) await Task.Delay(1);
+            while (!canExcute) await Task.Delay(1, GameManager.tokenSource.Token);
             skillObject.Execute(this);
             await Task.Delay(coolTimeSecond * (int)(1000f / Time.timeScale));
         }
