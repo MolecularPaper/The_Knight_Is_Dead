@@ -32,7 +32,6 @@ public class GameData
 {
     public List<ItemInfo> itemInfos = new List<ItemInfo>();
     public List<AbilityInfo> abilityInfos = new List<AbilityInfo>();
-    public List<SkillInfo> skillInfos = new List<SkillInfo>();
     public List<AdInfo> adInfos = new List<AdInfo>();
 
     public uint playerLevel;
@@ -50,10 +49,6 @@ public class GameData
 
         foreach (var item in playerInfo.items) {
             this.itemInfos.Add(new ItemInfo(item));
-        }
-
-        foreach (var item in playerInfo.skills) {
-            this.skillInfos.Add(new SkillInfo(item));
         }
 
         foreach (var item in adCollection.ads) {

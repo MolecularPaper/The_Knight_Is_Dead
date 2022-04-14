@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System;
 
 [System.Serializable]
 public class GameInfo : MonoBehaviour
@@ -42,6 +43,7 @@ public class GameInfoExtension : GameInstance
     public static bool isPause;
 
     public Vector3 PlayerPosition => playerCTRL.transform.position;
+    public Vector3 EnemyPostion => enemyCTRL.transform.position;
 
     public static CancellationTokenSource tokenSource;
 

@@ -15,8 +15,7 @@ public class BackPanel : MonoBehaviour, IPlayerObserver
 
     private void Awake()
     {
-        GameObject player = GameObject.FindWithTag("Player");
-        PlayerCTRL playerCTRL = player.GetComponent<PlayerCTRL>();
+        PlayerCTRL playerCTRL = FindObjectOfType<PlayerCTRL>();
         playerCTRL.Subscribe(this);
 
         foreach (Animator backAnimator in backAnimators) {

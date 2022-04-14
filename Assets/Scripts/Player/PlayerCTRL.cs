@@ -4,8 +4,6 @@ using UnityEngine;
 public interface IPlayerCalculate
 {
     public void LevelUp();
-
-    public void LevelUpSkill(string skillName);
     public void LevelUpAbility(string abilityName);
 }
 
@@ -44,10 +42,6 @@ public class PlayerInfo : MobMethodExtension
             this[item.itemName] = new Item(item);
         }
 
-        Debug.Log(gameData.skillInfos.Count);
-        foreach (var item in gameData.skillInfos) {
-            ((Skill)this[item.skillName]).SetSkill(item);
-        }
     }
 }
 
@@ -56,9 +50,6 @@ public abstract class PlayerInfoExtension : PlayerInfo
     [Space(10)]
     [SerializeField] protected float defConst;
     [SerializeField] protected float expInc;
-
-    [HideInInspector]
-    public Skill enbledSkill = null;
 
     public ulong RequestExp => (ulong)Mathf.Pow(expInc * level, 2);
 
@@ -145,15 +136,6 @@ public class PlayerCTRL : PlayerObservable, IPlayerCalculate, IMobAction
             _item.ItemUpdate();
         }
 
-        foreach (var skill in skills) {
-            if (skill.skillEnbled) {
-                enbledSkill = skill;
-                enbledSkill.EnbledSkill();
-            }
-            skill.SkillUpdated();
-            Subscribe(skill);
-        }
-
         PlayerUpdated();
     }
 
@@ -190,35 +172,6 @@ public class PlayerCTRL : PlayerObservable, IPlayerCalculate, IMobAction
         level++;
         skillPoint += 3;
         PlayerUpdated();
-    }
-
-    public void EnbledSkill(string skillName)
-    {
-        if (enbledSkill != null) enbledSkill.DisableSkill();
-        
-        if (string.IsNullOrEmpty(skillName) || ((Skill)this[skillName]).level == 0) {
-            enbledSkill = null;
-            PlayerUpdated();
-            return;
-        }
-
-        enbledSkill = (Skill)this[skillName];
-        enbledSkill.EnbledSkill();
-        PlayerUpdated();
-    }
-
-    public async void LevelUpSkill(string skillName)
-    {
-        Skill skill = (Skill)this[skillName];
-
-        isHoldButton = true;
-        while (skill.canLevelUp && isHoldButton) {
-            skillPoint -= skill.RequestSkillPoint;
-            skill.LevelUp();
-            PlayerUpdated();
-            try { await GameManager.Delay(100); }
-            catch (TaskCanceledException) { return; }
-        }
     }
 
     public bool isHoldButton { get; set; }
