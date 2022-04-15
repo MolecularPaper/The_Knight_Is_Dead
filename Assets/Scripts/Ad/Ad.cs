@@ -136,8 +136,14 @@ public abstract class AdMethodExtension : AdUI
 
         while (currentSecond >= 0) {
             UpdateTime();
-            try { await GameManager.Delay(1000); }
-            catch (TaskCanceledException) { return; }
+
+            try {
+                await GameManager.gm.Delay(1000); 
+            }
+            catch (TaskCanceledException) { 
+                return; 
+            }
+
             currentSecond--;
         }
 

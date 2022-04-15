@@ -30,37 +30,70 @@ public class GameInfo : MonoBehaviour
 public class GameInstance : GameInfo
 {
     public static GameManager gm;
-    protected SpawnManager spawnManager;
-    protected PlayerCTRL playerCTRL;
-    protected EnemyCTRL enemyCTRL;
-    [SerializeField] 
-    protected Fade fade;
 }
 
 public class GameInfoExtension : GameInstance
 {
     protected float currentTimeScale;
-    public static bool isPause;
 
-    public Vector3 PlayerPosition => playerCTRL.transform.position;
-    public Vector3 EnemyPostion => enemyCTRL.transform.position;
+    //Triggers
+    public bool isStart;
+    public bool isPause;
+    public bool isFade;
 
     public static CancellationTokenSource tokenSource;
-
-    public delegate void StageChangedDel(GameInfo gameInfo);
-    public StageChangedDel stageChanged;
 }
 
-public class GameManager : GameInfoExtension, IPlayerObserver, IEnemyObserver
+public interface IGameObservable
+{
+    public void GameUpdated();
+
+    public void Subscribe(IGameObserver obserbver);
+
+    public void Unsubscribe(IGameObserver obserbver);
+}
+
+public interface IGameObserver
+{
+    public void GameUpdated(GameInfoExtension gameInfo);
+}
+
+public class GameObservable : GameInfoExtension, IGameObservable
+{
+    public delegate void GameMangerUpdateDel(GameInfoExtension gameInfo);
+    public GameMangerUpdateDel gameMangerUpdateDel;
+
+    public void GameUpdated()
+    {
+        if (gameMangerUpdateDel != null) gameMangerUpdateDel.Invoke(this);
+    }
+
+    public void Subscribe(IGameObserver observer)
+    {
+        if (observer == null)
+            throw new System.NullReferenceException();
+
+        gameMangerUpdateDel += observer.GameUpdated;
+    }
+
+    public void Unsubscribe(IGameObserver observer)
+    {
+        if (observer == null)
+            throw new System.NullReferenceException();
+
+        gameMangerUpdateDel -= observer.GameUpdated;
+    }
+}
+
+public class GameManager : GameObservable, IPlayerObserver, IEnemyObserver
 {
     public void Awake()
     {
         gm = this;
-        GameObject player = GameObject.FindWithTag("Player");
-        playerCTRL = player.GetComponent<PlayerCTRL>();
+
+        PlayerCTRL playerCTRL = FindObjectOfType<PlayerCTRL>();
         playerCTRL.Subscribe(this);
 
-        spawnManager = GetComponent<SpawnManager>();
         tokenSource = new CancellationTokenSource();
 
         EnemyCTRL[] enemies = GameObject.FindObjectsOfType<EnemyCTRL>();
@@ -73,19 +106,23 @@ public class GameManager : GameInfoExtension, IPlayerObserver, IEnemyObserver
 
     public void Start()
     {
-        LoadData();
         GameStart();
     }
 
-    private void OnApplicationQuit() => SaveData();
-
     public async void GameStart()
     {
-        stageChanged.Invoke(this);
-        try { await Delay(1000); }
-        catch (TaskCanceledException) { return; }
-        playerCTRL.IsMove = true;
-        SpawnEnemy();
+        GameUpdated();
+
+        try {
+            await Delay(1000); 
+        }
+        catch (TaskCanceledException) { 
+            return;
+        }
+
+        isStart = true;
+        GameUpdated();
+        isStart = false;
     }
 
     public void PauseGame()
@@ -93,15 +130,26 @@ public class GameManager : GameInfoExtension, IPlayerObserver, IEnemyObserver
         currentTimeScale = Time.timeScale;
         Time.timeScale = 0.0f;
         isPause = true;
+        GameUpdated();
     }
 
     public void ResumeGame()
     {
         Time.timeScale = currentTimeScale;
         isPause = false;
+        GameUpdated();
     }
 
-    public static async Task Delay(int millisecondsDelay)
+    public void ResetGame()
+    {
+        stageIndex = 0;
+
+        tokenSource.Cancel();
+        GameDataManager.dataManager.SaveGameData();
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public async Task Delay(int millisecondsDelay)
     {
         await Task.Delay(millisecondsDelay, tokenSource.Token);
         while (isPause) {
@@ -109,108 +157,39 @@ public class GameManager : GameInfoExtension, IPlayerObserver, IEnemyObserver
         }
     }
 
-    public void AttackEnemy(ulong damage)
-    {
-        if (enemyCTRL) {
-            enemyCTRL.HitSound();
-            enemyCTRL.HitEffect();
-            enemyCTRL.Damage(damage);
-        }
-    }
-
-    public void AttackPlayer(ulong damage)
-    {
-        if (playerCTRL) {
-            playerCTRL.HitSound();
-            playerCTRL.HitEffect();
-            playerCTRL.Damage(damage);
-        }
-    }
-
     public async void PlayerUpdated(PlayerInfoExtension playerInfo)
     {
         if (playerInfo.IsDead) {
-            fade.FadeOut(true);
-            while (!fade.isFadeOut) {
-                try { await Task.Delay(1, tokenSource.Token); }
-                catch (TaskCanceledException) { return; }
+            isFade = true;
+            GameUpdated();
+
+            try {
+                await Delay(1500);
             }
+            catch (TaskCanceledException) { }
 
-            stageIndex = 0;
 
-            SaveData();
-            tokenSource.Cancel();
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-            return;
+            ResetGame();
         }
     }
 
-    public async void EnemyUpdated(EnemyInfo enemyInfo)
+    public void EnemyUpdated(EnemyObservable enemyCTRL)
     {
-        if (enemyInfo.IsDead) {
-            UpdateStageIndex();
-            playerCTRL.SetCurrentHP();
-            playerCTRL.IsAttack = false;
-            ((Item)playerCTRL["Soul"]).Count += ((Item)enemyInfo["Soul"]).Count;
-            playerCTRL.exp += enemyInfo.exp;
-            if (playerCTRL.CanLevelUp) playerCTRL.LevelUp();
-
-            try { await Delay((int)(1500 / Time.timeScale)); }
-            catch (TaskCanceledException) { return; }
-
-            playerCTRL.CalculateHpBar();
-            playerCTRL.IsMove = true;
-            SpawnEnemy();
-
-            return;
+        if (enemyCTRL.IsDead) {
+            stageIndex++;
+            if (highestStageIndex < stageIndex) {
+                highestStageIndex = stageIndex;
+            }
         }
-        else if (enemyInfo.IsStop) {
-            playerCTRL.IsMove = false;
 
-            try { await Delay((int)(100 / Time.timeScale)); }
-            catch (TaskCanceledException) { return; }
-
-            playerCTRL.IsAttack = true;
-            enemyCTRL.IsAttack = true;
-        }
+        GameUpdated();
     }
 
-    public void SpawnEnemy()
+    public void LoadData(GameData gameData, NoDeletedData noDeletedData)
     {
-        enemyCTRL = spawnManager.SpawnEnemy(stageIndex);
-        enemyCTRL.Subscribe(this);
-    }
-
-    public void UpdateStageIndex()
-    {
-        stageIndex++;
-        if (highestStageIndex < stageIndex) {
-            highestStageIndex = stageIndex;
+        adDeleted = noDeletedData.adDeleted;
+        if(gameData != null) {
+            this.SetInfo(gameData, noDeletedData);
         }
-        stageChanged.Invoke(this);
     }
-
-    private void LoadData()
-    {
-        NoDeletedData noDeletedData = null;
-
-        try {
-            noDeletedData = GameDataManager.dataManager.LoadNoDeletedData();
-            playerCTRL.nickName = noDeletedData.nickName;
-            adDeleted = noDeletedData.adDeleted;
-        }
-        catch (System.IO.DirectoryNotFoundException) { }
-
-        try {
-            GameData gameData = GameDataManager.dataManager.LoadGameData();
-            GetComponent<AdManager>().SetAdInfos(gameData);
-            playerCTRL.SetInfo(gameData);
-
-            if (noDeletedData != null) 
-                this.SetInfo(gameData, noDeletedData);
-        }
-        catch (System.IO.DirectoryNotFoundException) { }
-    }
-
-    private void SaveData() => GameDataManager.dataManager.SaveGameData(playerCTRL, this, GetComponent<AdManager>().adCollection);
 }

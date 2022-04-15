@@ -108,8 +108,8 @@ public class Ability : AbilityObservable, AbilityCalculate, IItemObserver
 
     public void LevelUp()
     {
-        level++;
         point += UpPoint;
+        level++;
     }
 
     public void ItemUpdate(Item item)

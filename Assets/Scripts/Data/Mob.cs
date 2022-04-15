@@ -5,7 +5,6 @@ public interface IMobAction
 {
     public void Attack();
     public void Damage(ulong damage);
-    public void Dead();
 }
 
 public interface IMobEffect
@@ -13,12 +12,6 @@ public interface IMobEffect
     public void AttackSound();
     public void HitSound();
     public void HitEffect();
-}
-
-public interface IMobCalculate
-{
-    public void SetCurrentHP();
-    public void CalculateHpBar();
 }
 
 public interface IMobCTRL
@@ -31,7 +24,7 @@ public class MobInfo : MonoBehaviour
 {
     public List<Item> items;
     public List<Ability> abilities;
-    protected long currentHp;
+    public long totalDamage;
     public ulong exp;
 
     public object this[string name] {
@@ -73,13 +66,12 @@ public class MobExtension : MobInfo
     protected Animator animator;
 
     [Space(10)]
-    [SerializeField] protected Transform hpBar;
     [SerializeField] protected Color hitColor;
     [SerializeField] protected AudioClip attakSound;
     [SerializeField] protected AudioClip hitSound;
 }
 
-public class MobMethodExtension : MobExtension, IMobEffect, IMobCalculate, IMobCTRL
+public class MobMethodExtension : MobExtension, IMobEffect, IMobCTRL
 {
     public void AddAbility(Ability ability) => abilities.Add(ability);
     public void AddItem(Item item) => items.Add(item);
@@ -89,27 +81,17 @@ public class MobMethodExtension : MobExtension, IMobEffect, IMobCalculate, IMobC
     public async void HitEffect()
     {
         spriteRenderer.color = hitColor;
-        try { await GameManager.Delay(100); }
-        catch (TaskCanceledException) { return; }
+
+        try {
+            await GameManager.gm.Delay(100);
+        }
+        catch (TaskCanceledException) { 
+            return; 
+        }
+
         try { spriteRenderer.color = Color.white; }
         catch { return; }
     }
 
     public void HitSound() => SoundManager.sound.PlaySE(hitSound);
-
-    public void SetCurrentHP()
-    {
-        Ability hp = (Ability)this["HP"];
-        currentHp = (long)hp.point;
-    }
-
-    public void CalculateHpBar()
-    {
-        Ability hp = (Ability)this["HP"];
-        hpBar.localScale =
-            new Vector3(
-                Mathf.Lerp(0, hpBarScale.x, (float)currentHp / hp.point),
-                hpBarScale.y,
-                hpBarScale.z);
-    }
 }

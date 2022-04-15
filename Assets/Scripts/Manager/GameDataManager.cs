@@ -73,19 +73,55 @@ public class GameDataManager : MonoBehaviour
     [SerializeField] private string titleDataFileName;
     private readonly string privateKey = "7ZWY64KY7IS47Z6I64KY7IS47J207JW86rCA652866eI7IKs67mE";
 
-    public void Awake()
+    [Space(10)]
+    [SerializeField] private bool loadAdData;
+    [SerializeField] private bool loadGameData;
+    [SerializeField] private bool loadPlayerData;
+
+    private void Awake()
     {
         dataManager = this;
+
+        NoDeletedData noDeletedData = null;
+        GameData gameData = null;
+
+        try {
+            noDeletedData = LoadNoDeletedData();
+        }
+        catch (DirectoryNotFoundException) { return; }
+
+        try {
+            gameData = LoadGameData();
+        }
+        catch (DirectoryNotFoundException) { }
+
+        if (loadAdData) {
+            AdManager adManager = FindObjectOfType<AdManager>();
+            adManager.LoadData(gameData);
+        }
+
+        if (loadGameData) {
+            GameManager gameManager = FindObjectOfType<GameManager>();
+            gameManager.LoadData(gameData, noDeletedData);
+        }
+
+        if (loadPlayerData) {
+            PlayerCTRL playerCTRL = FindObjectOfType<PlayerCTRL>();
+            playerCTRL.LoadData(gameData, noDeletedData);
+        }
     }
+
+    private void OnApplicationQuit() => SaveGameData();
 
     public void SaveNoDeletedData(NoDeletedData noDeletedData) => SaveFile(noDeletedData, noDeletedDataFileName);
 
-    public void SaveGameData(PlayerInfo playerInfo, GameInfo gameInfo, AdCollection adCollection)
+    public void SaveGameData()
     {
-        GameData saveData = new GameData(playerInfo, gameInfo, adCollection);
-        NoDeletedData noDeletedData = new NoDeletedData(playerInfo, gameInfo);
+        PlayerCTRL playerCTRL = FindObjectOfType<PlayerCTRL>();
+        AdCollection adCollection = AdManager.adManager.adCollection;
+
+        GameData saveData = new GameData(playerCTRL, GameManager.gm, adCollection);
         SaveFile(saveData, gameDataFileName);
-        SaveFile(noDeletedData, noDeletedDataFileName);
     }
 
     public NoDeletedData LoadNoDeletedData() => LoadData<NoDeletedData>(noDeletedDataFileName);

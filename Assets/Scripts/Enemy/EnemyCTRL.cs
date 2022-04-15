@@ -12,7 +12,7 @@ public interface IEnemyObservable
 
 public interface IEnemyObserver
 {
-    public void EnemyUpdated(EnemyInfo enemyInfo);
+    public void EnemyUpdated(EnemyObservable enemyCTRL);
 }
 
 public interface IEnemyAction : IMobAction
@@ -35,7 +35,7 @@ public abstract class EnemyInfo : MobMethodExtension
 
 public class EnemyObservable : EnemyInfo, IEnemyObservable
 {
-    private delegate void EnemyUpdatedDel(EnemyInfo enemyInfo);
+    private delegate void EnemyUpdatedDel(EnemyObservable enemyCTRL);
     private EnemyUpdatedDel enemyUpdatedDel;
     public override bool IsStop {
         get => isStop;
@@ -81,56 +81,94 @@ public class EnemyObservable : EnemyInfo, IEnemyObservable
     }
 }
 
-public class EnemyCTRL : EnemyObservable, IEnemyAction
+public class EnemyCTRL : EnemyObservable, IPlayerObserver, IEnemyAction
 {
     private void Awake()
     {
         animator = GetComponentInChildren<Animator>();
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
-        hpBarScale = hpBar.localScale;
+
+        Subscribe(GameManager.gm);
+
+        PlayerCTRL playerCTRL = FindObjectOfType<PlayerCTRL>();
+        playerCTRL.Subscribe(this);
+        Subscribe(playerCTRL);
+
+        StageUI stageUI = FindObjectOfType<StageUI>();
+        Subscribe(stageUI);
+
+        SpawnManager spawnManager = FindObjectOfType<SpawnManager>();
+        Subscribe(spawnManager);
     }
 
-    private void OnApplicationQuit()
+    public void PlayerUpdated(PlayerInfoExtension playerInfo)
     {
-        try { Destroy(this.gameObject); }
-        catch { return; }
+        if (playerInfo.IsDead) {
+            try {
+                IsAttack = false;
+            }
+            catch (MissingReferenceException) {
+                return;
+            }
+        }
     }
 
     public void Attack()
     {
         AttackSound();
-        GameManager.gm.AttackPlayer(((Ability)this["ATK"]).point);
+
+        PlayerCTRL playerCTRL = FindObjectOfType<PlayerCTRL>();
+        if (playerCTRL != null) {
+            playerCTRL.Damage(((Ability)this["HP"]).point);
+        }
     }
 
     public void Damage(ulong damage)
     {
         if (IsDead) return;
 
-        currentHp -= (long)damage;
+        totalDamage += (long)damage;
 
-        if (currentHp <= 0) {
+        HitEffect();
+        HitSound();
+
+        if (totalDamage >= (long)((Ability)this["HP"]).point) {
             IsDead = true;
+            return;
         }
 
-        CalculateHpBar();
+        EnemyUpdated();
     }
 
     public async void Move()
     {
-        Vector3 playerPostion = GameManager.gm.PlayerPosition;
+        PlayerCTRL playerCTRL = FindObjectOfType<PlayerCTRL>();
+        Vector3 playerPostion = playerCTRL.transform.position;
+
         while (Vector3.Distance(playerPostion, transform.position) > stopDistance) {
             transform.Translate(moveSpeed * Time.deltaTime * Vector3.left);
-            try { await Task.Delay(1, GameManager.tokenSource.Token); }
-            catch (TaskCanceledException) { return; }
+
+            try { 
+                await Task.Delay(1, GameManager.tokenSource.Token); 
+            }
+            catch (TaskCanceledException) {
+                return; 
+            }
         }
 
         IsStop = true;
+        IsAttack = true;
     }
 
     public async void Dead()
     {
-        try { await GameManager.Delay((int)(500 / Time.timeScale)); }
-        catch (TaskCanceledException) { return; }
+        try { 
+            await GameManager.gm.Delay((int)(500 / Time.timeScale));
+        }
+        catch (TaskCanceledException) {
+            return;
+        }
+
         Destroy(this.gameObject);
     }
 }

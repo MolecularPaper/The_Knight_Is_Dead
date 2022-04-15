@@ -265,6 +265,9 @@ MonoBehaviour:
   gameDataFileName: GameData
   noDeletedDataFileName: NoDeleted
   titleDataFileName: TitleData
+  loadAdData: 0
+  loadGameData: 0
+  loadPlayerData: 0
 --- !u!1 &175642521
 GameObject:
   m_ObjectHideFlags: 0

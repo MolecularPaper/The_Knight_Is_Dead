@@ -6,8 +6,22 @@ using UnityEngine;
 
 public class AdManager : MonoBehaviour
 {
+    public static AdManager adManager;
+
     public List<AdUI> adExtensions;
     public AdCollection adCollection;
+
+    public void Awake()
+    {
+        adManager = this;
+    }
+
+    public void LoadData(GameData gameData)
+    {
+        if(gameData != null) {
+            SetAdInfos(gameData);
+        }
+    }
 
     public void Start()
     {

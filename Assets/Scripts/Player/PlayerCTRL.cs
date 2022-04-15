@@ -73,6 +73,7 @@ public class PlayerObservable : PlayerInfoExtension, IPlayerObservable
             isDead = value;
             if (IsDead) animator.SetTrigger("Dead");
             PlayerUpdated();
+            isDead = false;
         }
     }
 
@@ -114,15 +115,12 @@ public class PlayerObservable : PlayerInfoExtension, IPlayerObservable
     }
 }
 
-public class PlayerCTRL : PlayerObservable, IPlayerCalculate, IMobAction
+public class PlayerCTRL : PlayerObservable, IEnemyObserver, IPlayerCalculate, IMobAction
 {
     private void Awake()
     {
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-
-        SetCurrentHP();
-        hpBarScale = hpBar.localScale;
     }
 
     public void Start()
@@ -136,7 +134,55 @@ public class PlayerCTRL : PlayerObservable, IPlayerCalculate, IMobAction
             _item.ItemUpdate();
         }
 
+        IsMove = true;
         PlayerUpdated();
+    }
+
+    public void LoadData(GameData gameData, NoDeletedData noDeletedData)
+    {
+        nickName = noDeletedData.nickName;
+        if (gameData != null) {
+            SetInfo(gameData);
+        }
+    }
+
+    public async void EnemyUpdated(EnemyObservable enemyCTRL)
+    {
+        if (enemyCTRL.IsDead) {
+            enemyCTRL.Unsubscribe(this);
+
+            totalDamage = 0;
+
+            ((Item)this["Soul"]).Count += ((Item)enemyCTRL["Soul"]).Count;
+
+            exp += enemyCTRL.exp;
+            if (CanLevelUp) {
+                LevelUp();
+            }
+            
+            IsAttack = false;
+
+            try {
+                await GameManager.gm.Delay((int)(1000 / Time.timeScale));
+            }
+            catch (TaskCanceledException) { 
+                return; 
+            }
+
+            IsMove = true;
+        }
+        else if (enemyCTRL.IsStop && IsMove) {
+            IsMove = false;
+
+            try {
+                await GameManager.gm.Delay((int)(300 / Time.timeScale)); 
+            }
+            catch (TaskCanceledException) {
+                return; 
+            }
+
+            IsAttack = true;
+        }
     }
 
     public void Attack()
@@ -148,7 +194,11 @@ public class PlayerCTRL : PlayerObservable, IPlayerCalculate, IMobAction
         }
 
         AttackSound();
-        GameManager.gm.AttackEnemy(damage);
+
+        EnemyCTRL enemyCTRL = FindObjectOfType<EnemyCTRL>();
+        if(enemyCTRL != null) {
+            enemyCTRL.Damage(damage);
+        }
     }
 
     public void Damage(ulong damage)
@@ -156,16 +206,18 @@ public class PlayerCTRL : PlayerObservable, IPlayerCalculate, IMobAction
         if (IsDead) return;
 
         float def = ((Ability)this["DEF"]).point;
-        currentHp -= (long)((1 - def / (def + defConst)) * damage);
+        totalDamage += (long)((1 - def / (def + defConst)) * damage);
+        
+        HitEffect();
+        HitSound();
 
-        if (currentHp <= 0) {
+        if (totalDamage >= (long)((Ability)this["HP"]).point) {
             IsDead = true;
+            return;
         }
 
-        CalculateHpBar();
+        PlayerUpdated();
     }
-
-    public void Dead() => IsDead = true;
 
     public void LevelUp()
     {
@@ -183,10 +235,16 @@ public class PlayerCTRL : PlayerObservable, IPlayerCalculate, IMobAction
         isHoldButton = true;
         while (ability.canLevelUp && isHoldButton) {
             item.Count -= ability.RequestSoul;
+
             ability.LevelUp();
             item.ItemUpdate();
-            try { await GameManager.Delay(100); }
-            catch (TaskCanceledException) { return; }
+
+            try { 
+                await GameManager.gm.Delay(100); 
+            }
+            catch (TaskCanceledException) { 
+                return;
+            }
         }
 
         PlayerUpdated();

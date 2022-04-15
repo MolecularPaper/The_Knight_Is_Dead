@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class Fade : MonoBehaviour
+public class Fade : MonoBehaviour, IGameObserver
 {
     [SerializeField] float fadeSpeed;
     [SerializeField] private CanvasGroup fade;
@@ -11,7 +11,10 @@ public class Fade : MonoBehaviour
     public void Awake()
     {
         FadeOut(false);
+        GameManager.gm.Subscribe(this);
     }
+
+    public void GameUpdated(GameInfoExtension gameInfo) => FadeOut(gameInfo.isFade);
 
     public async void FadeOut(bool isFadeOut)
     {
