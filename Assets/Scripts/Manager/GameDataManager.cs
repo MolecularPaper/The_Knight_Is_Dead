@@ -16,11 +16,14 @@ public class NoDeletedData
     public NoDeletedData(string nickName)
     {
         this.nickName = nickName;
+        this.adDeleted = false;
+        this.bgmVolume = 0.5f;
+        this.seVolume = 0.5f;
     }
 
-    public NoDeletedData(PlayerInfo playerInfo, GameInfo gameInfo)
+    public NoDeletedData(GameInfo gameInfo)
     {
-        this.nickName = playerInfo.nickName;
+        this.nickName = gameInfo.playerNickname;
         this.adDeleted = gameInfo.adDeleted;
         this.bgmVolume = gameInfo.bgmVolume;
         this.seVolume = gameInfo.seVolume;
@@ -32,6 +35,7 @@ public class GameData
 {
     public List<ItemInfo> itemInfos = new List<ItemInfo>();
     public List<AbilityInfo> abilityInfos = new List<AbilityInfo>();
+    public List<SkillInfo> skillInfos = new List<SkillInfo>();
     public List<AdInfo> adInfos = new List<AdInfo>();
 
     public uint playerLevel;
@@ -49,6 +53,10 @@ public class GameData
 
         foreach (var item in playerInfo.items) {
             this.itemInfos.Add(new ItemInfo(item));
+        }
+
+        foreach (var item in playerInfo.skills) {
+            this.skillInfos.Add(new SkillInfo(item));
         }
 
         foreach (var item in adCollection.ads) {
@@ -82,7 +90,7 @@ public class GameDataManager : MonoBehaviour
     {
         dataManager = this;
 
-        NoDeletedData noDeletedData = null;
+        NoDeletedData noDeletedData;
         GameData gameData = null;
 
         try {
@@ -95,25 +103,45 @@ public class GameDataManager : MonoBehaviour
         }
         catch (DirectoryNotFoundException) { }
 
-        if (loadAdData) {
-            AdManager adManager = FindObjectOfType<AdManager>();
-            adManager.LoadData(gameData);
-        }
-
+        GameManager gameManager = FindObjectOfType<GameManager>();
         if (loadGameData) {
-            GameManager gameManager = FindObjectOfType<GameManager>();
-            gameManager.LoadData(gameData, noDeletedData);
+            gameManager.playerNickname = noDeletedData.nickName;
+            gameManager.bgmVolume = noDeletedData.bgmVolume;
+            gameManager.seVolume = noDeletedData.seVolume;
+            gameManager.adDeleted = noDeletedData.adDeleted;
         }
 
-        if (loadPlayerData) {
-            PlayerCTRL playerCTRL = FindObjectOfType<PlayerCTRL>();
-            playerCTRL.LoadData(gameData, noDeletedData);
+        if (gameData != null) {
+            if (loadGameData) {
+                gameManager.SetInfo(gameData);
+            }
+
+            if (loadAdData) {
+                AdManager adManager = FindObjectOfType<AdManager>();
+                adManager.SetAdInfos(gameData);
+            }
+
+            if (loadPlayerData) {
+                PlayerCTRL playerCTRL = FindObjectOfType<PlayerCTRL>();
+                playerCTRL.SetInfo(gameData);
+            }
         }
     }
 
-    private void OnApplicationQuit() => SaveGameData();
+    private void OnApplicationQuit()
+    {
+        SaveNoDeletedData();
+        SaveGameData();
+    }
 
     public void SaveNoDeletedData(NoDeletedData noDeletedData) => SaveFile(noDeletedData, noDeletedDataFileName);
+
+    public void SaveNoDeletedData()
+    {
+        PlayerCTRL playerCTRL = FindObjectOfType<PlayerCTRL>();
+        NoDeletedData noDeletedData = new NoDeletedData(GameManager.gm);
+        SaveFile(noDeletedData, noDeletedDataFileName);
+    }
 
     public void SaveGameData()
     {
@@ -121,7 +149,7 @@ public class GameDataManager : MonoBehaviour
         AdCollection adCollection = AdManager.adManager.adCollection;
 
         GameData saveData = new GameData(playerCTRL, GameManager.gm, adCollection);
-        SaveFile(saveData, gameDataFileName);
+        SaveFile(saveData, gameDataFileName);    
     }
 
     public NoDeletedData LoadNoDeletedData() => LoadData<NoDeletedData>(noDeletedDataFileName);

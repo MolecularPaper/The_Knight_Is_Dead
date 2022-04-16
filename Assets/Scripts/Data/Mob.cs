@@ -24,6 +24,9 @@ public class MobInfo : MonoBehaviour
 {
     public List<Item> items;
     public List<Ability> abilities;
+    public List<Skill> skills;
+
+    [Space(10)]
     public long totalDamage;
     public ulong exp;
 
@@ -39,6 +42,11 @@ public class MobInfo : MonoBehaviour
                     return item;
                 }
             }
+            foreach (var item in skills) {
+                if (item.skillName == name) {
+                    return item;
+                }
+            }
             throw new System.ArgumentNullException();
         }
         set {
@@ -51,6 +59,12 @@ public class MobInfo : MonoBehaviour
             for (int i = 0; i < abilities.Count; i++) {
                 if (abilities[i].abilityName == name) {
                     abilities[i] = (Ability)value;
+                    return;
+                }
+            }
+            for (int i = 0; i < abilities.Count; i++) {
+                if (skills[i].skillName == name) {
+                    skills[i] = (Skill)value;
                     return;
                 }
             }

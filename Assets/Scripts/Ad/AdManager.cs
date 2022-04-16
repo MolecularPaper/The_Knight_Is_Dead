@@ -16,13 +16,6 @@ public class AdManager : MonoBehaviour
         adManager = this;
     }
 
-    public void LoadData(GameData gameData)
-    {
-        if(gameData != null) {
-            SetAdInfos(gameData);
-        }
-    }
-
     public void Start()
     {
         adCollection = new AdCollection(adExtensions);
@@ -30,6 +23,8 @@ public class AdManager : MonoBehaviour
 
     public void SetAdInfos(GameData gameData)
     {
+        if (gameData == null) return;
+
         for (int i = 0; i < gameData.adInfos.Count; i++) {
             this.adExtensions[i].SetInfo(gameData.adInfos[i]);
         }

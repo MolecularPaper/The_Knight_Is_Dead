@@ -8,10 +8,10 @@ public class AbilityUI : MonoBehaviour, IAbilityObserver
 {
     [SerializeField] private string abilityName;
 
-    public TextMeshProUGUI title;
-    public TextMeshProUGUI description;
-    public TextMeshProUGUI requestSoul;
-    public Button levelUpButton;
+    [SerializeField] private TextMeshProUGUI title;
+    [SerializeField] private TextMeshProUGUI description;
+    [SerializeField] private TextMeshProUGUI requestSoul;
+    [SerializeField] private Button levelUpButton;
 
     private string titleText;
     private string descriptionText;

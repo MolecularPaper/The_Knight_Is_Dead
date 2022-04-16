@@ -9,21 +9,22 @@ public class GameInfo : MonoBehaviour
 {
     public int highestStageIndex;
     public int stageIndex;
+
+    public string playerNickname;
     public float bgmVolume;
     public float seVolume;
     public bool adDeleted { get; set; }
 
     public GameInfo() { }
 
-    public GameInfo(GameData gameData, NoDeletedData noDeletedData) => SetInfo(gameData, noDeletedData);
+    public GameInfo(GameData gameData) => SetInfo(gameData);
 
-    public void SetInfo(GameData gameData, NoDeletedData noDeletedData)
+    public void SetInfo(GameData gameData)
     {
-        this.highestStageIndex = gameData.highestStageIndex;
-        this.stageIndex = gameData.stageIndex;
-        this.bgmVolume = noDeletedData.bgmVolume;
-        this.seVolume = noDeletedData.seVolume;
-        this.adDeleted = noDeletedData.adDeleted;
+        if(gameData != null) {
+            this.highestStageIndex = gameData.highestStageIndex;
+            this.stageIndex = gameData.stageIndex;
+        }
     }
 }
 
@@ -183,13 +184,5 @@ public class GameManager : GameObservable, IPlayerObserver, IEnemyObserver
         }
 
         GameUpdated();
-    }
-
-    public void LoadData(GameData gameData, NoDeletedData noDeletedData)
-    {
-        adDeleted = noDeletedData.adDeleted;
-        if(gameData != null) {
-            this.SetInfo(gameData, noDeletedData);
-        }
     }
 }

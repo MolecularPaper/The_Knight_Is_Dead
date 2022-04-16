@@ -11,13 +11,13 @@ public class PlayerInfoUI : MonoBehaviour, IPlayerObserver
     [SerializeField] RectTransform hpBarFill;
     [SerializeField] TextMeshProUGUI hpBarText;
 
-    private void Awake()
+    private void Start()
     {
         GameObject player = GameObject.FindWithTag("Player");
         PlayerCTRL playerCTRL = player.GetComponent<PlayerCTRL>();
         playerCTRL.Subscribe(this);
 
-        infoText.text = $"{playerCTRL.nickName} {playerCTRL.level}LV";
+        infoText.text = $"{GameManager.gm.playerNickname} {playerCTRL.level}LV";
     }
 
     public void PlayerUpdated(PlayerInfoExtension playerInfo)
