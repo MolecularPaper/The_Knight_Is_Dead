@@ -8,11 +8,6 @@ public interface IPlayerCalculate
     public void LevelUpSkill(string skillName);
 }
 
-public interface IPlayerAction
-{
-    public void ExcuteSkill(string skillName);
-}
-
 public interface IPlayerObservable
 {
     public void Subscribe(IPlayerObserver observer);
@@ -122,7 +117,7 @@ public class PlayerObservable : PlayerInfoExtension, IPlayerObservable
     }
 }
 
-public class PlayerCTRL : PlayerObservable, IEnemyObserver, IPlayerCalculate, IPlayerAction, IMobAction
+public class PlayerCTRL : PlayerObservable, IEnemyObserver, IPlayerCalculate, IMobAction
 {
     private void Awake()
     {
@@ -219,12 +214,6 @@ public class PlayerCTRL : PlayerObservable, IEnemyObserver, IPlayerCalculate, IP
         }
 
         PlayerUpdated();
-    }
-
-    public void ExcuteSkill(string skillName)
-    {
-        Skill skill = (Skill)this[skillName];
-        skill.Execute(this);
     }
 
     public void LevelUp()

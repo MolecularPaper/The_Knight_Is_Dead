@@ -177,12 +177,22 @@ MonoBehaviour:
     pointInc: 10
     soulInc: 4
     isFixInc: 1
+  skills:
+  - skillName: Flame
+    level: 1
+    isLock: 0
+    canLevelUp: 0
+    pointInc: 10000
+    skillPointInc: 2
+    unlockLevel: 3
+    coolTime: 0
+    icon: {fileID: 21300000, guid: c8d30fa22223f264baea30a0aff11607, type: 3}
+    skillEffect: {fileID: 7624616192877242653, guid: e14d084838fb8ec4f91c9315833d0f38, type: 3}
   totalDamage: 0
   exp: 0
   hitColor: {r: 1, g: 0, b: 0, a: 1}
   attakSound: {fileID: 8300000, guid: 01cfde3b31ad19d41adccd4ad06a970b, type: 3}
   hitSound: {fileID: 8300000, guid: e7f9fcb7e90d3d14e8bbf73f4e0db4ad, type: 3}
-  nickName: 
   level: 1
   skillPoint: 0
   defConst: 100

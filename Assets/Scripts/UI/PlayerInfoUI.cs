@@ -16,8 +16,7 @@ public class PlayerInfoUI : MonoBehaviour, IPlayerObserver
         GameObject player = GameObject.FindWithTag("Player");
         PlayerCTRL playerCTRL = player.GetComponent<PlayerCTRL>();
         playerCTRL.Subscribe(this);
-
-        infoText.text = $"{GameManager.gm.playerNickname} {playerCTRL.level}LV";
+        PlayerUpdated(playerCTRL);
     }
 
     public void PlayerUpdated(PlayerInfoExtension playerInfo)
@@ -26,6 +25,7 @@ public class PlayerInfoUI : MonoBehaviour, IPlayerObserver
         long currentHp = (long)hp.point - playerInfo.totalDamage;
         currentHp = currentHp < 0 ? 0 : currentHp;
 
+        infoText.text = $"{GameManager.gm.playerNickname} {playerInfo.level}LV";
         hpBarFill.localScale = new Vector3(currentHp / (float)hp.point, 1, 1);
         hpBarText.text = $"{currentHp}/{hp.point}";
     }

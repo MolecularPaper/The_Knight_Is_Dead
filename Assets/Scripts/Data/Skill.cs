@@ -31,6 +31,8 @@ public class SkillExtension : SkillInfo
     public ulong pointInc;
     public uint skillPointInc;
     public uint unlockLevel;
+    public float coolTime;
+    public Sprite icon;
 
     public ulong Point {
         get {
@@ -63,7 +65,7 @@ public interface ISkillObserver
 
 public interface ISkill
 {
-    public void Execute(PlayerInfo playerInfo);
+    public void Execute(PlayerInfo playerInfo, EnemyCTRL enemyCTRL);
 
     public void Unlock();
 
@@ -99,7 +101,7 @@ public class SkillObservable : SkillExtension, ISkillObservable, IPlayerObserver
 
     public void PlayerUpdated(PlayerInfoExtension playerInfo)
     {
-        isLock = playerInfo.level >= unlockLevel;
+        isLock = playerInfo.level < unlockLevel;
         canLevelUp = RequestSkillPoint <= playerInfo.skillPoint;
         SkillUpdated();
     }
@@ -108,10 +110,8 @@ public class SkillObservable : SkillExtension, ISkillObservable, IPlayerObserver
 [System.Serializable]
 public class Skill : SkillObservable, ISkill
 {
-    public void Execute(PlayerInfo playerInfo)
+    public void Execute(PlayerInfo playerInfo, EnemyCTRL enemyCTRL)
     {
-        EnemyCTRL enemyCTRL = GameObject.FindObjectOfType<EnemyCTRL>();
-
         SkillEffect skillEffect = 
             GameObject.Instantiate(this.skillEffect, enemyCTRL.transform.position, Quaternion.identity).GetComponent<SkillEffect>();
         skillEffect.skillDamageDel += () => {

@@ -61,12 +61,19 @@ public class SoundManager : MonoBehaviour
 
     private void AddButtonSoundEffect()
     {
-        EventTrigger[] allButtons = FindObjectsOfType<EventTrigger>();
-        foreach (EventTrigger eventTrigger in allButtons) {
+        EventTrigger[] allTriggers = FindObjectsOfType<EventTrigger>();
+        foreach (EventTrigger eventTrigger in allTriggers) {
             EventTrigger.Entry entry = new EventTrigger.Entry();
             entry.eventID = EventTriggerType.Select;
             entry.callback.AddListener((data) => { PlaySE(buttonClickSound); });
             eventTrigger.triggers.Add(entry);
+        }
+
+        Button[] allButtons = FindObjectsOfType<Button>();
+        foreach (Button button in allButtons) {
+            button.onClick.AddListener(() => {
+                PlaySE(buttonClickSound);
+            });
         }
     }
 

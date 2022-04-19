@@ -14,6 +14,7 @@ public class SkillUI : MonoBehaviour, ISkillObserver
     [SerializeField] private TextMeshProUGUI unlockLevel;
     [SerializeField] private GameObject lockPanel;
     [SerializeField] private Button levelUpButton;
+    [SerializeField] private Image icon;
 
     private string titleText;
     private string descriptionText;
@@ -31,6 +32,10 @@ public class SkillUI : MonoBehaviour, ISkillObserver
 
         titleText = title.text;
         descriptionText = description.text;
+
+        icon.sprite = skill.icon;
+
+        SkillUpdated(skill);
     }
 
     public void SkillUpdated(SkillExtension skillExtension)
@@ -40,7 +45,7 @@ public class SkillUI : MonoBehaviour, ISkillObserver
         requestSkillPoint.text = $"{skillExtension.RequestSkillPoint}Æ÷ÀÎÆ®";
         lockPanel.SetActive(skillExtension.isLock);
 
-        levelUpButton.interactable = skillExtension.isLock && skillExtension.canLevelUp;
+        levelUpButton.interactable = !skillExtension.isLock && skillExtension.canLevelUp;
     }
 
 }
