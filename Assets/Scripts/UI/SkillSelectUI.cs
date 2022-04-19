@@ -29,7 +29,9 @@ public class SkillSlot
 
         PlayerCTRL playerCTRL = GameObject.FindObjectOfType<PlayerCTRL>();
         while (skill.isEnabled) {
-            while (!playerCTRL.IsMove) {
+            EnemyCTRL enemyCTRL = null;
+            while (playerCTRL.IsMove || enemyCTRL == null) {
+                enemyCTRL = GameObject.FindObjectOfType<EnemyCTRL>();
                 try {
                     await GameManager.gm.Delay(100);
                 }
@@ -38,7 +40,13 @@ public class SkillSlot
                 }
             }
 
-            EnemyCTRL enemyCTRL = GameObject.FindObjectOfType<EnemyCTRL>();
+            try {
+                await GameManager.gm.Delay(200 * slotIndex);
+            }
+            catch (TaskCanceledException) {
+                return;
+            }
+
             skill.Execute(playerCTRL, enemyCTRL);
 
             try {
