@@ -105,18 +105,17 @@ public class SkillSelectUI : MonoBehaviour
 
         skillTapBlock.alpha = 1.0f;
         skillTapBlock.blocksRaycasts = true;
-
         selectBarBlock.blocksRaycasts = true;
     }
 
     public void SelectSlot(int slotIndex)
     {
+        skillTemp.slotIndex = slotIndex;
         slots[slotIndex].Enabled(skillTemp);
         skillTemp = null;
 
         skillTapBlock.alpha = 0.0f;
         skillTapBlock.blocksRaycasts = false;
-
         selectBarBlock.blocksRaycasts = false;
     }
 }
