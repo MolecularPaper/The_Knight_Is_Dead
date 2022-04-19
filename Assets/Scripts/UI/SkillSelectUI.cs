@@ -102,6 +102,10 @@ public class SkillSelectUI : MonoBehaviour
 
         PlayerCTRL playerCTRL = FindObjectOfType<PlayerCTRL>();
         skillTemp = (Skill)playerCTRL[skillName];
+        
+        if(skillTemp.level == 0) {
+            return;
+        }
 
         skillTapBlock.alpha = 1.0f;
         skillTapBlock.blocksRaycasts = true;
