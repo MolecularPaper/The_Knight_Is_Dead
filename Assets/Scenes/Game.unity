@@ -11656,7 +11656,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Delegates: []
+  m_Delegates:
+  - eventID: 2
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 4544550978808934478}
+          m_TargetAssemblyTypeName: PlayerCTRL, Assembly-CSharp
+          m_MethodName: LevelUpSkill
+          m_Mode: 5
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: Flame
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 3
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 4544550978808934478}
+          m_TargetAssemblyTypeName: PlayerCTRL, Assembly-CSharp
+          m_MethodName: set_isHoldButton
+          m_Mode: 6
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &1009467382
 GameObject:
   m_ObjectHideFlags: 0
@@ -12400,7 +12432,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 2849.9998}
+  m_AnchoredPosition: {x: 0, y: 5700}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1053375863
@@ -13638,7 +13670,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90d274bd01ddb5b48a9bbcd8e1342ad8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  infoText: {fileID: 1817830628}
+  info: {fileID: 1817830628}
+  skillPoint: {fileID: 1991003261}
   hpBarFill: {fileID: 115507476}
   hpBarText: {fileID: 1359146784}
 --- !u!1 &1187021574
@@ -15244,7 +15277,7 @@ GameObject:
   - component: {fileID: 1372175345}
   - component: {fileID: 1372175344}
   m_Layer: 5
-  m_Name: Uloock
+  m_Name: Ulock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -21072,7 +21105,6 @@ GameObject:
   - component: {fileID: 1991003260}
   - component: {fileID: 1991003262}
   - component: {fileID: 1991003261}
-  - component: {fileID: 1991003263}
   m_Layer: 5
   m_Name: SkillPoint
   m_TagString: Untagged
@@ -21196,18 +21228,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1991003259}
   m_CullTransparentMesh: 1
---- !u!114 &1991003263
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1991003259}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cd4efb10da1846e4ea64c4e9c53438fa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1991643997
 GameObject:
   m_ObjectHideFlags: 0

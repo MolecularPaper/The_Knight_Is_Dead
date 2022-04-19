@@ -30,6 +30,7 @@ public class PlayerInfo : MobMethodExtension
 
     public void SetInfo(GameData gameData)
     {
+        this.exp = gameData.playerExp;
         this.level = gameData.playerLevel;
         this.skillPoint = gameData.playerSkillPoint;
 

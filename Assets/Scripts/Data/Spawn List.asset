@@ -15,7 +15,7 @@ MonoBehaviour:
   hpIncrease: 1.2
   atkIncrease: 0.4
   soulIncrease: 0.65
-  expIncrease: 0
+  expIncrease: 0.4
   enemyPrefabs:
   - {fileID: 7353172988540160834, guid: 55f7f6aba0d26e845920ad7db91e66e5, type: 3}
   - {fileID: 7758084400519629752, guid: f50c86523bf508d47be01ed5ca01fd28, type: 3}
