@@ -92,6 +92,8 @@ public class GameManager : GameObservable, IPlayerObserver, IEnemyObserver
     {
         gm = this;
 
+        Screen.sleepTimeout = SleepTimeout.NeverSleep;
+
         PlayerCTRL playerCTRL = FindObjectOfType<PlayerCTRL>();
         playerCTRL.Subscribe(this);
 

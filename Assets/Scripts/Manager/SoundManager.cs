@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEngine;
@@ -36,18 +37,27 @@ public class SoundManager : MonoBehaviour
         }
     }
 
+
     private void Start()
     {
         ResetVolume();
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     private void OnApplicationQuit()
     {
         isPlayBgm = false;
     }
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode) => ResetVolume();
 
     private void ResetVolume()
     {
+        bgmSilder = GameObject.FindWithTag("BgmSlider").GetComponent<Slider>();
+        bgmSilder.onValueChanged.AddListener(ChangeBGMVolume);
+
+        seSilder = GameObject.FindWithTag("SeSlider").GetComponent<Slider>();
+        seSilder.onValueChanged.AddListener(ChangeSEVolume);
+
         bgmSilder.value = GameManager.gm.bgmVolume;
         bgmSource.volume = GameManager.gm.bgmVolume;
         seSilder.value = GameManager.gm.seVolume;
@@ -77,13 +87,13 @@ public class SoundManager : MonoBehaviour
         }
     }
 
-    public void ChangeBGMVolume()
+    public void ChangeBGMVolume(float value)
     {
         bgmSource.volume = bgmSilder.value;
         GameManager.gm.bgmVolume = bgmSilder.value;
     }
 
-    public void ChangeSEVolume()
+    public void ChangeSEVolume(float value)
     {
         seSource.volume = seSilder.value;
         GameManager.gm.seVolume = seSilder.value;

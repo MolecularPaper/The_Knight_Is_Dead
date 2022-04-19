@@ -1,7 +1,7 @@
 using UnityEngine;
 using TMPro;
 
-public class StageUI : MonoBehaviour, IGameObserver, IEnemyObserver
+public class StageUI : MonoBehaviour, IEnemyObserver
 {
     [SerializeField] TextMeshProUGUI highestStage;
     [SerializeField] TextMeshProUGUI stage;
@@ -9,10 +9,11 @@ public class StageUI : MonoBehaviour, IGameObserver, IEnemyObserver
     [SerializeField] GameObject hpBar;
     [SerializeField] RectTransform hpBarFill;
     [SerializeField] TextMeshProUGUI hpBarText;
-    
-    void Start()
+
+    private void Start()
     {
-        GameManager.gm.Subscribe(this);
+        highestStage.text = $"최고 스테이지: {GameManager.gm.highestStageIndex + 1}";
+        stage.text = $"스테이지 {GameManager.gm.stageIndex + 1}";
     }
 
     public void EnemyUpdated(EnemyObservable enemyCTRL)
@@ -25,11 +26,10 @@ public class StageUI : MonoBehaviour, IGameObserver, IEnemyObserver
 
         hpBarFill.localScale = new Vector3(currentHp / (float)hp.point, 1, 1);
         hpBarText.text = $"{currentHp}/{hp.point}";
-    }
 
-    public void GameUpdated(GameInfoExtension gameInfo)
-    {
-        highestStage.text = $"최고 스테이지: {gameInfo.highestStageIndex + 1}";
-        stage.text = $"스테이지 {gameInfo.stageIndex + 1}";
+        if (!enemyCTRL.IsDead && enemyCTRL.IsStop) {
+            highestStage.text = $"최고 스테이지: {GameManager.gm.highestStageIndex + 1}";
+            stage.text = $"스테이지 {GameManager.gm.stageIndex + 1}";
+        }
     }
 }

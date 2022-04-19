@@ -105,10 +105,14 @@ public abstract class AdMethodExtension : AdUI
         this.CreateAndLoadRewardedAd();
     }
 
-    protected void HandleUserEarnedReward(object sender, Reward args)
+    protected async void HandleUserEarnedReward(object sender, Reward args)
     {
         GameManager.gm.ResumeGame();
         AdEnd();
+
+        button.interactable = false;
+        await GameManager.gm.Delay(3000);
+        button.interactable = true;
     }
 
     public void AdEnd()
