@@ -10,7 +10,7 @@ public class SkillSlot
     [SerializeField] private GameObject slot;
     [SerializeField] private Image slotIcon;
 
-    private bool isEnabled;
+    public Skill skill;
 
     public SkillSlot(GameObject slotObject)
     {
@@ -20,14 +20,16 @@ public class SkillSlot
 
     public async void Enabled(Skill skill) 
     {
-        isEnabled = true;
+        this.skill = skill;
+        skill.isEnabled = true;
+
         slotIcon.sprite = skill.icon;
         slotIcon.gameObject.SetActive(true);
 
         PlayerCTRL playerCTRL = GameObject.FindObjectOfType<PlayerCTRL>();
-        while (isEnabled) {
+        while (skill.isEnabled) {
             EnemyCTRL enemyCTRL = null;
-            if (enemyCTRL == null) {
+            while (enemyCTRL == null) {
                 GameObject.FindObjectOfType<EnemyCTRL>();
                 try {
                     await GameManager.gm.Delay(100);
@@ -50,7 +52,8 @@ public class SkillSlot
 
     public void Disable()
     {
-        isEnabled = false;
+        skill.isEnabled = false;
+        skill = null;
         slotIcon.sprite = null;
         slotIcon.gameObject.SetActive(false);
         slot.transform.SetAsLastSibling();
@@ -61,14 +64,15 @@ public class SkillSelectUI : MonoBehaviour
 {
     [SerializeField] private CanvasGroup skillTapBlock;
     [SerializeField] private CanvasGroup selectBarBlock;
+    [SerializeField] private Transform skillSlots;
 
     private List<SkillSlot> slots = new List<SkillSlot>();
     private Skill skillTemp;
 
-    private void Awake()
+    private void Start()
     {
-        for (int i = 0; i < transform.childCount; i++) {
-            Transform child = transform.GetChild(i);
+        for (int i = 0; i < skillSlots.childCount; i++) {
+            Transform child = skillSlots.GetChild(i);
 
             SkillSlot skillSlot = new SkillSlot(child.gameObject);
             slots.Add(skillSlot);
@@ -78,10 +82,24 @@ public class SkillSelectUI : MonoBehaviour
                 SelectSlot(i);
             });
         }
+
+        PlayerCTRL playerCTRL = FindObjectOfType<PlayerCTRL>();
+        foreach (var skill in playerCTRL.skills) {
+            if (skill.isEnabled) {
+                slots[skill.slotIndex].Enabled(skill);
+            }
+        }
     }
 
     public void SelectSkill(string skillName)
     {
+        foreach (SkillSlot skillSlot in slots) {
+            if (skillSlot.skill != null && skillSlot.skill.skillName == skillName) {
+                skillSlot.Disable();
+                return;
+            }
+        }
+
         PlayerCTRL playerCTRL = FindObjectOfType<PlayerCTRL>();
         skillTemp = (Skill)playerCTRL[skillName];
 

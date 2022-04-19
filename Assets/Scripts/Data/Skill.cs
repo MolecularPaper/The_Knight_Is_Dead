@@ -10,7 +10,9 @@ public class SkillInfo
 
     [Space(10)]
     public bool isLock;
+    public bool isEnabled;
     public bool canLevelUp;
+    public int slotIndex;
 
     public SkillInfo() { }
 
@@ -21,6 +23,8 @@ public class SkillInfo
         this.skillName = skillInfo.skillName;
         this.level = skillInfo.level;
         this.isLock = skillInfo.isLock;
+        this.isEnabled = skillInfo.isEnabled;
+        this.slotIndex = skillInfo.slotIndex;
     }
 }
 
@@ -112,8 +116,9 @@ public class Skill : SkillObservable, ISkill
 {
     public void Execute(PlayerInfo playerInfo, EnemyCTRL enemyCTRL)
     {
-        SkillEffect skillEffect = 
-            GameObject.Instantiate(this.skillEffect, enemyCTRL.transform.position, Quaternion.identity).GetComponent<SkillEffect>();
+        GameObject gameObject = GameObject.Instantiate(this.skillEffect, enemyCTRL.transform.position, Quaternion.identity, enemyCTRL.transform);
+
+        SkillEffect skillEffect = gameObject.GetComponent<SkillEffect>();
         skillEffect.skillDamageDel += () => {
             if (enemyCTRL != null) {
                 Ability atk = (Ability)playerInfo["ATK"];

@@ -10,7 +10,7 @@ public class StageUI : MonoBehaviour, IGameObserver, IEnemyObserver
     [SerializeField] RectTransform hpBarFill;
     [SerializeField] TextMeshProUGUI hpBarText;
     
-    void Awake()
+    void Start()
     {
         GameManager.gm.Subscribe(this);
     }

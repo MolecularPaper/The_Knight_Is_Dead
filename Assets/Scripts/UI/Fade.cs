@@ -8,7 +8,7 @@ public class Fade : MonoBehaviour, IGameObserver
 
     public bool isFadeOut => fade.alpha == 1;
 
-    public void Awake()
+    public void Start()
     {
         FadeOut(false);
         GameManager.gm.Subscribe(this);
