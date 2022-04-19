@@ -5929,7 +5929,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 456303353}
   m_Enabled: 1
-  m_Alpha: 0.98
+  m_Alpha: 1
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
@@ -12144,7 +12144,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 26220}
+  m_AnchoredPosition: {x: 0, y: 38190}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1053375863
@@ -14962,7 +14962,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1372175343
 RectTransform:
   m_ObjectHideFlags: 0
@@ -20839,7 +20839,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skillTapBlock: {fileID: 1474425412}
   selectBarBlock: {fileID: 1133450539}
-  skillSlots: {fileID: 1133450535}
+  skillSlots:
+  - {fileID: 829953575}
+  - {fileID: 654579098}
+  - {fileID: 1078005895}
+  - {fileID: 455468751}
+  - {fileID: 434504892}
+  - {fileID: 544224034}
 --- !u!1 &1991003259
 GameObject:
   m_ObjectHideFlags: 0
@@ -28000,6 +28006,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+      propertyPath: skills.Array.data[0].coolTime
+      value: 2.2
+      objectReference: {fileID: 0}
     - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
       propertyPath: skills.Array.data[0].unlockLevel
       value: 1

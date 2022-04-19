@@ -10,7 +10,8 @@ public class SkillSlot
     [SerializeField] private GameObject slot;
     [SerializeField] private Image slotIcon;
 
-    public Skill skill;
+    public Skill skill = null;
+    public int slotIndex;
 
     public SkillSlot(GameObject slotObject)
     {
@@ -28,9 +29,7 @@ public class SkillSlot
 
         PlayerCTRL playerCTRL = GameObject.FindObjectOfType<PlayerCTRL>();
         while (skill.isEnabled) {
-            EnemyCTRL enemyCTRL = null;
-            while (enemyCTRL == null) {
-                GameObject.FindObjectOfType<EnemyCTRL>();
+            while (!playerCTRL.IsMove) {
                 try {
                     await GameManager.gm.Delay(100);
                 }
@@ -39,6 +38,7 @@ public class SkillSlot
                 }
             }
 
+            EnemyCTRL enemyCTRL = GameObject.FindObjectOfType<EnemyCTRL>();
             skill.Execute(playerCTRL, enemyCTRL);
 
             try {
@@ -64,22 +64,23 @@ public class SkillSelectUI : MonoBehaviour
 {
     [SerializeField] private CanvasGroup skillTapBlock;
     [SerializeField] private CanvasGroup selectBarBlock;
-    [SerializeField] private Transform skillSlots;
+    [SerializeField] private List<GameObject> skillSlots;
 
     private List<SkillSlot> slots = new List<SkillSlot>();
     private Skill skillTemp;
 
     private void Start()
     {
-        for (int i = 0; i < skillSlots.childCount; i++) {
-            Transform child = skillSlots.GetChild(i);
+        for (int i = 0; i < skillSlots.Count; i++) {
+            SkillSlot skillSlot = new SkillSlot(skillSlots[i]);
+            skillSlot.slotIndex = i;
 
-            SkillSlot skillSlot = new SkillSlot(child.gameObject);
             slots.Add(skillSlot);
 
-            Button button = child.GetComponent<Button>();
+            Button button = skillSlots[i].GetComponent<Button>();
+            button.onClick.RemoveAllListeners();
             button.onClick.AddListener(() => {
-                SelectSlot(i);
+                SelectSlot(skillSlot.slotIndex);
             });
         }
 
@@ -102,10 +103,6 @@ public class SkillSelectUI : MonoBehaviour
 
         PlayerCTRL playerCTRL = FindObjectOfType<PlayerCTRL>();
         skillTemp = (Skill)playerCTRL[skillName];
-        
-        if(skillTemp.level == 0) {
-            return;
-        }
 
         skillTapBlock.alpha = 1.0f;
         skillTapBlock.blocksRaycasts = true;
@@ -114,9 +111,12 @@ public class SkillSelectUI : MonoBehaviour
 
     public void SelectSlot(int slotIndex)
     {
-        skillTemp.slotIndex = slotIndex;
+        if(slots[slotIndex].skill != null) {
+            slots[slotIndex].skill = null;
+        }
+
         slots[slotIndex].Enabled(skillTemp);
-        skillTemp = null;
+        skillTemp.slotIndex = slotIndex;
 
         skillTapBlock.alpha = 0.0f;
         skillTapBlock.blocksRaycasts = false;
