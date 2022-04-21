@@ -25,14 +25,20 @@ public class WeaponInfo : ItemInfo
 public class WeaponExtension : WeaponInfo, IItemObserver
 {
     [Space(10)]
+    public string weaponTitle;
+    
+    [TextArea(5, 50)]
+    public string weaponDescription;
+
+    [Space(10)]
     [SerializeField] private ulong startPoint;
     [SerializeField] private ulong startSoul;
     [SerializeField] private uint startCount;
 
     [Space(10)]
-    [SerializeField] private ulong pointInc;
-    [SerializeField] private ulong soulInc;
-    [SerializeField] private uint countInc;
+    [SerializeField] private float pointInc;
+    [SerializeField] private float soulInc;
+    [SerializeField] private float countInc;
 
     [Space(10)]
     public Sprite weaponIcon;
@@ -49,5 +55,19 @@ public class WeaponExtension : WeaponInfo, IItemObserver
             canLevelUp = item.Count >= RequestSoul && this.count >= RequestCount;
         }
         else throw new System.ArgumentException();
+    }
+}
+
+[System.Serializable]
+public class Weapon : WeaponExtension
+{
+    public void LevelUp()
+    {
+        if (canLevelUp) {
+            PlayerCTRL playerCTRL = GameObject.FindObjectOfType<PlayerCTRL>();
+            ((Item)playerCTRL["Soul"]).Count -= RequestSoul;
+            count -= RequestCount;
+            level++;
+        }
     }
 }

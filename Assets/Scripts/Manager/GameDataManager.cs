@@ -61,6 +61,10 @@ public class GameData
             this.skillInfos.Add(new SkillInfo(item));
         }
 
+        foreach (var item in playerInfo.weapons) {
+            this.weapons.Add(new WeaponInfo(item));
+        }
+
         foreach (var item in adCollection.ads) {
             adInfos.Add(new AdInfo(item));
         }

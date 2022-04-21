@@ -30,7 +30,7 @@ public class PlayerInfo : MobMethodExtension
     public uint skillPoint;
 
     public List<Skill> skills;
-    public List<WeaponExtension> weapons;
+    public List<Weapon> weapons;
 
     public override object this[string name] { 
         get {
@@ -47,7 +47,7 @@ public class PlayerInfo : MobMethodExtension
             return base[name];
         }
         set {
-            for (int i = 0; i < abilities.Count; i++) {
+            for (int i = 0; i < skills.Count; i++) {
                 if (skills[i].skillName == name) {
                     skills[i] = (Skill)value;
                     return;
@@ -55,7 +55,7 @@ public class PlayerInfo : MobMethodExtension
             }
             for (int i = 0; i < weapons.Count; i++) {
                 if (weapons[i].itemName == name) {
-                    weapons[i] = (WeaponExtension)value;
+                    weapons[i] = (Weapon)value;
                     return;
                 }
             }
@@ -92,6 +92,8 @@ public abstract class PlayerInfoExtension : PlayerInfo
     [Space(10)]
     [SerializeField] protected float defConst;
     [SerializeField] protected float expInc;
+
+    public Weapon currentWeapon;
 
     public ulong RequestExp => (ulong)Mathf.Pow(expInc * level, 2);
 
@@ -170,6 +172,10 @@ public class PlayerCTRL : PlayerObservable, IEnemyObserver, IPlayerCalculate, IM
         Item item = (Item)this["Soul"];
         foreach (var ability in abilities) {
             item.Subscribe(ability);
+        }
+
+        foreach (var weapon in weapons) {
+            item.Subscribe(weapon);
         }
 
         foreach (var skill in skills) {
