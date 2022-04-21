@@ -24,13 +24,12 @@ public class MobInfo : MonoBehaviour
 {
     public List<Item> items;
     public List<Ability> abilities;
-    public List<Skill> skills;
 
     [Space(10)]
     public long totalDamage;
     public ulong exp;
 
-    public object this[string name] {
+    public virtual object this[string name] {
         get {
             foreach (var item in items) {
                 if (item.itemName == name) {
@@ -39,11 +38,6 @@ public class MobInfo : MonoBehaviour
             }
             foreach (var item in abilities) {
                 if (item.abilityName == name) {
-                    return item;
-                }
-            }
-            foreach (var item in skills) {
-                if (item.skillName == name) {
                     return item;
                 }
             }
@@ -59,12 +53,6 @@ public class MobInfo : MonoBehaviour
             for (int i = 0; i < abilities.Count; i++) {
                 if (abilities[i].abilityName == name) {
                     abilities[i] = (Ability)value;
-                    return;
-                }
-            }
-            for (int i = 0; i < abilities.Count; i++) {
-                if (skills[i].skillName == name) {
-                    skills[i] = (Skill)value;
                     return;
                 }
             }

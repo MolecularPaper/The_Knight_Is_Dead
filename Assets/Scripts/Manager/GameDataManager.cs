@@ -36,6 +36,8 @@ public class GameData
     public List<ItemInfo> itemInfos = new List<ItemInfo>();
     public List<AbilityInfo> abilityInfos = new List<AbilityInfo>();
     public List<SkillInfo> skillInfos = new List<SkillInfo>();
+    public List<WeaponInfo> weapons = new List<WeaponInfo>();
+
     public List<AdInfo> adInfos = new List<AdInfo>();
 
     public uint playerLevel;
@@ -104,7 +106,7 @@ public class GameDataManager : MonoBehaviour
         catch (DirectoryNotFoundException) { }
 
         GameManager gameManager = FindObjectOfType<GameManager>();
-        if (loadGameData) {
+        if (gameManager && loadGameData) {
             gameManager.playerNickname = noDeletedData.nickName;
             gameManager.bgmVolume = noDeletedData.bgmVolume;
             gameManager.seVolume = noDeletedData.seVolume;

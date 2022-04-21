@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -28,6 +29,40 @@ public class PlayerInfo : MobMethodExtension
     public uint level;
     public uint skillPoint;
 
+    public List<Skill> skills;
+    public List<WeaponExtension> weapons;
+
+    public override object this[string name] { 
+        get {
+            foreach (var item in skills) {
+                if (item.skillName == name) {
+                    return item;
+                }
+            }
+            foreach (var item in weapons) {
+                if (item.itemName == name) {
+                    return item;
+                }
+            }
+            return base[name];
+        }
+        set {
+            for (int i = 0; i < abilities.Count; i++) {
+                if (skills[i].skillName == name) {
+                    skills[i] = (Skill)value;
+                    return;
+                }
+            }
+            for (int i = 0; i < weapons.Count; i++) {
+                if (weapons[i].itemName == name) {
+                    weapons[i] = (WeaponExtension)value;
+                    return;
+                }
+            }
+            base[name] = value;
+        }
+    }
+
     public void SetInfo(GameData gameData)
     {
         this.exp = gameData.playerExp;
@@ -44,6 +79,10 @@ public class PlayerInfo : MobMethodExtension
 
         foreach (var item in gameData.skillInfos) {
             ((Skill)this[item.skillName]).SetSkill(item);
+        }
+
+        foreach (var item in gameData.weapons) {
+            ((WeaponInfo)this[item.itemName]).SetInfo(item);
         }
     }
 }
