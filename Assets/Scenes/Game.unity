@@ -6896,7 +6896,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 80, y: 80}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &644716149
 MonoBehaviour:
@@ -6974,7 +6974,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: e8d27feba81acc24ca641d29ce8573a0, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d0b9ad95d9ca07e4d8758482133a1290, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -7673,6 +7673,7 @@ GameObject:
   - component: {fileID: 713058268}
   - component: {fileID: 713058270}
   - component: {fileID: 713058269}
+  - component: {fileID: 713058271}
   m_Layer: 5
   m_Name: Icon
   m_TagString: Untagged
@@ -7696,8 +7697,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -40, y: -40}
+  m_AnchoredPosition: {x: 5, y: 0}
+  m_SizeDelta: {x: -50, y: -50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &713058269
 MonoBehaviour:
@@ -7712,14 +7713,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.52740663, g: 1, b: 0.2216981, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 9a01b6df2bf95614184be130c0909ea6, type: 3}
+  m_Sprite: {fileID: 21300000, guid: a9d16b14099c4304aa40c2aff14480d0, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -7737,6 +7738,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 713058267}
   m_CullTransparentMesh: 1
+--- !u!114 &713058271
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 713058267}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 1}
+  m_EffectDistance: {x: 1, y: -1}
+  m_UseGraphicAlpha: 1
 --- !u!1 &739119776
 GameObject:
   m_ObjectHideFlags: 0
@@ -7848,7 +7864,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 80, y: 80}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &796705077
 MonoBehaviour:
@@ -7926,7 +7942,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 752a41c3a5b28494b8b18621521bd386, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 2b019920a3c29174ea65c95fef61aeb9, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -9661,7 +9677,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 1139.9999}
+  m_AnchoredPosition: {x: 0, y: 3419.9998}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1053375863
@@ -16200,10 +16216,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Padding:
     m_Left: 0
-    m_Right: 0
-    m_Top: 0
+    m_Right: 20
+    m_Top: 10
     m_Bottom: 0
-  m_ChildAlignment: 0
+  m_ChildAlignment: 2
   m_Spacing: 10
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
@@ -17214,6 +17230,105 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1942858753}
   m_CullTransparentMesh: 1
+--- !u!1 &1947659167
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1947659168}
+  - component: {fileID: 1947659171}
+  - component: {fileID: 1947659170}
+  - component: {fileID: 1947659169}
+  m_Layer: 0
+  m_Name: WeaponDraw
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1947659168
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1947659167}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 1984301589}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0, y: 0}
+--- !u!114 &1947659169
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1947659167}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!114 &1947659170
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1947659167}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UiScaleMode: 0
+  m_ReferencePixelsPerUnit: 100
+  m_ScaleFactor: 1
+  m_ReferenceResolution: {x: 800, y: 600}
+  m_ScreenMatchMode: 0
+  m_MatchWidthOrHeight: 0
+  m_PhysicalUnit: 3
+  m_FallbackScreenDPI: 96
+  m_DefaultSpriteDPI: 96
+  m_DynamicPixelsPerUnit: 1
+  m_PresetInfoIsWorld: 0
+--- !u!223 &1947659171
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1947659167}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 0
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_TargetDisplay: 0
 --- !u!1 &1947738181
 GameObject:
   m_ObjectHideFlags: 0
@@ -17558,6 +17673,7 @@ Transform:
   - {fileID: 1354827630}
   - {fileID: 1404976521}
   - {fileID: 1591750811}
+  - {fileID: 1947659168}
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -24941,7 +25057,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
       propertyPath: weapons.Array.size
-      value: 1
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
       propertyPath: skills.Array.data[1].icon
@@ -24953,7 +25069,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
       propertyPath: weapons.Array.data[0].count
-      value: 100
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+      propertyPath: weapons.Array.data[0].level
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
       propertyPath: skills.Array.data[0].coolTime
@@ -24973,6 +25093,26 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
       propertyPath: weapons.Array.data[0].soulInc
+      value: 1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+      propertyPath: weapons.Array.data[1].soulInc
+      value: 1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+      propertyPath: weapons.Array.data[2].soulInc
+      value: 1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+      propertyPath: weapons.Array.data[3].soulInc
+      value: 1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+      propertyPath: weapons.Array.data[4].soulInc
+      value: 1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+      propertyPath: weapons.Array.data[5].soulInc
       value: 1.2
       objectReference: {fileID: 0}
     - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
@@ -24997,15 +25137,79 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
       propertyPath: weapons.Array.data[0].isUnlock
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
       propertyPath: weapons.Array.data[0].itemName
-      value: common_sword
+      value: common_bat
       objectReference: {fileID: 0}
     - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
       propertyPath: weapons.Array.data[0].pointInc
       value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+      propertyPath: weapons.Array.data[1].countInc
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+      propertyPath: weapons.Array.data[1].itemName
+      value: knights_sword
+      objectReference: {fileID: 0}
+    - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+      propertyPath: weapons.Array.data[1].pointInc
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+      propertyPath: weapons.Array.data[2].countInc
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+      propertyPath: weapons.Array.data[2].itemName
+      value: gold_sword
+      objectReference: {fileID: 0}
+    - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+      propertyPath: weapons.Array.data[2].pointInc
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+      propertyPath: weapons.Array.data[3].countInc
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+      propertyPath: weapons.Array.data[3].itemName
+      value: wind_sword
+      objectReference: {fileID: 0}
+    - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+      propertyPath: weapons.Array.data[3].pointInc
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+      propertyPath: weapons.Array.data[4].countInc
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+      propertyPath: weapons.Array.data[4].itemName
+      value: water_sword
+      objectReference: {fileID: 0}
+    - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+      propertyPath: weapons.Array.data[4].pointInc
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+      propertyPath: weapons.Array.data[5].countInc
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+      propertyPath: weapons.Array.data[5].isUnlock
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+      propertyPath: weapons.Array.data[5].itemName
+      value: devil_sword
+      objectReference: {fileID: 0}
+    - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+      propertyPath: weapons.Array.data[5].pointInc
+      value: 70
       objectReference: {fileID: 0}
     - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
       propertyPath: skills.Array.data[0].skillTitle
@@ -25018,6 +25222,26 @@ PrefabInstance:
     - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
       propertyPath: weapons.Array.data[0].startSoul
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+      propertyPath: weapons.Array.data[1].startSoul
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+      propertyPath: weapons.Array.data[2].startSoul
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+      propertyPath: weapons.Array.data[3].startSoul
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+      propertyPath: weapons.Array.data[4].startSoul
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+      propertyPath: weapons.Array.data[5].startSoul
+      value: 2000
       objectReference: {fileID: 0}
     - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
       propertyPath: skills.Array.data[0].unlockLevel
@@ -25042,10 +25266,90 @@ PrefabInstance:
     - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
       propertyPath: weapons.Array.data[0].weaponIcon
       value: 
-      objectReference: {fileID: 21300000, guid: ef6c7ea707f4f3649bf59058e640da84, type: 3}
+      objectReference: {fileID: 21300000, guid: f0901e159e728ec4b8c4615132872d6b, type: 3}
+    - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+      propertyPath: weapons.Array.data[1].startCount
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+      propertyPath: weapons.Array.data[1].startPoint
+      value: 20000
+      objectReference: {fileID: 0}
+    - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+      propertyPath: weapons.Array.data[1].weaponIcon
+      value: 
+      objectReference: {fileID: 21300000, guid: 8514d586774d33f44bedb915cab5cc15, type: 3}
+    - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+      propertyPath: weapons.Array.data[2].startCount
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+      propertyPath: weapons.Array.data[2].startPoint
+      value: 30000
+      objectReference: {fileID: 0}
+    - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+      propertyPath: weapons.Array.data[2].weaponIcon
+      value: 
+      objectReference: {fileID: 21300000, guid: 74d0dbe7f6aeec146800d51e81060f24, type: 3}
+    - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+      propertyPath: weapons.Array.data[3].startCount
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+      propertyPath: weapons.Array.data[3].startPoint
+      value: 40000
+      objectReference: {fileID: 0}
+    - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+      propertyPath: weapons.Array.data[3].weaponIcon
+      value: 
+      objectReference: {fileID: 21300000, guid: cdbb784a22d26cc4ab38168c960baecf, type: 3}
+    - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+      propertyPath: weapons.Array.data[4].startCount
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+      propertyPath: weapons.Array.data[4].startPoint
+      value: 45000
+      objectReference: {fileID: 0}
+    - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+      propertyPath: weapons.Array.data[4].weaponIcon
+      value: 
+      objectReference: {fileID: 21300000, guid: 657c5f0abf4d82040be46a08164b368a, type: 3}
+    - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+      propertyPath: weapons.Array.data[5].startCount
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+      propertyPath: weapons.Array.data[5].startPoint
+      value: 70000
+      objectReference: {fileID: 0}
+    - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+      propertyPath: weapons.Array.data[5].weaponIcon
+      value: 
+      objectReference: {fileID: 21300000, guid: 9b25a13fdc7160844a372cc70f26e6ea, type: 3}
     - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
       propertyPath: weapons.Array.data[0].weaponTitle
-      value: "\uD3C9\uBC94\uD55C \uAC80"
+      value: "\uBABD\uB465\uC774"
+      objectReference: {fileID: 0}
+    - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+      propertyPath: weapons.Array.data[1].weaponTitle
+      value: "\uAE30\uC0AC\uC758 \uAC80"
+      objectReference: {fileID: 0}
+    - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+      propertyPath: weapons.Array.data[2].weaponTitle
+      value: "\uD669\uAE08\uAC80"
+      objectReference: {fileID: 0}
+    - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+      propertyPath: weapons.Array.data[3].weaponTitle
+      value: "\uBC14\uB78C\uC758 \uC815\uB839\uAC80"
+      objectReference: {fileID: 0}
+    - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+      propertyPath: weapons.Array.data[4].weaponTitle
+      value: "\uBB3C\uC758 \uC815\uB839\uAC80"
+      objectReference: {fileID: 0}
+    - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+      propertyPath: weapons.Array.data[5].weaponTitle
+      value: "\uC545\uB9C8\uC758 \uAC80"
       objectReference: {fileID: 0}
     - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
       propertyPath: skills.Array.data[1].skillPointInc
@@ -25115,8 +25419,41 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
       propertyPath: weapons.Array.data[0].weaponDescription
-      value: "\uD3C9\uBC94\uD55C \uAC80\uC774\uB2E4.\n\uC7A5\uCC29\uD55C \uC0AC\uB78C\uC758
+      value: "\uD754\uD55C \uBABD\uB465\uC774\uB2E4.\n\uC7A5\uCC29\uD55C \uC0AC\uB78C\uC758
         \uACF5\uACA9\uB825\uC744 {point_persent}%\uB9CC\uD07C \uC62C\uB824\uC900\uB2E4."
+      objectReference: {fileID: 0}
+    - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+      propertyPath: weapons.Array.data[1].weaponDescription
+      value: "\uC774\uB984\uBAA8\uB97C \uAE30\uC0AC\uC758 \uAC80. \uC7A5\uC2DD\uC774
+        \uBD99\uC5B4\uC788\uB2E4.\n\uC7A5\uCC29\uD55C \uC0AC\uB78C\uC758 \uACF5\uACA9\uB825\uC744
+        {point_persent}%\uB9CC\uD07C \uC62C\uB824\uC900\uB2E4."
+      objectReference: {fileID: 0}
+    - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+      propertyPath: weapons.Array.data[2].weaponDescription
+      value: "\uACE0\uB300\uC758 \uC131\uC655\uC774 \uC0AC\uC6A9\uD588\uB2E4\uB358
+        \uD669\uAE08\uC758 \uAE30\uC6B4\uC744 \uAC00\uC9C0\uACE0 \uC788\uB294 \uAC80.\n\uC7A5\uCC29\uD55C
+        \uC0AC\uB78C\uC758 \uACF5\uACA9\uB825\uC744 {point_persent}%\uB9CC\uD07C
+        \uC62C\uB824\uC900\uB2E4."
+      objectReference: {fileID: 0}
+    - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+      propertyPath: weapons.Array.data[3].weaponDescription
+      value: "\uBC14\uB78C\uC758 \uC815\uB839\uC758 \uAE30\uC6B4\uC774 \uAE43\uB4E4\uC5B4
+        \uC788\uB294 \uAC80.\n\uC7A5\uCC29\uD55C \uC0AC\uB78C\uC758 \uACF5\uACA9\uB825\uC744
+        {point_persent}%\uB9CC\uD07C \uC62C\uB824\uC900\uB2E4."
+      objectReference: {fileID: 0}
+    - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+      propertyPath: weapons.Array.data[4].weaponDescription
+      value: "\uBB3C\uC758 \uC815\uB839\uC758 \uAE30\uC6B4\uC774 \uAE43\uB4E4\uC5B4
+        \uC788\uB294 \uAC80.\n\uC7A5\uCC29\uD55C \uC0AC\uB78C\uC758 \uACF5\uACA9\uB825\uC744
+        {point_persent}%\uB9CC\uD07C \uC62C\uB824\uC900\uB2E4."
+      objectReference: {fileID: 0}
+    - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
+      propertyPath: weapons.Array.data[5].weaponDescription
+      value: "\uC545\uB9C8 \uBCA8\uB9AC\uC54C\uC758 \uAE30\uC6B4\uC774 \uAE43\uB4E4\uC5B4
+        \uC788\uB294 \uAC80. \n\uC804\uB300 \uC6A9\uC0AC\uC5D0 \uC758\uD574 \uCC98\uCE58\uB41C
+        \uBCA8\uB9AC\uC54C\uC758 \uC601\uD63C\uC870\uAC01\uC774 \uBD09\uC778\uB418\uC5B4\uC788\uB2E4.\n\uC7A5\uCC29\uD55C
+        \uC0AC\uB78C\uC758 \uACF5\uACA9\uB825\uC744 {point_persent}%\uB9CC\uD07C
+        \uC62C\uB824\uC900\uB2E4."
       objectReference: {fileID: 0}
     - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
       propertyPath: abilities.Array.data[0].ablilityDescription
