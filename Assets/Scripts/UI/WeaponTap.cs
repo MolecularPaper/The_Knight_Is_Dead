@@ -7,8 +7,7 @@ using TMPro;
 public class WeaponTap : MonoBehaviour
 {
     [SerializeField] private Transform content;
-    [SerializeField] private Sprite frame;
-    [SerializeField] private TMP_FontAsset font;
+    [SerializeField] private GameObject weaponUI;
 
     [Space(10)]
     [SerializeField] private Canvas weaponInfoCanvas;
@@ -27,44 +26,10 @@ public class WeaponTap : MonoBehaviour
         PlayerCTRL playerCTRL = FindObjectOfType<PlayerCTRL>();
 
         foreach (var item in playerCTRL.weapons) {
-            GameObject weaponSlot = new GameObject("WeaponSlot");
-            weaponSlot.transform.parent = content;
-
-            Image weaponSlotImage = weaponSlot.AddComponent<Image>();
-            weaponSlotImage.sprite = frame;
-
-            Button weaponSlotButton = weaponSlot.AddComponent<Button>();
-            weaponSlotButton.image = weaponSlotImage;
-            weaponSlotButton.onClick.AddListener(() => { 
+            WeaponUI weaponSlot = Instantiate(this.weaponUI, content).GetComponent<WeaponUI>();
+            weaponSlot.SetWeaponUI(item, () => {
                 WeaponReinforce(item);
             });
-
-            GameObject weaponIcon = new GameObject("WeaponIcon");
-            weaponIcon.transform.parent = weaponSlot.transform;
-            Image weaponIconImage = weaponIcon.AddComponent<Image>();
-            weaponIconImage.sprite = item.weaponIcon;
-
-            RectTransform weaponIconRect = weaponIcon.GetComponent<RectTransform>();
-            weaponIconRect.anchorMin = new Vector2(0, 0);
-            weaponIconRect.anchorMax = new Vector2(1, 1);
-            weaponIconRect.offsetMin = new Vector2(20, 70);
-            weaponIconRect.offsetMax = new Vector2(-20, -20);
-
-            GameObject weaponTitle = new GameObject("WeaponTitle");
-            weaponTitle.transform.parent = weaponSlot.transform;
-
-            TextMeshProUGUI weaponTitleTMP = weaponTitle.AddComponent<TextMeshProUGUI>();
-            weaponTitleTMP.font = font;
-            weaponTitleTMP.text = item.weaponTitle;
-            weaponTitleTMP.enableAutoSizing = true;
-            weaponTitleTMP.enableWordWrapping = false;
-            weaponTitleTMP.alignment = TextAlignmentOptions.Center;
-
-            RectTransform weaponTitleRect = weaponTitle.GetComponent<RectTransform>();
-            weaponTitleRect.anchorMin = new Vector2(0, 0);
-            weaponTitleRect.anchorMax = new Vector2(1, 1);
-            weaponTitleRect.offsetMin = new Vector2(20, 20);
-            weaponTitleRect.offsetMax = new Vector2(-20, -130);
         }
     }
 

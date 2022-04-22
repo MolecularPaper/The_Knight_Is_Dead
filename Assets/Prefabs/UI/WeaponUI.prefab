@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 2231863154602059017}
   - component: {fileID: 2231863154602059018}
   - component: {fileID: 8027501000931688721}
+  - component: {fileID: 3881291499270872539}
+  - component: {fileID: 8515971894634755218}
   m_Layer: 5
   m_Name: WeaponUI
   m_TagString: Untagged
@@ -122,6 +124,34 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!225 &3881291499270872539
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2231863154602059028}
+  m_Enabled: 1
+  m_Alpha: 0
+  m_Interactable: 1
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
+--- !u!114 &8515971894634755218
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2231863154602059028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e49a3ffdeab5fe74c8f2202c08a85f21, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weaponIcon: {fileID: 5887068151173994966}
+  weaponTitle: {fileID: 987287750877773647}
+  weaponInfoButton: {fileID: 8027501000931688721}
+  block: {fileID: 3881291499270872539}
 --- !u!1 &5528114802909312474
 GameObject:
   m_ObjectHideFlags: 0

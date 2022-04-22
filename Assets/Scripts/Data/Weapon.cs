@@ -4,7 +4,7 @@ using UnityEngine;
 
 public interface IWeaponObserver
 {
-    public void WeaponUpdate(WeaponExtension weaponExtension);
+    public void WeaponUpdate(WeaponObservable weaponExtension);
 }
 
 public interface IWeaponObservable
@@ -78,7 +78,7 @@ public class WeaponExtension : WeaponInfo, IItemObserver
 
 public class WeaponObservable : WeaponExtension, IWeaponObservable
 {
-    private delegate void WeaponUpdateDel(WeaponExtension weaponExtension);
+    private delegate void WeaponUpdateDel(WeaponObservable weaponExtension);
     private WeaponUpdateDel weaponUpdateDel;
 
     public void WeaponUpdate()
@@ -119,6 +119,6 @@ public class Weapon : WeaponObservable
     public void Unlock()
     {
         isUnlock = true;
-
+        WeaponUpdate();
     }
 }
