@@ -143,15 +143,15 @@ public class EnemyCTRL : EnemyObservable, IPlayerObserver, IEnemyAction
         PlayerCTRL playerCTRL = FindObjectOfType<PlayerCTRL>();
         Vector3 playerPostion = playerCTRL.transform.position;
 
-        while (Vector3.Distance(playerPostion, transform.position) > stopDistance) {
-            transform.Translate(moveSpeed * Time.deltaTime * Vector3.left);
+        try {
+            while (Vector3.Distance(playerPostion, transform.position) > stopDistance) {
+                transform.Translate(moveSpeed * Time.deltaTime * Vector3.left);
 
-            try { 
-                await Task.Delay(1, GameManager.tokenSource.Token); 
+                await Task.Delay(1, GameManager.tokenSource.Token);
             }
-            catch (TaskCanceledException) {
-                return; 
-            }
+        }
+        catch { 
+            return;
         }
 
         IsStop = true;

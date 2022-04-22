@@ -112,6 +112,11 @@ public class GameManager : GameObservable, IPlayerObserver, IEnemyObserver
         GameStart();
     }
 
+    private void OnApplicationQuit()
+    {
+        tokenSource.Cancel();
+    }
+
     public async void GameStart()
     {
         GameUpdated();

@@ -1,34 +1,52 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEngine;
 using TMPro;
 
 public class AbilityUI : MonoBehaviour, IAbilityObserver
 {
-    [SerializeField] private string abilityName;
-
+    [SerializeField] private Image icon;
     [SerializeField] private TextMeshProUGUI title;
     [SerializeField] private TextMeshProUGUI description;
     [SerializeField] private TextMeshProUGUI requestSoul;
     [SerializeField] private Button levelUpButton;
+    [SerializeField] private EventTrigger levelUpTrigger;
 
     private string titleText;
     private string descriptionText;
 
-    private void Awake()
+    public void SetAbility(PlayerCTRL playerCTRL, Ability ability)
     {
-        GameObject player = GameObject.FindWithTag("Player");
-        PlayerCTRL playerCTRL = player.GetComponent<PlayerCTRL>();
-        ((Ability)playerCTRL[abilityName]).Subscribe(this);
+        this.gameObject.name = ability.abilityName;
 
-        titleText = title.text;
-        descriptionText = description.text;
+        this.icon.sprite = ability.ablilityIcon;
+        this.titleText = ability.ablilityTitle;
+        this.descriptionText = ability.ablilityDescription;
+
+        EventTrigger.Entry pointerDown = new EventTrigger.Entry();
+        pointerDown.eventID = EventTriggerType.PointerDown;
+        pointerDown.callback.AddListener((data) => {
+            playerCTRL.LevelUpAbility(ability.abilityName);
+        });
+
+        EventTrigger.Entry pointerUp = new EventTrigger.Entry();
+        pointerUp.eventID = EventTriggerType.PointerUp;
+        pointerUp.callback.AddListener((data) => {
+            playerCTRL.isHoldButton = false;
+        });
+
+        levelUpTrigger.triggers.Add(pointerDown);
+        levelUpTrigger.triggers.Add(pointerUp);
+
+        ability.Subscribe(this);
+        AbilityUpdated(ability);
     }
 
     public void AbilityUpdated(AbilityExtension abilityInfo)
     {
-        title.text = titleText.Replace("{LV}", abilityInfo.level.ToString());
+        title.text = titleText.Replace("{level}", abilityInfo.level.ToString());
 
         description.text = descriptionText.Replace("{point}", abilityInfo.point.ToString());
         description.text = description.text.Replace("{next_point}", abilityInfo.NextPoint.ToString());

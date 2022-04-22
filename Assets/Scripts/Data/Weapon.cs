@@ -2,11 +2,27 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public interface IWeaponObserver
+{
+    public void WeaponUpdate(WeaponExtension weaponExtension);
+}
+
+public interface IWeaponObservable
+{
+    public void Subscribe(IWeaponObserver observer);
+
+    public void Unsubscribe(IWeaponObserver observer);
+
+    public void WeaponUpdate();
+}
+
 [System.Serializable]
 public class WeaponInfo : ItemInfo
 {
     public uint level;
     public bool canLevelUp;
+    public bool isUnlock;
+    public bool isHold;
 
     public WeaponInfo() { }
 
@@ -18,6 +34,8 @@ public class WeaponInfo : ItemInfo
         this.count = weaponInfo.count;
         this.level = weaponInfo.level;
         this.canLevelUp = weaponInfo.canLevelUp;
+        this.isUnlock = weaponInfo.isUnlock;
+        this.isHold = weaponInfo.isHold;
     }
 }
 
@@ -58,8 +76,35 @@ public class WeaponExtension : WeaponInfo, IItemObserver
     }
 }
 
+public class WeaponObservable : WeaponExtension, IWeaponObservable
+{
+    private delegate void WeaponUpdateDel(WeaponExtension weaponExtension);
+    private WeaponUpdateDel weaponUpdateDel;
+
+    public void WeaponUpdate()
+    {
+        if (weaponUpdateDel != null) weaponUpdateDel.Invoke(this);
+    }
+
+    public void Subscribe(IWeaponObserver observer)
+    {
+        if (observer == null)
+            throw new System.NullReferenceException();
+
+        weaponUpdateDel += observer.WeaponUpdate;
+    }
+
+    public void Unsubscribe(IWeaponObserver observer)
+    {
+        if (observer == null)
+            throw new System.NullReferenceException();
+
+        weaponUpdateDel -= observer.WeaponUpdate;
+    }
+}
+
 [System.Serializable]
-public class Weapon : WeaponExtension
+public class Weapon : WeaponObservable
 {
     public void LevelUp()
     {
@@ -69,5 +114,11 @@ public class Weapon : WeaponExtension
             count -= RequestCount;
             level++;
         }
+    }
+
+    public void Unlock()
+    {
+        isUnlock = true;
+
     }
 }

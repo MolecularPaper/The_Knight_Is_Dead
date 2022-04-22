@@ -29,6 +29,7 @@ public class PlayerInfo : MobMethodExtension
     public uint level;
     public uint skillPoint;
 
+    [Space(10)]
     public List<Skill> skills;
     public List<Weapon> weapons;
 
@@ -176,6 +177,10 @@ public class PlayerCTRL : PlayerObservable, IEnemyObserver, IPlayerCalculate, IM
 
         foreach (var weapon in weapons) {
             item.Subscribe(weapon);
+
+            if (weapon.isHold) {
+                currentWeapon = weapon;
+            }
         }
 
         foreach (var skill in skills) {
@@ -207,7 +212,7 @@ public class PlayerCTRL : PlayerObservable, IEnemyObserver, IPlayerCalculate, IM
             IsAttack = false;
 
             try {
-                await GameManager.gm.Delay((int)(1000 / Time.timeScale));
+                await GameManager.gm.Delay((int)(1200 / Time.timeScale));
             }
             catch (TaskCanceledException) { 
                 return; 
@@ -235,6 +240,10 @@ public class PlayerCTRL : PlayerObservable, IEnemyObserver, IPlayerCalculate, IM
 
         if (Random.Range(0f, 10000f) < ((Ability)this["CRIP"]).point) {
             damage += (ulong)(damage * (((Ability)this["CRID"]).point / 10000f));
+        }
+
+        if(currentWeapon != null) {
+            damage += (ulong)(damage * (currentWeapon.Point / 10000f));
         }
 
         AttackSound();

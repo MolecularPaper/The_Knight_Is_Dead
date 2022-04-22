@@ -6,11 +6,11 @@ using UnityEngine;
 public class AbilityInfo
 {
     [HideInInspector]
-    public bool canLevelUp = false;
     public string abilityName = "";
     public uint level = 1;
     public ulong point = 0;
     public ulong startSoul = 0;
+    public bool canLevelUp = false;
 
     public AbilityInfo() { }
 
@@ -34,6 +34,13 @@ public class AbilityExtension : AbilityInfo
     [SerializeField] protected float pointInc;
     [SerializeField] protected float soulInc;
     [SerializeField] protected bool isFixInc;
+
+    [Space(10)]
+    public Sprite ablilityIcon;
+    public string ablilityTitle;
+
+    [TextArea(5, 50)]
+    public string ablilityDescription;
 
     public ulong UpPoint {
         get {

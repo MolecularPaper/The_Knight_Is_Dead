@@ -24,7 +24,7 @@ public class SkillSlot
         this.skill = skill;
         skill.isEnabled = true;
 
-        slotIcon.sprite = skill.icon;
+        slotIcon.sprite = skill.skillicon;
         slotIcon.gameObject.SetActive(true);
 
         PlayerCTRL playerCTRL = GameObject.FindObjectOfType<PlayerCTRL>();

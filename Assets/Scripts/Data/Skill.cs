@@ -36,7 +36,13 @@ public class SkillExtension : SkillInfo
     public uint skillPointInc;
     public uint unlockLevel;
     public float coolTime;
-    public Sprite icon;
+
+    [Space(10)]
+    public Sprite skillicon;
+    public string skillTitle;
+
+    [TextArea(5, 50)]
+    public string skillDescription;
 
     public ulong Point {
         get {
@@ -116,9 +122,16 @@ public class Skill : SkillObservable, ISkill
 {
     public void Execute(PlayerInfo playerInfo, EnemyCTRL enemyCTRL)
     {
-        GameObject gameObject = GameObject.Instantiate(this.skillEffect, enemyCTRL.transform.position, Quaternion.identity, enemyCTRL.transform);
+        GameObject skillObject;
 
-        SkillEffect skillEffect = gameObject.GetComponent<SkillEffect>();
+        try {
+            skillObject = GameObject.Instantiate(this.skillEffect, enemyCTRL.transform.position, Quaternion.identity, enemyCTRL.transform);
+        }
+        catch {
+            return;
+        }
+
+        SkillEffect skillEffect = skillObject.GetComponent<SkillEffect>();
         skillEffect.skillDamageDel += () => {
             if (enemyCTRL != null) {
                 Ability atk = (Ability)playerInfo["ATK"];

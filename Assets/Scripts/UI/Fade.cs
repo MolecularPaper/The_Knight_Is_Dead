@@ -18,7 +18,7 @@ public class Fade : MonoBehaviour, IGameObserver
 
     public async void FadeOut(bool isFadeOut)
     {
-        fade.gameObject.SetActive(true);
+        fade.blocksRaycasts = true;
 
         while (true) {
             if (isFadeOut) {
@@ -28,7 +28,7 @@ public class Fade : MonoBehaviour, IGameObserver
             else {
                 fade.alpha = Mathf.MoveTowards(fade.alpha, 0, fadeSpeed * Time.deltaTime);
                 if (fade.alpha == 0) {
-                    fade.gameObject.SetActive(false);
+                    fade.blocksRaycasts = false;
                     break;
                 }
             }
