@@ -94,7 +94,7 @@ public abstract class PlayerInfoExtension : PlayerInfo
     [SerializeField] protected float defConst;
     [SerializeField] protected float expInc;
 
-    public Weapon currentWeapon;
+    [HideInInspector] public Weapon currentWeapon;
 
     public ulong RequestExp => (ulong)Mathf.Pow(expInc * level, 2);
 
@@ -200,8 +200,6 @@ public class PlayerCTRL : PlayerObservable, IEnemyObserver, IPlayerCalculate, IM
         if (enemyCTRL.IsDead) {
             enemyCTRL.Unsubscribe(this);
 
-            totalDamage = 0;
-
             ((Item)this["Soul"]).Count += ((Item)enemyCTRL["Soul"]).Count;
 
             exp += enemyCTRL.exp;
@@ -217,6 +215,8 @@ public class PlayerCTRL : PlayerObservable, IEnemyObserver, IPlayerCalculate, IM
             catch (TaskCanceledException) { 
                 return; 
             }
+
+            totalDamage = 0;
 
             IsMove = true;
         }

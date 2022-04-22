@@ -114,6 +114,8 @@ public class Weapon : WeaponObservable
             count -= RequestCount;
             level++;
         }
+
+        WeaponUpdate();
     }
 
     public void Unlock()
