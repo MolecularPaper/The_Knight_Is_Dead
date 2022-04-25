@@ -48,8 +48,8 @@ public class AbilityUI : MonoBehaviour, IAbilityObserver
     {
         title.text = titleText.Replace("{level}", abilityInfo.level.ToString());
 
-        description.text = descriptionText.Replace("{point}", abilityInfo.point.ToString());
-        description.text = description.text.Replace("{next_point}", abilityInfo.NextPoint.ToString());
+        description.text = descriptionText.Replace("{point}", string.Format("{0:#,###}", abilityInfo.point));
+        description.text = description.text.Replace("{next_point}", string.Format("{0:#,###}", abilityInfo.NextPoint));
         description.text = description.text.Replace("{point_persent}", string.Format("{0:0.00}", abilityInfo.point / 100f));
         description.text = description.text.Replace("{next_point_persent}", string.Format("{0:0.00}", abilityInfo.NextPoint / 100f));
 

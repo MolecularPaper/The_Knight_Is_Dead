@@ -160,13 +160,6 @@ public class EnemyCTRL : EnemyObservable, IPlayerObserver, IEnemyAction
 
     public async void Dead()
     {
-        try { 
-            await GameManager.gm.Delay((int)(500 / Time.timeScale));
-        }
-        catch (TaskCanceledException) {
-            return;
-        }
-
         Destroy(this.gameObject);
     }
 }

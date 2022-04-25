@@ -292,7 +292,7 @@ public class PlayerCTRL : PlayerObservable, IEnemyObserver, IPlayerCalculate, IM
             item.ItemUpdate();
 
             try { 
-                await GameManager.gm.Delay(100); 
+                await GameManager.gm.Delay(50); 
             }
             catch (TaskCanceledException) { 
                 return;
@@ -319,5 +319,16 @@ public class PlayerCTRL : PlayerObservable, IEnemyObserver, IPlayerCalculate, IM
                 return;
             }
         }
+    }
+
+    public void AddWeapon(string name)
+    {
+        Weapon weapon = (Weapon)this[name];
+
+        if (!weapon.isUnlock) {
+            weapon.Unlock();
+        }
+
+        weapon.count++;
     }
 }

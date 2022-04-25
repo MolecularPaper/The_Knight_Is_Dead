@@ -17,6 +17,18 @@ public interface IWeaponObservable
 }
 
 [System.Serializable]
+public enum WeaponRate
+{
+    S = 0,
+    A = 1,
+    B = 2,
+    C = 3,
+    D = 4,
+    E = 5,
+    F = 6,
+}
+
+[System.Serializable]
 public class WeaponInfo : ItemInfo
 {
     public uint level;
@@ -47,6 +59,8 @@ public class WeaponExtension : WeaponInfo, IItemObserver
     
     [TextArea(5, 50)]
     public string weaponDescription;
+
+    public WeaponRate weaponRate;
 
     [Space(10)]
     [SerializeField] private ulong startPoint;
