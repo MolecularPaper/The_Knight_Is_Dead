@@ -96,11 +96,24 @@ public abstract class PlayerInfoExtension : PlayerInfo
 
     [HideInInspector] public Weapon currentWeapon;
 
-    public ulong RequestExp => (ulong)Mathf.Pow(expInc * level, 2);
+    public long RequestExp => (long)Mathf.Pow(expInc * level, 2);
 
     public bool CanLevelUp => exp >= RequestExp;
 
     protected bool isDead;
+
+    public long AttackDamage {
+        get {
+            long damage = ((Ability)this["ATK"]).point;
+
+            if (currentWeapon != null) {
+                damage += (long)(damage * (currentWeapon.Point / 10000f));
+            }
+
+            return damage;
+        }
+    }
+
     public abstract bool IsDead { get; set; }
     public abstract bool IsAttack { get; set; }
     public abstract bool IsMove { get; set; }
@@ -236,14 +249,10 @@ public class PlayerCTRL : PlayerObservable, IEnemyObserver, IPlayerCalculate, IM
 
     public void Attack()
     {
-        ulong damage = ((Ability)this["ATK"]).point;
+        long damage = AttackDamage;
 
         if (Random.Range(0f, 10000f) < ((Ability)this["CRIP"]).point) {
-            damage += (ulong)(damage * (((Ability)this["CRID"]).point / 10000f));
-        }
-
-        if(currentWeapon != null) {
-            damage += (ulong)(damage * (currentWeapon.Point / 10000f));
+            damage += (long)(damage * (((Ability)this["CRID"]).point / 10000f));
         }
 
         AttackSound();
@@ -254,7 +263,7 @@ public class PlayerCTRL : PlayerObservable, IEnemyObserver, IPlayerCalculate, IM
         }
     }
 
-    public void Damage(ulong damage)
+    public void Damage(long damage)
     {
         if (IsDead) return;
 
@@ -263,7 +272,7 @@ public class PlayerCTRL : PlayerObservable, IEnemyObserver, IPlayerCalculate, IM
         
         HitEffect();
 
-        if (totalDamage >= (long)((Ability)this["HP"]).point) {
+        if (totalDamage >= ((Ability)this["HP"]).point) {
             IsDead = true;
             return;
         }

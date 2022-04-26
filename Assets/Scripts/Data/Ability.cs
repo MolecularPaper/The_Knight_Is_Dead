@@ -8,8 +8,8 @@ public class AbilityInfo
     [HideInInspector]
     public string abilityName = "";
     public uint level = 1;
-    public ulong point = 0;
-    public ulong startSoul = 0;
+    public long point = 0;
+    public long startSoul = 0;
     public bool canLevelUp = false;
 
     public AbilityInfo() { }
@@ -28,7 +28,7 @@ public class AbilityInfo
 [System.Serializable]
 public class AbilityExtension : AbilityInfo
 {
-    [SerializeField] protected ulong maxPoint;
+    [SerializeField] protected long maxPoint;
 
     [Space(10)]
     [SerializeField] protected float pointInc;
@@ -42,20 +42,20 @@ public class AbilityExtension : AbilityInfo
     [TextArea(5, 50)]
     public string ablilityDescription;
 
-    public ulong UpPoint {
+    public long UpPoint {
         get {
             if (isFixInc) {
-                return (ulong)pointInc;
+                return (long)pointInc;
             }
             else {
-                return (ulong)Mathf.Pow(pointInc * level, 2) + 1;
+                return (long)Mathf.Pow(pointInc * level, 2) + 1;
             }
         }
     }
 
-    public ulong NextPoint => point + UpPoint;
+    public long NextPoint => point + UpPoint;
 
-    public ulong RequestSoul => (ulong)Mathf.Pow(soulInc * level, 2) + startSoul;
+    public long RequestSoul => (long)Mathf.Pow(soulInc * level, 2) + startSoul;
 }
 
 public interface AbilityCalculate
@@ -107,7 +107,7 @@ public class AbilityObservable : AbilityExtension, IAbilityObservable
 [System.Serializable]
 public class Ability : AbilityObservable, AbilityCalculate, IItemObserver
 {
-    public Ability(string abilityName, ulong point)
+    public Ability(string abilityName, long point)
     {
         this.abilityName = abilityName;
         this.point = point;

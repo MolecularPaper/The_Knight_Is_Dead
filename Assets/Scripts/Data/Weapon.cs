@@ -63,8 +63,8 @@ public class WeaponExtension : WeaponInfo, IItemObserver
     public WeaponRate weaponRate;
 
     [Space(10)]
-    [SerializeField] private ulong startPoint;
-    [SerializeField] private ulong startSoul;
+    [SerializeField] private long startPoint;
+    [SerializeField] private long startSoul;
     [SerializeField] private uint startCount;
 
     [Space(10)]
@@ -75,9 +75,9 @@ public class WeaponExtension : WeaponInfo, IItemObserver
     [Space(10)]
     public Sprite weaponIcon;
 
-    public ulong Point => (ulong)Mathf.Pow(pointInc * level, 2) + startPoint;
+    public long Point => (long)Mathf.Pow(pointInc * level, 2) + startPoint;
 
-    public ulong RequestSoul => (ulong)Mathf.Pow(soulInc * level, 2) + startSoul;
+    public long RequestSoul => (long)Mathf.Pow(soulInc * level, 2) + startSoul;
 
     public uint RequestCount => (uint)Mathf.Pow(countInc * level, 2) + startCount;
 

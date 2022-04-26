@@ -20,7 +20,7 @@ public interface IItemObservable
 public class ItemInfo
 {
     public string itemName = "";
-    public ulong count = 0;
+    public long count = 0;
 
     public ItemInfo() { }
 
@@ -37,7 +37,7 @@ public class Item : ItemInfo, IItemObservable
     private delegate void ItemUpdateDel(Item item);
     private ItemUpdateDel itemUpdateDel;
 
-    public ulong Count {
+    public long Count {
         get => count;
         set {
             count = value;
@@ -45,7 +45,7 @@ public class Item : ItemInfo, IItemObservable
         }
     }
 
-    public Item(string itemName, ulong count)
+    public Item(string itemName, long count)
     {
         this.itemName = itemName;
         Count = count;

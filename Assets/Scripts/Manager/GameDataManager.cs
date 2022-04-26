@@ -42,7 +42,7 @@ public class GameData
 
     public uint playerLevel;
     public uint playerSkillPoint;
-    public ulong playerExp;
+    public long playerExp;
 
     public int highestStageIndex;
     public int stageIndex;

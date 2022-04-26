@@ -32,7 +32,7 @@ public class SkillInfo
 public class SkillExtension : SkillInfo
 {
     [Space(10)]
-    public ulong pointInc;
+    public long pointInc;
     public uint skillPointInc;
     public uint unlockLevel;
     public float coolTime;
@@ -44,9 +44,9 @@ public class SkillExtension : SkillInfo
     [TextArea(5, 50)]
     public string skillDescription;
 
-    public ulong Point {
+    public long Point {
         get {
-            return pointInc * (ulong)level;
+            return pointInc * level;
         }
     }
 
@@ -135,7 +135,7 @@ public class Skill : SkillObservable, ISkill
         skillEffect.skillDamageDel += () => {
             if (enemyCTRL != null) {
                 Ability atk = (Ability)playerInfo["ATK"];
-                enemyCTRL.Damage((ulong)(atk.point * (Point / 10000f)));
+                enemyCTRL.Damage((long)(atk.point * (Point / 10000f)));
             }
         };
     }

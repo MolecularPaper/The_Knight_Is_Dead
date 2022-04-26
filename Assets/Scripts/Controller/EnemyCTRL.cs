@@ -121,16 +121,16 @@ public class EnemyCTRL : EnemyObservable, IPlayerObserver, IEnemyAction
         }
     }
 
-    public void Damage(ulong damage)
+    public void Damage(long damage)
     {
         if (IsDead) return;
 
-        totalDamage += (long)damage;
+        totalDamage += damage;
 
         HitEffect();
         HitSound();
 
-        if (totalDamage >= (long)((Ability)this["HP"]).point) {
+        if (totalDamage >= ((Ability)this["HP"]).point) {
             IsDead = true;
             return;
         }

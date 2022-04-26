@@ -46,10 +46,10 @@ public class SpawnManager : MonoBehaviour, IGameObserver, IEnemyObserver
 
         EnemyCTRL enemyCTRL = enemy.GetComponent<EnemyCTRL>();
 
-        ulong hp = (ulong)Mathf.Pow(spawnList.hpIncrease * (index + 1), 2) + 10;
-        ulong atk = (ulong)Mathf.Pow(spawnList.atkIncrease * (index + 1), 2) + 5;
-        ulong soul = (ulong)(Mathf.Pow(spawnList.soulIncrease * (index + 1), 2)) + 5;
-        ulong exp = (ulong)(Mathf.Pow(spawnList.expIncrease * (index + 1), 2)) + 1;
+        long hp = (long)Mathf.Pow(spawnList.hpIncrease * (index + 1), 2) + 10;
+        long atk = (long)Mathf.Pow(spawnList.atkIncrease * (index + 1), 2) + 5;
+        long soul = (long)(Mathf.Pow(spawnList.soulIncrease * (index + 1), 2)) + 5;
+        long exp = (long)(Mathf.Pow(spawnList.expIncrease * (index + 1), 2)) + 1;
 
         enemyCTRL.AddAbility(new Ability("HP", hp));
         enemyCTRL.AddAbility(new Ability("ATK", atk));

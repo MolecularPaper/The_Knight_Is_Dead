@@ -1,15 +1,15 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Collections;
+using System.Threading;
 using UnityEngine.UI;
 using UnityEngine;
 using TMPro;
 
-
 public class WeaponDraw : MonoBehaviour, IItemObserver
 {
-
     [Space(10)]
+    [SerializeField] private Canvas weaponDrawUI;
     [SerializeField] private TMP_InputField countInputField;
     [SerializeField] private Button drawButton;
     [SerializeField] private CanvasGroup info;
@@ -18,13 +18,18 @@ public class WeaponDraw : MonoBehaviour, IItemObserver
     [Space(10)]
     [SerializeField] private Transform list;
     [SerializeField] private GameObject slot;
+
+    [Space(10)]
+    [SerializeField] private int drawCost;
     
     private List<WeaponDrawSlot> slots = new List<WeaponDrawSlot>();
     private PlayerCTRL playerCTRL;
     private Animator animator;
 
     private int drawCount = 0;
-    private ulong crystalCount = 0;
+    private long crystalCount = 0;
+
+    private CancellationTokenSource drawToken = new CancellationTokenSource();
 
     private void Awake()
     {
@@ -41,70 +46,121 @@ public class WeaponDraw : MonoBehaviour, IItemObserver
         }
     }
 
+    public void Enable()
+    {
+        GameManager.gm.PauseGame();
+        weaponDrawUI.enabled = true;
+    }
+
+    public void DIsable()
+    {
+        GameManager.gm.ResumeGame();
+        weaponDrawUI.enabled = false;
+        CancelViewer();
+    }
+
+    public void CloseViewer()
+    {
+        CancelViewer();
+        TapChange(true);
+
+        foreach (var slot in slots) {
+            slot.ResetSlot();
+        }
+    }
+
+    private void CancelViewer()
+    {
+        drawToken.Cancel();
+        drawToken = new CancellationTokenSource();
+    }
+
+    private void TapChange(bool infoVisible)
+    {
+        info.alpha = infoVisible ? 1 : 0;
+        info.blocksRaycasts = infoVisible;
+
+        viewer.alpha = infoVisible ? 0 : 1;
+        viewer.blocksRaycasts = !infoVisible;
+    }
+
     public void ItemUpdate(Item item)
     {
         crystalCount = item.count;
-        drawButton.interactable = (ulong)(drawCount * 100) <= crystalCount;
+        drawButton.interactable = drawCount * drawCost <= crystalCount;
     }
 
     public void SetDrawCount()
     {
-        drawCount = int.Parse(countInputField.text);
-        drawButton.interactable = (ulong)(drawCount * 100) <= crystalCount;
+        try {
+            drawCount = int.Parse(countInputField.text);
+        }
+        catch (System.FormatException) {
+            drawButton.interactable = false;
+        }
+
+        drawButton.interactable = drawCount * drawCost <= crystalCount;
     }
 
     public void DrawWeapon()
     {
-        if (drawCount == 0 || (ulong)(drawCount * 100) > crystalCount) {
+        if (drawCount == 0 || drawCount * drawCost > crystalCount) {
             return;
         }
 
-        animator.SetTrigger("OnDrawWeapon");
-
-        print("Test");
+        animator.SetTrigger("OnWeaponDraw");
     }
 
     public async void OnDrawWeapon()
     {
+        animator.ResetTrigger("OnWeaponDraw");
+
         foreach (var item in slots) {
             item.ResetSlot();
         }
 
-        info.alpha = 0;
-        info.blocksRaycasts = false;
+        TapChange(false);
 
-        viewer.alpha = 1;
-        viewer.blocksRaycasts = true;
-
-        List<Weapon> drawedWeapons = new List<Weapon>();
         for (int i = 0; i < drawCount; i++) {
             WeaponRate weaponRate = (WeaponRate)ChooseRate();
             Weapon weapon = ChooseWeapon(weaponRate);
             playerCTRL.AddWeapon(weapon.itemName);
-            drawedWeapons.Add(weapon);
+
+            foreach (var slot in slots) {
+                if (weapon.itemName == slot.weaponName) {
+                    slot.CountUp();
+                }
+            }
         }
 
-        foreach (var drawed in drawedWeapons) {
-            foreach (var slot in slots) {
-                if(drawed.itemName == slot.weaponName) {
-                    slot.CountUp();
-                    await Task.Delay(100);
+        Item cryStal = (Item)playerCTRL["Crystal"];
+        cryStal.Count -= drawCount * drawCost;
+
+        foreach (var slot in slots) {
+            if (slot.count > 0) {
+                slot.gameObject.SetActive(true);
+
+                try {
+                    await Task.Delay(300, drawToken.Token);
+                }
+                catch (TaskCanceledException) {
+                    return;
                 }
             }
         }
     }
 
     [ContextMenu("Test Draw")]
-    public void TestDraw()
+    private void TestDraw()
     {
         playerCTRL = FindObjectOfType<PlayerCTRL>();
         for (int i = 0; i < 10000; i++) {
             WeaponRate weaponRate = (WeaponRate)ChooseRate();
-            print(ChooseWeapon(weaponRate));
+            print(ChooseWeapon(weaponRate).weaponTitle);
         }
     }
 
-    public int ChooseRate()
+    private int ChooseRate()
     {
         float randomPoint = Random.value * 100f;
         float[] probs = { 3, 6.2f, 8.5f, 10f, 15f, 20f, 40f };

@@ -4,7 +4,7 @@ using UnityEngine;
 public interface IMobAction
 {
     public void Attack();
-    public void Damage(ulong damage);
+    public void Damage(long damage);
 }
 
 public interface IMobEffect
@@ -27,7 +27,7 @@ public class MobInfo : MonoBehaviour
 
     [Space(10)]
     public long totalDamage;
-    public ulong exp;
+    public long exp;
 
     public virtual object this[string name] {
         get {

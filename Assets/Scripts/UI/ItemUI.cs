@@ -14,6 +14,7 @@ public class ItemUI : MonoBehaviour, IItemObserver
         PlayerCTRL playerCTRL = player.GetComponent<PlayerCTRL>();
         Item item = (Item)playerCTRL[itemName];
         item.Subscribe(this);
+        ItemUpdate(item);
     }
 
     public void ItemUpdate(Item item)
