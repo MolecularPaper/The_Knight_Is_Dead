@@ -105,9 +105,7 @@ public abstract class AdMethodExtension : AdObservable
 
     public virtual void ShowAd()
     {
-        GameManager.gm.PauseGame();
         if (GameManager.gm.AdDeleted) {
-            GameManager.gm.ResumeGame();
             AdEnd();
             return;
         }
@@ -122,6 +120,24 @@ public abstract class AdMethodExtension : AdObservable
 
         buttonEnbled = true;
         AdUpdated();
+    }
+
+    public void HandleRewardedAdOpening(object sender, EventArgs args)
+    {
+        MonoBehaviour.print("HandleAdOpened event received");
+        GameManager.gm.PauseGame();
+    }
+
+    public void HandleRewardedAdClosed(object sender, EventArgs args)
+    {
+        MonoBehaviour.print("HandleAdClosed event received");
+        GameManager.gm.ResumeGame();
+    }
+
+    public void HandleRewardedAdFailedToShow(object sender, AdErrorEventArgs args)
+    {
+        MonoBehaviour.print("HandleRewardedAdFailedToShow event received with message: " + args.AdError);
+        GameManager.gm.ResumeGame();
     }
 
     public void AdEnd()
@@ -145,8 +161,6 @@ public abstract class AdMethodExtension : AdObservable
 
     public async void CalculateTime()
     {
-        GameManager.gm.ResumeGame();
-
         if(0 <= currentSecond) {
             adStartEvent.Invoke();
         }
@@ -190,6 +204,9 @@ public class RewardAd : AdMethodExtension
 
         rewardedAd = new RewardedAd(adUnitId);
         rewardedAd.OnUserEarnedReward += HandleUserEarnedReward;
+        rewardedAd.OnAdOpening += HandleRewardedAdOpening;
+        rewardedAd.OnAdClosed += HandleRewardedAdClosed;
+        rewardedAd.OnAdFailedToShow += HandleRewardedAdFailedToShow;
 
         this.CreateAndLoadAd();
     }
