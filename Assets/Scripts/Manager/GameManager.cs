@@ -13,7 +13,19 @@ public class GameInfo : MonoBehaviour
     public string playerNickname;
     public float bgmVolume;
     public float seVolume;
-    public bool adDeleted { get; set; }
+
+    private bool adDeleted;
+    public bool AdDeleted {
+        get => adDeleted;
+        set {
+            if (value) {
+                if (AdManager.adManager) {
+                    AdManager.adManager.bannerAd.Hide();
+                }
+                adDeleted = value;
+            }
+        }
+    }
 
     public GameInfo() { }
 

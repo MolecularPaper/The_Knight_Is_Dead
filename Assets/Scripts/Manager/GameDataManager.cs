@@ -24,7 +24,7 @@ public class NoDeletedData
     public NoDeletedData(GameInfo gameInfo)
     {
         this.nickName = gameInfo.playerNickname;
-        this.adDeleted = gameInfo.adDeleted;
+        this.adDeleted = gameInfo.AdDeleted;
         this.bgmVolume = gameInfo.bgmVolume;
         this.seVolume = gameInfo.seVolume;
     }
@@ -38,7 +38,8 @@ public class GameData
     public List<SkillInfo> skillInfos = new List<SkillInfo>();
     public List<WeaponInfo> weapons = new List<WeaponInfo>();
 
-    public List<AdInfo> adInfos = new List<AdInfo>();
+    //Ads
+    public List<AdInfo> rewardedAds = new List<AdInfo>();
 
     public uint playerLevel;
     public uint playerSkillPoint;
@@ -47,7 +48,7 @@ public class GameData
     public int highestStageIndex;
     public int stageIndex;
 
-    public GameData(PlayerInfo playerInfo, GameInfo gameInfo, AdCollection adCollection)
+    public GameData(PlayerInfo playerInfo, GameInfo gameInfo, AdManager adManager)
     {
         foreach (var item in playerInfo.abilities) {
             this.abilityInfos.Add(new AbilityInfo(item));
@@ -65,8 +66,8 @@ public class GameData
             this.weapons.Add(new WeaponInfo(item));
         }
 
-        foreach (var item in adCollection.ads) {
-            adInfos.Add(new AdInfo(item));
+        foreach (var item in adManager.rewardedAds) {
+            rewardedAds.Add(new AdInfo(item));
         }
 
         this.playerLevel = playerInfo.level;
@@ -114,7 +115,7 @@ public class GameDataManager : MonoBehaviour
             gameManager.playerNickname = noDeletedData.nickName;
             gameManager.bgmVolume = noDeletedData.bgmVolume;
             gameManager.seVolume = noDeletedData.seVolume;
-            gameManager.adDeleted = noDeletedData.adDeleted;
+            gameManager.AdDeleted = noDeletedData.adDeleted;
         }
 
         if (gameData != null) {
@@ -152,9 +153,8 @@ public class GameDataManager : MonoBehaviour
     public void SaveGameData()
     {
         PlayerCTRL playerCTRL = FindObjectOfType<PlayerCTRL>();
-        AdCollection adCollection = AdManager.adManager.adCollection;
 
-        GameData saveData = new GameData(playerCTRL, GameManager.gm, adCollection);
+        GameData saveData = new GameData(playerCTRL, GameManager.gm, AdManager.adManager);
         SaveFile(saveData, gameDataFileName);    
     }
 

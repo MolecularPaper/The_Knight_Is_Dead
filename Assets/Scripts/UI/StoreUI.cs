@@ -10,6 +10,6 @@ public class StoreUI : MonoBehaviour
 
     public void UpdateUI()
     {
-        adUI.SetActive(!GameManager.gm.adDeleted);
+        adUI.SetActive(!GameManager.gm.AdDeleted);
     }
 }

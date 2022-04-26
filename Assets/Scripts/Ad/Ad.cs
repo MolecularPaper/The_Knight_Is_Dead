@@ -2,10 +2,30 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
 using System;
+using UnityEngine.Events;
 using UnityEngine.UI;
 using UnityEngine;
 using GoogleMobileAds.Api;
 using TMPro;
+
+public interface IAdObservable
+{
+    public void Subscribe(IAdObserver observer);
+
+    public void Unsubscribe(IAdObserver observer);
+
+    public void AdUpdated();
+}
+
+public interface IAdObserver
+{
+    public void AdUpdated(AdExtension adExtension);
+}
+
+public enum AdType
+{
+    Rewarded,
+}
 
 [System.Serializable]
 public class AdInfo
@@ -13,6 +33,7 @@ public class AdInfo
     public string adName;
     public int currentSecond;
     public bool canShowAd = true;
+    public bool buttonEnbled;
 
     public AdInfo() { }
 
@@ -26,93 +47,81 @@ public class AdInfo
     }
 }
 
+[System.Serializable]
 public class AdExtension : AdInfo
 {
-    public string adUnitId;
+    [Space(10)]
+    [SerializeField] protected string testAdUnitID = "ca-app-pub-3940256099942544/5224354917";
+    [SerializeField] protected string aosAdUnitID = "ca-app-pub-3940256099942544/5224354917";
+    [SerializeField] protected string iosAdUnitID = "ca-app-pub-3940256099942544/1712485313";
 
     [Space(10)]
     public int compensationSecond;
     public int maxAdNestingCount;
-}
 
-[System.Serializable]
-public class AdUI : AdExtension
-{
     [Space(10)]
-    public Button button;
-    public TextMeshProUGUI buttonText;
+    public Sprite icon;
+    public string adTitle;
+    [TextArea(5, 50)]
+    public string desciption;
+
+    [Space(10)]
+    [SerializeField] protected UnityEvent adStartEvent;
+    [SerializeField] protected UnityEvent adEndEvent;
 }
 
 [System.Serializable]
-public abstract class AdMethodExtension : AdUI
+public class AdObservable : AdExtension, IAdObservable
 {
-    public AdMethodExtension(AdUI adUI)
+    public delegate void AdUpdateDel(AdExtension adExtension);
+    public AdUpdateDel adUpdateDel;
+
+    public void Subscribe(IAdObserver observer)
     {
-        this.adName = adUI.adName;
-        this.currentSecond = adUI.currentSecond;
-        this.adUnitId = adUI.adUnitId;
-        this.canShowAd = adUI.canShowAd;
+        if (observer == null)
+            throw new NullReferenceException();
 
-        this.compensationSecond = adUI.compensationSecond;
-        this.maxAdNestingCount = adUI.maxAdNestingCount;
-
-        this.button = adUI.button;
-        this.buttonText = adUI.buttonText;
-
-        button.interactable = canShowAd;
-        button.onClick.AddListener(() => {
-            if (GameManager.gm.adDeleted) {
-                AdEnd();
-            }
-            else if (canShowAd) {
-                GameManager.gm.PauseGame();
-                ShowAd();
-            }
-        });
-        Reset();
-
-        CalculateTime();
+        adUpdateDel += observer.AdUpdated;
     }
 
+    public void Unsubscribe(IAdObserver observer)
+    {
+        if (observer == null)
+            throw new NullReferenceException();
+
+        adUpdateDel -= observer.AdUpdated;
+    }
+
+    public void AdUpdated()
+    {
+        if (adUpdateDel != null) adUpdateDel.Invoke(this);
+    }
+}
+
+[System.Serializable]
+public abstract class AdMethodExtension : AdObservable
+{
     public abstract void Reset();
 
-    public abstract void ShowAd();
-
-    protected abstract void CreateAndLoadRewardedAd();
-
-    protected void HandleRewardedAdLoaded(object sender, EventArgs args)
+    public virtual void ShowAd()
     {
-        MonoBehaviour.print("HandleRewardedAdLoaded event received");
+        GameManager.gm.PauseGame();
+        if (GameManager.gm.AdDeleted) {
+            GameManager.gm.ResumeGame();
+            AdEnd();
+            return;
+        }
     }
 
-    protected void HandleRewardedAdFailedToLoad(object sender, AdFailedToLoadEventArgs args)
-    {
-        MonoBehaviour.print("HandleRewardedAdFailedToLoad event received with message: "+ args.LoadAdError);
-    }
+    protected abstract void CreateAndLoadAd();
 
-    protected void HandleRewardedAdOpening(object sender, EventArgs args)
+    protected void HandleUserEarnedReward(object sender, Reward args)
     {
-        MonoBehaviour.print("HandleRewardedAdOpening event received");
-    }
-
-    protected void HandleRewardedAdFailedToShow(object sender, AdErrorEventArgs args)
-    {
-        MonoBehaviour.print("HandleRewardedAdFailedToShow event received with message: " + args.AdError);
-    }
-
-    protected void HandleRewardedAdClosed(object sender, EventArgs args)
-    {
-        this.CreateAndLoadRewardedAd();
-    }
-
-    protected async void HandleUserEarnedReward(object sender, Reward args)
-    {
-        GameManager.gm.ResumeGame();
         AdEnd();
+        CreateAndLoadAd();
 
-        button.interactable = false;
-        await GameManager.gm.Delay(3000);
-        button.interactable = true;
+        buttonEnbled = true;
+        AdUpdated();
     }
 
     public void AdEnd()
@@ -120,26 +129,30 @@ public abstract class AdMethodExtension : AdUI
         if(currentSecond <= 0) {
             currentSecond = compensationSecond;
             CalculateTime();
+            AdUpdated();
         }
         else if(currentSecond < compensationSecond * maxAdNestingCount) {
             currentSecond += compensationSecond;
-            UpdateTime();
+            AdUpdated();
         }
         
         if(currentSecond > compensationSecond * maxAdNestingCount) {
             canShowAd = false;
-            button.interactable = false;
+            buttonEnbled = false;
+            AdUpdated();
         }
     }
 
     public async void CalculateTime()
     {
+        GameManager.gm.ResumeGame();
+
         if(0 <= currentSecond) {
-            Reward();
+            adStartEvent.Invoke();
         }
 
         while (currentSecond >= 0) {
-            UpdateTime();
+            AdUpdated();
 
             try {
                 await GameManager.gm.Delay(1000); 
@@ -151,96 +164,121 @@ public abstract class AdMethodExtension : AdUI
             currentSecond--;
         }
 
-        RewardEnd();
+        adEndEvent.Invoke();
 
         canShowAd = true;
-        buttonText.text = "±¤°í ½ÃÃ»";
-        button.interactable = true;
+        buttonEnbled = true;
     }
-
-    private void UpdateTime() => buttonText.text = $"{string.Format("{0:D2}", (currentSecond % 3600) / 60)}:{string.Format("{0:D2}", (currentSecond % 3600) % 60)}";
-    protected abstract void Reward();
-    protected abstract void RewardEnd();
 }
 
 [System.Serializable]
-public class AdCollection
-{
-    public List<AdUI> ads = new List<AdUI>();
-    public AdExtension this[string adName] {
-        get {
-            foreach (var item in ads) {
-                if (item.adName == adName) 
-                    return item;
-            }
-            throw new ArgumentNullException();
-        }
-    }
-
-    public AdCollection(List<AdUI> adUIs)
-    {
-        foreach (var item in adUIs) {
-            switch (item.adName) {
-                case "DoubleSpeed":
-                    ads.Add(new DoubleSpeedAd(item));
-                    break;
-                default:
-                    throw new ArgumentNullException();
-            }
-        }
-    }
-}
-
-public abstract class RewardAd : AdMethodExtension
+public class RewardAd : AdMethodExtension
 {
     protected RewardedAd rewardedAd;
 
-    public RewardAd(AdUI adUI) : base(adUI) { }
-
     public override void Reset()
     {
+#if UNITY_EDITOR
+        string adUnitId = testAdUnitID;
+#elif UNITY_ANDROID
+        string adUnitId = aosAdUnitID;
+#elif UNITY_IPHONE
+        string adUnitId = iosAdUnitID;
+#else
+        string adUnitId = "unexpected_platform";
+#endif
+
         rewardedAd = new RewardedAd(adUnitId);
+        rewardedAd.OnUserEarnedReward += HandleUserEarnedReward;
 
-        // Called when an ad request has successfully loaded.
-        this.rewardedAd.OnAdLoaded += HandleRewardedAdLoaded;
-        // Called when an ad request failed to load.
-        this.rewardedAd.OnAdFailedToLoad += HandleRewardedAdFailedToLoad;
-        // Called when an ad is shown.
-        this.rewardedAd.OnAdOpening += HandleRewardedAdOpening;
-        // Called when an ad request failed to show.
-        this.rewardedAd.OnAdFailedToShow += HandleRewardedAdFailedToShow;
-        // Called when the user should be rewarded for interacting with the ad.
-        this.rewardedAd.OnUserEarnedReward += HandleUserEarnedReward;
-        // Called when the ad is closed.
-        this.rewardedAd.OnAdClosed += HandleRewardedAdClosed;
-
-        this.CreateAndLoadRewardedAd();
+        this.CreateAndLoadAd();
     }
 
     public override void ShowAd()
     {
-        if (this.rewardedAd.IsLoaded()) {
-            this.rewardedAd.Show();
+        base.ShowAd();
+        if (rewardedAd.IsLoaded()) {
+            rewardedAd.Show();
         }
     }
 
-    protected override void CreateAndLoadRewardedAd()
+    protected override void CreateAndLoadAd()
     {
         AdRequest request = new AdRequest.Builder().Build();
-        this.rewardedAd.LoadAd(request);
+        rewardedAd.LoadAd(request);
     }
 }
 
 [System.Serializable]
-public class DoubleSpeedAd : RewardAd
+public class BannerAd
 {
-    public DoubleSpeedAd(AdUI adUI) : base(adUI) { }
+    [SerializeField] private string testAdUnitID = "ca-app-pub-3940256099942544/6300978111";
+    [SerializeField] private string aosAdUnitID = "ca-app-pub-3940256099942544/6300978111";
+    [SerializeField] private string iosAdUnitID = "ca-app-pub-3940256099942544/2934735716";
+    [SerializeField] private int height;
 
-    protected override void Reward() => Time.timeScale = 2.0f;
+    private BannerView bannerView;
 
-    protected override void RewardEnd()
+    public void Reset()
     {
-        Debug.Log("RewardEnd");
-        Time.timeScale = 1.0f;
+        if (GameManager.gm.AdDeleted)
+            return;
+
+        this.RequestBanner();
+    }
+
+    public void Hide() => bannerView.Hide();
+
+    private void RequestBanner()
+    {
+#if UNITY_EDITOR
+        string adUnitId = testAdUnitID;
+#elif UNITY_ANDROID
+        string adUnitId = aosAdUnitID;
+#elif UNITY_IPHONE
+        string adUnitId = iosAdUnitID;
+#else
+        string adUnitId = "unexpected_platform";
+#endif
+        AdSize adaptiveSize = AdSize.GetPortraitAnchoredAdaptiveBannerAdSizeWithWidth(height);
+        this.bannerView = new BannerView(adUnitId, adaptiveSize, AdPosition.Top);
+
+        // Called when an ad request has successfully loaded.
+        this.bannerView.OnAdLoaded += this.HandleOnAdLoaded;
+        // Called when an ad request failed to load.
+        this.bannerView.OnAdFailedToLoad += this.HandleOnAdFailedToLoad;
+        // Called when an ad is clicked.
+        this.bannerView.OnAdOpening += this.HandleOnAdOpened;
+        // Called when the user returned from the app after an ad click.
+        this.bannerView.OnAdClosed += this.HandleOnAdClosed;
+
+        // Create an empty ad request.
+        AdRequest request = new AdRequest.Builder().Build();
+
+        // Load the banner with the request.
+        this.bannerView.LoadAd(request);
+    }
+
+    public void HandleOnAdLoaded(object sender, EventArgs args)
+    {
+        MonoBehaviour.print("HandleAdLoaded event received");
+        MonoBehaviour.print(String.Format("Ad Height: {0}, width: {1}",
+            this.bannerView.GetHeightInPixels(),
+            this.bannerView.GetWidthInPixels()));
+    }
+
+    public void HandleOnAdFailedToLoad(object sender, AdFailedToLoadEventArgs args)
+    {
+        MonoBehaviour.print("HandleFailedToReceiveAd event received with message: "+ args.LoadAdError);
+    }
+
+    public void HandleOnAdOpened(object sender, EventArgs args)
+    {
+        MonoBehaviour.print("HandleAdOpened event received");
+    }
+
+    public void HandleOnAdClosed(object sender, EventArgs args)
+    {
+        MonoBehaviour.print("HandleAdClosed event received");
     }
 }

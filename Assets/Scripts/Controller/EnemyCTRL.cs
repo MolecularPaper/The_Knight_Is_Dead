@@ -158,7 +158,7 @@ public class EnemyCTRL : EnemyObservable, IPlayerObserver, IEnemyAction
         IsAttack = true;
     }
 
-    public async void Dead()
+    public void Dead()
     {
         Destroy(this.gameObject);
     }
