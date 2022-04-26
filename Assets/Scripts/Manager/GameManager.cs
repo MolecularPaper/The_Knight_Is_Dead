@@ -18,12 +18,10 @@ public class GameInfo : MonoBehaviour
     public bool AdDeleted {
         get => adDeleted;
         set {
-            if (value) {
-                if (AdManager.adManager) {
-                    AdManager.adManager.bannerAd.Hide();
-                }
-                adDeleted = value;
+            if (value && AdManager.adManager) {
+                AdManager.adManager.bannerAd.Hide();
             }
+            adDeleted = value;
         }
     }
 
@@ -123,7 +121,6 @@ public class GameManager : GameObservable, IPlayerObserver, IEnemyObserver
     {
         GameStart();
     }
-
     private void OnApplicationQuit()
     {
         tokenSource.Cancel();
@@ -200,6 +197,8 @@ public class GameManager : GameObservable, IPlayerObserver, IEnemyObserver
             if (highestStageIndex < stageIndex) {
                 highestStageIndex = stageIndex;
             }
+
+            GameDataManager.dataManager.SaveGameData();
         }
 
         GameUpdated();

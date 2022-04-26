@@ -7,6 +7,7 @@ using TMPro;
 public class TitleManager : MonoBehaviour
 {
     [SerializeField] private SetInfoUI setInfoUI;
+    [SerializeField] private TextMeshProUGUI version;
     
     private bool noData;
 
@@ -19,6 +20,8 @@ public class TitleManager : MonoBehaviour
         catch(System.IO.DirectoryNotFoundException) {
             noData = true;
         }
+
+        version.text = Application.version;
     }
 
     public void GameStart()

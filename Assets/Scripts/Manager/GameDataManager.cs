@@ -1,6 +1,7 @@
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Cryptography;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Collections;
 using System.IO;
 using System;
@@ -135,17 +136,18 @@ public class GameDataManager : MonoBehaviour
         }
     }
 
-    private void OnApplicationQuit()
+    private void OnApplicationPause(bool pause)
     {
-        SaveNoDeletedData();
-        SaveGameData();
+        if (pause) {
+            SaveGameData();
+            SaveNoDeletedData();
+        }
     }
 
     public void SaveNoDeletedData(NoDeletedData noDeletedData) => SaveFile(noDeletedData, noDeletedDataFileName);
 
     public void SaveNoDeletedData()
     {
-        PlayerCTRL playerCTRL = FindObjectOfType<PlayerCTRL>();
         NoDeletedData noDeletedData = new NoDeletedData(GameManager.gm);
         SaveFile(noDeletedData, noDeletedDataFileName);
     }
@@ -172,7 +174,9 @@ public class GameDataManager : MonoBehaviour
         BinaryFormatter formatter = new BinaryFormatter();
         FileStream stream = new FileStream(path, FileMode.OpenOrCreate);
 
-        formatter.Serialize(stream, bytes);
+        Task.Run(() => {
+            formatter.Serialize(stream, bytes);
+        });
         stream.Close();
     }
 
@@ -197,12 +201,15 @@ public class GameDataManager : MonoBehaviour
         }
     }
 
-    public void DeleteSaveData()
+    public async void DeleteSaveData()
     {
         string path = Application.persistentDataPath + $"/{gameDataFileName}.sav";
         if (File.Exists(path)) File.Delete(path);
         GameManager.tokenSource.Cancel();
-        SceneManager.LoadScene(gameObject.scene.name);
+
+        await Task.Delay(1000);
+
+        Application.Quit();
     }
 
     private string Encrypt(string data)

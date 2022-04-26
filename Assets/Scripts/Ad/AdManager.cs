@@ -35,6 +35,7 @@ public class AdManager : MonoBehaviour
 
         for (int i = 0; i < gameData.rewardedAds.Count; i++) {
             rewardedAds[i].SetInfo(gameData.rewardedAds[i]);
+            rewardedAds[i].CalculateTime();
         }
     }
 
@@ -45,6 +46,7 @@ public class AdManager : MonoBehaviour
     }
 
     public void DoubleSpeed() => Time.timeScale = 2.0f;
+
     public void SpeedReset() => Time.timeScale = 1.0f;
 
     public void GetCrystal()

@@ -38,16 +38,17 @@ public class SpawnManager : MonoBehaviour, IGameObserver, IEnemyObserver
 
     public EnemyCTRL SpawnEnemy(int index)
     {
-        if (index >= spawnList.enemyPrefabs.Count)
-            index = spawnList.enemyPrefabs.Count - 1;
+        int spawnIndex = index;
+        if (spawnIndex >= spawnList.enemyPrefabs.Count)
+            spawnIndex = spawnList.enemyPrefabs.Count - 1;
 
         GameObject enemy;
-        enemy = Instantiate(spawnList.enemyPrefabs[index], spawnPoint.position, spawnPoint.rotation, spawnPoint);
+        enemy = Instantiate(spawnList.enemyPrefabs[spawnIndex], spawnPoint.position, spawnPoint.rotation, spawnPoint);
 
         EnemyCTRL enemyCTRL = enemy.GetComponent<EnemyCTRL>();
 
-        long hp = (long)Mathf.Pow(spawnList.hpIncrease * (index + 1), 2) + 10;
-        long atk = (long)Mathf.Pow(spawnList.atkIncrease * (index + 1), 2) + 5;
+        long hp = (long)Mathf.Pow(spawnList.hpIncrease * (index + 1), 2) + 1;
+        long atk = (long)Mathf.Pow(spawnList.atkIncrease * (index + 1), 2) + 4;
         long soul = (long)(Mathf.Pow(spawnList.soulIncrease * (index + 1), 2)) + 5;
         long exp = (long)(Mathf.Pow(spawnList.expIncrease * (index + 1), 2)) + 1;
 

@@ -117,7 +117,7 @@ public class EnemyCTRL : EnemyObservable, IPlayerObserver, IEnemyAction
     {
         PlayerCTRL playerCTRL = FindObjectOfType<PlayerCTRL>();
         if (playerCTRL != null) {
-            playerCTRL.Damage(((Ability)this["HP"]).point);
+            playerCTRL.Damage(((Ability)this["ATK"]).point);
         }
     }
 

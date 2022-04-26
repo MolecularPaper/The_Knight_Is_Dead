@@ -58,6 +58,7 @@ public class AdExtension : AdInfo
     [Space(10)]
     public int compensationSecond;
     public int maxAdNestingCount;
+    public bool isDelay;
 
     [Space(10)]
     public Sprite icon;
@@ -103,13 +104,7 @@ public abstract class AdMethodExtension : AdObservable
 {
     public abstract void Reset();
 
-    public virtual void ShowAd()
-    {
-        if (GameManager.gm.AdDeleted) {
-            AdEnd();
-            return;
-        }
-    }
+    public abstract void ShowAd();
 
     protected abstract void CreateAndLoadAd();
 
@@ -120,18 +115,8 @@ public abstract class AdMethodExtension : AdObservable
 
         buttonEnbled = true;
         AdUpdated();
-    }
 
-    public void HandleRewardedAdOpening(object sender, EventArgs args)
-    {
-        MonoBehaviour.print("HandleAdOpened event received");
-        GameManager.gm.PauseGame();
-    }
-
-    public void HandleRewardedAdClosed(object sender, EventArgs args)
-    {
-        MonoBehaviour.print("HandleAdClosed event received");
-        GameManager.gm.ResumeGame();
+        GameDataManager.dataManager.SaveGameData();
     }
 
     public void HandleRewardedAdFailedToShow(object sender, AdErrorEventArgs args)
@@ -142,7 +127,9 @@ public abstract class AdMethodExtension : AdObservable
 
     public void AdEnd()
     {
-        if(currentSecond <= 0) {
+        GameManager.gm.ResumeGame();
+
+        if (currentSecond <= 0) {
             currentSecond = compensationSecond;
             CalculateTime();
             AdUpdated();
@@ -161,11 +148,13 @@ public abstract class AdMethodExtension : AdObservable
 
     public async void CalculateTime()
     {
-        if(0 <= currentSecond) {
+        if (0 <= currentSecond) {
             adStartEvent.Invoke();
         }
 
-        while (currentSecond >= 0) {
+        buttonEnbled = !isDelay;
+
+        while (0 <= currentSecond) {
             AdUpdated();
 
             try {
@@ -204,8 +193,6 @@ public class RewardAd : AdMethodExtension
 
         rewardedAd = new RewardedAd(adUnitId);
         rewardedAd.OnUserEarnedReward += HandleUserEarnedReward;
-        rewardedAd.OnAdOpening += HandleRewardedAdOpening;
-        rewardedAd.OnAdClosed += HandleRewardedAdClosed;
         rewardedAd.OnAdFailedToShow += HandleRewardedAdFailedToShow;
 
         this.CreateAndLoadAd();
@@ -213,7 +200,13 @@ public class RewardAd : AdMethodExtension
 
     public override void ShowAd()
     {
-        base.ShowAd();
+        GameManager.gm.PauseGame();
+        if (GameManager.gm.AdDeleted) {
+            GameManager.gm.ResumeGame();
+            AdEnd();
+            return;
+        }
+
         if (rewardedAd.IsLoaded()) {
             rewardedAd.Show();
         }
@@ -244,7 +237,12 @@ public class BannerAd
         this.RequestBanner();
     }
 
-    public void Hide() => bannerView.Hide();
+    public void Hide()
+    {
+        if (bannerView != null) {
+            bannerView.Destroy();
+        }
+    }
 
     private void RequestBanner()
     {

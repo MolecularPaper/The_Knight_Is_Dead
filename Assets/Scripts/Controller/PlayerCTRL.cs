@@ -214,6 +214,7 @@ public class PlayerCTRL : PlayerObservable, IEnemyObserver, IPlayerCalculate, IM
             enemyCTRL.Unsubscribe(this);
 
             ((Item)this["Soul"]).Count += ((Item)enemyCTRL["Soul"]).Count;
+            
 
             exp += enemyCTRL.exp;
             if (CanLevelUp) {
@@ -232,6 +233,10 @@ public class PlayerCTRL : PlayerObservable, IEnemyObserver, IPlayerCalculate, IM
             totalDamage = 0;
 
             IsMove = true;
+
+            if(GameManager.gm.stageIndex == GameManager.gm.highestStageIndex) {
+                ((Item)this["Crystal"]).Count += 5;
+            }
         }
         else if (enemyCTRL.IsStop && IsMove) {
             IsMove = false;
@@ -309,6 +314,7 @@ public class PlayerCTRL : PlayerObservable, IEnemyObserver, IPlayerCalculate, IM
         }
 
         PlayerUpdated();
+        GameDataManager.dataManager.SaveGameData();
     }
 
     public async void LevelUpSkill(string skillName)
@@ -328,6 +334,8 @@ public class PlayerCTRL : PlayerObservable, IEnemyObserver, IPlayerCalculate, IM
                 return;
             }
         }
+
+        GameDataManager.dataManager.SaveGameData();
     }
 
     public void AddWeapon(string name)
@@ -339,5 +347,7 @@ public class PlayerCTRL : PlayerObservable, IEnemyObserver, IPlayerCalculate, IM
         }
 
         weapon.count++;
+
+        GameDataManager.dataManager.SaveGameData();
     }
 }

@@ -83,7 +83,7 @@ public class WeaponTap : MonoBehaviour
         while (weapon.canLevelUp && isHoldButton) {
             weapon.LevelUp();
             SetWeaponInfo(weapon);
-            await GameManager.gm.Delay(100);
+            await GameManager.gm.Delay(200);
         }
     }
 

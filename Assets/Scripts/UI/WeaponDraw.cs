@@ -31,7 +31,7 @@ public class WeaponDraw : MonoBehaviour, IItemObserver
 
     private CancellationTokenSource drawToken = new CancellationTokenSource();
 
-    private void Awake()
+    private void Start()
     {
         animator = GetComponent<Animator>();
         playerCTRL = FindObjectOfType<PlayerCTRL>();

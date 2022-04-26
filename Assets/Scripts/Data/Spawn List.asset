@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1825c276d3723f42abc71216f16c630, type: 3}
   m_Name: Spawn List
   m_EditorClassIdentifier: 
-  hpIncrease: 1.2
-  atkIncrease: 0.4
+  hpIncrease: 5
+  atkIncrease: 0.3
   soulIncrease: 0.65
   expIncrease: 0.4
   enemyPrefabs:
