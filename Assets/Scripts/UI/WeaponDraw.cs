@@ -8,7 +8,6 @@ using TMPro;
 
 public class WeaponDraw : MonoBehaviour, IItemObserver
 {
-    [SerializeField] private Animator animator;
 
     [Space(10)]
     [SerializeField] private TMP_InputField countInputField;
@@ -22,12 +21,14 @@ public class WeaponDraw : MonoBehaviour, IItemObserver
     
     private List<WeaponDrawSlot> slots = new List<WeaponDrawSlot>();
     private PlayerCTRL playerCTRL;
+    private Animator animator;
 
     private int drawCount = 0;
     private ulong crystalCount = 0;
 
     private void Awake()
     {
+        animator = GetComponent<Animator>();
         playerCTRL = FindObjectOfType<PlayerCTRL>();
         Item crystal = (Item)playerCTRL["Crystal"];
         crystal.Subscribe(this);
@@ -54,7 +55,7 @@ public class WeaponDraw : MonoBehaviour, IItemObserver
 
     public void DrawWeapon()
     {
-        if (drawCount == 0 || (ulong)(drawCount * 100) <= crystalCount) {
+        if (drawCount == 0 || (ulong)(drawCount * 100) > crystalCount) {
             return;
         }
 
