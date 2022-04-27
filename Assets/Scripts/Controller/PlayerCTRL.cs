@@ -213,8 +213,7 @@ public class PlayerCTRL : PlayerObservable, IEnemyObserver, IPlayerCalculate, IM
         if (enemyCTRL.IsDead) {
             enemyCTRL.Unsubscribe(this);
 
-            ((Item)this["Soul"]).Count += ((Item)enemyCTRL["Soul"]).Count;
-            
+            AddItem("Soul", ((Item)enemyCTRL["Soul"]).Count);
 
             exp += enemyCTRL.exp;
             if (CanLevelUp) {
@@ -233,10 +232,6 @@ public class PlayerCTRL : PlayerObservable, IEnemyObserver, IPlayerCalculate, IM
             totalDamage = 0;
 
             IsMove = true;
-
-            if(GameManager.gm.stageIndex == GameManager.gm.highestStageIndex) {
-                ((Item)this["Crystal"]).Count += 5;
-            }
         }
         else if (enemyCTRL.IsStop && IsMove) {
             IsMove = false;
@@ -338,15 +333,24 @@ public class PlayerCTRL : PlayerObservable, IEnemyObserver, IPlayerCalculate, IM
         GameDataManager.dataManager.SaveGameData();
     }
 
-    public void AddWeapon(string name)
+    public void AddItem(string name, long count)
     {
-        Weapon weapon = (Weapon)this[name];
-
-        if (!weapon.isUnlock) {
-            weapon.Unlock();
+        try
+        {
+            Item item = (Item)this[name];
+            item.count += count;
         }
+        catch (System.ArgumentNullException)
+        {
+            Weapon weapon = (Weapon)this[name];
 
-        weapon.count++;
+            if (!weapon.isUnlock)
+            {
+                weapon.Unlock();
+            }
+
+            weapon.count += count;
+        }
 
         GameDataManager.dataManager.SaveGameData();
     }

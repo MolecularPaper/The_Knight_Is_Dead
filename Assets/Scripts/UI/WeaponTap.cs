@@ -22,7 +22,6 @@ public class WeaponTap : MonoBehaviour
 
     [Space(10)]
     [SerializeField] private Button weaponInfoReinforceButton;
-    [SerializeField] private EventTrigger weaponInfoReinforceTrigger;
     [SerializeField] private Button weaponInfoMountButton;
 
     private void Start()
@@ -60,31 +59,10 @@ public class WeaponTap : MonoBehaviour
             SetWeaponInfo(weapon);
         });
 
-        EventTrigger.Entry pointerDown = new EventTrigger.Entry();
-        pointerDown.eventID = EventTriggerType.PointerDown;
-        pointerDown.callback.AddListener((data) => {
-            LevelUpWeapon(weapon);
-        });
-
-        EventTrigger.Entry pointerUp = new EventTrigger.Entry();
-        pointerUp.eventID = EventTriggerType.PointerUp;
-        pointerUp.callback.AddListener((data) => {
-            isHoldButton = false;
-        });
-
-        weaponInfoReinforceTrigger.triggers.Add(pointerDown);
-        weaponInfoReinforceTrigger.triggers.Add(pointerUp);
-    }
-
-    public bool isHoldButton { get; set; }
-    public async void LevelUpWeapon(Weapon weapon)
-    {
-        isHoldButton = true;
-        while (weapon.canLevelUp && isHoldButton) {
+        weaponInfoReinforceButton.onClick.AddListener(() => {
             weapon.LevelUp();
             SetWeaponInfo(weapon);
-            await GameManager.gm.Delay(200);
-        }
+        });
     }
 
     public void SetWeaponInfo(Weapon weapon)

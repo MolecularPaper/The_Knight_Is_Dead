@@ -127,7 +127,7 @@ public class WeaponDraw : MonoBehaviour, IItemObserver
         for (int i = 0; i < drawCount; i++) {
             WeaponRate weaponRate = (WeaponRate)ChooseRate();
             Weapon weapon = ChooseWeapon(weaponRate);
-            playerCTRL.AddWeapon(weapon.itemName);
+            playerCTRL.AddItem(weapon.itemName, 1);
 
             foreach (var slot in slots) {
                 if (weapon.itemName == slot.weaponName) {

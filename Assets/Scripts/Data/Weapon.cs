@@ -124,9 +124,13 @@ public class Weapon : WeaponObservable
     {
         if (canLevelUp) {
             PlayerCTRL playerCTRL = GameObject.FindObjectOfType<PlayerCTRL>();
-            ((Item)playerCTRL["Soul"]).Count -= RequestSoul;
+
+            Item soul = ((Item)playerCTRL["Soul"]);
+            soul.Count -= RequestSoul;
             count -= RequestCount;
+
             level++;
+            canLevelUp = soul.Count >= RequestSoul && this.count >= RequestCount;
         }
 
         WeaponUpdate();

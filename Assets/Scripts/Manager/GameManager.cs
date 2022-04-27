@@ -210,6 +210,9 @@ public class GameManager : GameObservable, IPlayerObserver, IEnemyObserver
             stageIndex++;
             if (highestStageIndex < stageIndex) {
                 highestStageIndex = stageIndex;
+
+                PlayerCTRL playerCTRL = FindObjectOfType<PlayerCTRL>();
+                playerCTRL.AddItem("Crystal", 5);
             }
 
             GameDataManager.dataManager.SaveGameData();

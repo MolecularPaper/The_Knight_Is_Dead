@@ -533,8 +533,8 @@ MonoBehaviour:
   highestStageIndex: 0
   stageIndex: 0
   playerNickname: 
-  bgmVolume: 0.7
-  seVolume: 0.05
+  bgmVolume: 0.4
+  seVolume: 0.1
   isStart: 0
   isPause: 0
   isFade: 0
@@ -550,7 +550,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 851388db1a89caf46bfa4f06fb01f8c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnList: {fileID: 11400000, guid: 8a4c3c37a5af3234a9016cc3d2ecc8fc, type: 2}
+  spawnList: {fileID: 11400000, guid: 9f6ca386c6c1867458313462fe155708, type: 2}
   spawnPoint: {fileID: 2140163087}
 --- !u!114 &43927167
 MonoBehaviour:
@@ -566,7 +566,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   adTap: {fileID: 979740718}
   adUI: {fileID: 7347163096037594779, guid: a687b2107837f8f4bb622acbea53160d, type: 3}
-  isTest: 0
+  isTest: 1
   bannerAd:
     aosAdUnitID: ca-app-pub-8430939724238851/2043816001
     iosAdUnitID: ca-app-pub-3940256099942544/2934735716
@@ -6971,7 +6971,6 @@ MonoBehaviour:
   weaponReinforceCount: {fileID: 1483115106}
   weaponRequestSoul: {fileID: 1869563105}
   weaponInfoReinforceButton: {fileID: 2017046397}
-  weaponInfoReinforceTrigger: {fileID: 2017046400}
   weaponInfoMountButton: {fileID: 2131209848}
 --- !u!1 &654579098
 GameObject:
@@ -9770,7 +9769,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 25080}
+  m_AnchoredPosition: {x: 0, y: 12540}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1053375863
