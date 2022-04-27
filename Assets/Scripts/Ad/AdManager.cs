@@ -23,9 +23,9 @@ public class AdManager : MonoBehaviour
 
     public void Start()
     {
-        foreach (var item in rewardedAds) {
-            CreateAdUI(item);
-            item.CreateAndLoadAd();
+        foreach (var rewardAd in rewardedAds) {
+            CreateAdUI(rewardAd);
+            rewardAd.Reset();
         }
 
         bannerAd.Reset();

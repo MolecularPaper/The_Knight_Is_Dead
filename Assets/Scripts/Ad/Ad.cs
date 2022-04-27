@@ -71,6 +71,7 @@ public class AdExtension : AdInfo
     [Space(10)]
     [SerializeField] protected UnityEvent adStartEvent;
     [SerializeField] protected UnityEvent adEndEvent;
+    [SerializeField] protected UnityEvent adLoadingEvent;
 }
 
 [System.Serializable]
@@ -104,6 +105,8 @@ public class AdObservable : AdExtension, IAdObservable
 [System.Serializable]
 public abstract class AdMethodExtension : AdObservable
 {
+    public abstract void Reset();
+
     public abstract void ShowAd();
 
     public abstract void CreateAndLoadAd();
@@ -173,6 +176,17 @@ public class RewardAd : AdMethodExtension
 {
     protected RewardedAd rewardedAd;
 
+    public override void Reset()
+    {
+        FloatingUI floatingUI = GameObject.FindObjectOfType<FloatingUI>();
+        adLoadingEvent.AddListener(() =>
+        {
+            floatingUI.SetInfoUI("광고가 로딩중입니다!");
+        });
+
+        CreateAndLoadAd();
+    }
+
     public override void ShowAd()
     {
         GameManager.gm.PauseGame();
@@ -185,6 +199,7 @@ public class RewardAd : AdMethodExtension
         }
         else {
             GameManager.gm.ResumeGame();
+            adLoadingEvent.Invoke();
             return;
         }
     }
