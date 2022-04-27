@@ -25,14 +25,21 @@ public class GooglePlayUpdateManager : MonoBehaviour
 
         appUpdateManager = new AppUpdateManager();
 
+#if UNITY_ANDROID
+        CheckUpdateCycle();
+#endif
     }
 
-    public async bool CheckUpdateCycle()
+    public async void CheckUpdateCycle()
     {
-
+        while (true)
+        {
+            await CheckForUpdate();
+            await Task.Delay(60000);
+        }
     }
 
-    public async void CheckForUpdate()
+    public async Task CheckForUpdate()
     {
         PlayAsyncOperation<AppUpdateInfo, AppUpdateErrorCode> appUpdateInfoOperation = appUpdateManager.GetAppUpdateInfo();
 
@@ -53,6 +60,9 @@ public class GooglePlayUpdateManager : MonoBehaviour
                 {
                     return appUpdateManager.StartUpdate(appUpdateInfoResult, appUpdateOptions);
                 });
+
+                print(startUpdateRequest.Error);
+                Application.Quit();
             }
         }
         else
