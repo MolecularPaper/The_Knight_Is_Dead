@@ -136,12 +136,10 @@ public class GameDataManager : MonoBehaviour
         }
     }
 
-    private void OnApplicationPause(bool pause)
+    private void OnApplicationQuit()
     {
-        if (pause) {
-            SaveGameData();
-            SaveNoDeletedData();
-        }
+        SaveGameData();
+        SaveNoDeletedData();
     }
 
     public void SaveNoDeletedData(NoDeletedData noDeletedData) => SaveFile(noDeletedData, noDeletedDataFileName);
@@ -174,9 +172,7 @@ public class GameDataManager : MonoBehaviour
         BinaryFormatter formatter = new BinaryFormatter();
         FileStream stream = new FileStream(path, FileMode.OpenOrCreate);
 
-        Task.Run(() => {
-            formatter.Serialize(stream, bytes);
-        });
+        formatter.Serialize(stream, bytes);
         stream.Close();
     }
 

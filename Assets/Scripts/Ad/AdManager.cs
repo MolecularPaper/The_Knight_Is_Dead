@@ -10,9 +10,11 @@ public class AdManager : MonoBehaviour
 
     [SerializeField] private Transform adTap;
     [SerializeField] private GameObject adUI;
+    public bool isTest;
 
     public BannerAd bannerAd;
     public List<RewardAd> rewardedAds;
+
 
     public void Awake()
     {
@@ -23,7 +25,7 @@ public class AdManager : MonoBehaviour
     {
         foreach (var item in rewardedAds) {
             CreateAdUI(item);
-            item.Reset();
+            item.CreateAndLoadAd();
         }
 
         bannerAd.Reset();

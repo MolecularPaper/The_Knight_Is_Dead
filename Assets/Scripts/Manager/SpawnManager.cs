@@ -15,7 +15,7 @@ public class SpawnManager : MonoBehaviour, IGameObserver, IEnemyObserver
         GameManager.gm.Subscribe(this);
     }
 
-    public void GameUpdated(GameInfoExtension gameInfo)
+    public void GameUpdated(GameObservable gameInfo)
     {
         this.currentStage = gameInfo.stageIndex;
 

@@ -1,7 +1,9 @@
 using System.Threading.Tasks;
 using System.Threading;
 using UnityEngine.SceneManagement;
+using UnityEngine.Events;
 using UnityEngine;
+using System.Collections.Generic;
 using System;
 
 [System.Serializable]
@@ -20,6 +22,7 @@ public class GameInfo : MonoBehaviour
         set {
             if (value && AdManager.adManager) {
                 AdManager.adManager.bannerAd.Hide();
+                GameDataManager.dataManager.SaveNoDeletedData(new NoDeletedData(this));
             }
             adDeleted = value;
         }
@@ -53,6 +56,8 @@ public class GameInfoExtension : GameInstance
     public bool isFade;
 
     public static CancellationTokenSource tokenSource;
+
+    public Queue<UnityAction> mainThreadEvent = new Queue<UnityAction>();
 }
 
 public interface IGameObservable
@@ -66,12 +71,12 @@ public interface IGameObservable
 
 public interface IGameObserver
 {
-    public void GameUpdated(GameInfoExtension gameInfo);
+    public void GameUpdated(GameObservable gameInfo);
 }
 
 public class GameObservable : GameInfoExtension, IGameObservable
 {
-    public delegate void GameMangerUpdateDel(GameInfoExtension gameInfo);
+    public delegate void GameMangerUpdateDel(GameObservable gameInfo);
     public GameMangerUpdateDel gameMangerUpdateDel;
 
     public void GameUpdated()
@@ -121,6 +126,15 @@ public class GameManager : GameObservable, IPlayerObserver, IEnemyObserver
     {
         GameStart();
     }
+
+    public void Update()
+    {
+        int count = mainThreadEvent.Count;
+        for (int i = 0; i < count; i++) {
+            mainThreadEvent.Dequeue().Invoke();
+        }
+    }
+
     private void OnApplicationQuit()
     {
         tokenSource.Cancel();

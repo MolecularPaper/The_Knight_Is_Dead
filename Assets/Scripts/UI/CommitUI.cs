@@ -12,7 +12,7 @@ public class CommitUI : MonoBehaviour
 
     public void GameDataDeleteCommit()
     {
-        text.text = "정말로 게임 데이터를\n삭제하시겠습니까?";
+        text.text = "게임데이터를 삭제하게되면 유저 능력치와 소울, 크리스탈 모두 \n초기화 됩니다!\n정말로 초기화 하시겠습니까?";
         yesButton.onClick.RemoveAllListeners();
         yesButton.onClick.AddListener(GameDataManager.dataManager.DeleteSaveData);
         canvas.SetActive(true);

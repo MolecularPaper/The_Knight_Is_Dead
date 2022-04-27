@@ -14,7 +14,7 @@ public class Fade : MonoBehaviour, IGameObserver
         GameManager.gm.Subscribe(this);
     }
 
-    public void GameUpdated(GameInfoExtension gameInfo) => FadeOut(gameInfo.isFade);
+    public void GameUpdated(GameObservable gameInfo) => FadeOut(gameInfo.isFade);
 
     public async void FadeOut(bool isFadeOut)
     {

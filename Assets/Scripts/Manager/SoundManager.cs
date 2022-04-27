@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using UnityEngine;
 using System.Threading.Tasks;
 
-public class SoundManager : MonoBehaviour
+public class SoundManager : MonoBehaviour, IGameObserver
 {
     public static SoundManager sound;
 
@@ -35,12 +35,14 @@ public class SoundManager : MonoBehaviour
         if (isPlayBgm) {
             bgmSource.Play();
         }
+
+        GameManager gameManager = FindObjectOfType<GameManager>();
+        gameManager.Subscribe(this);
     }
 
 
     private void Start()
     {
-        ResetVolume();
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
@@ -48,9 +50,13 @@ public class SoundManager : MonoBehaviour
     {
         isPlayBgm = false;
     }
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode) => ResetVolume();
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        GameManager gameManager = FindObjectOfType<GameManager>();
+        gameManager.Subscribe(this);
+    }
 
-    private void ResetVolume()
+    private void ResetVolume(GameInfo gameInfo)
     {
         bgmSilder = GameObject.FindWithTag("BgmSlider").GetComponent<Slider>();
         bgmSilder.onValueChanged.AddListener(ChangeBGMVolume);
@@ -58,10 +64,10 @@ public class SoundManager : MonoBehaviour
         seSilder = GameObject.FindWithTag("SeSlider").GetComponent<Slider>();
         seSilder.onValueChanged.AddListener(ChangeSEVolume);
 
-        bgmSilder.value = GameManager.gm.bgmVolume;
-        bgmSource.volume = GameManager.gm.bgmVolume;
-        seSilder.value = GameManager.gm.seVolume;
-        seSource.volume = GameManager.gm.seVolume;
+        bgmSilder.value = gameInfo.bgmVolume;
+        bgmSource.volume = gameInfo.bgmVolume;
+        seSilder.value = gameInfo.seVolume;
+        seSource.volume = gameInfo.seVolume;
     }
 
     public void PlaySE(AudioClip audioClip)
@@ -97,5 +103,11 @@ public class SoundManager : MonoBehaviour
     {
         seSource.volume = seSilder.value;
         GameManager.gm.seVolume = seSilder.value;
+    }
+
+    public void GameUpdated(GameObservable gameInfo)
+    {
+        ResetVolume(gameInfo);
+        gameInfo.Unsubscribe(this);
     }
 }

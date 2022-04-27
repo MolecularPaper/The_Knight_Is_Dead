@@ -10,6 +10,7 @@ public class WeaponDraw : MonoBehaviour, IItemObserver
 {
     [Space(10)]
     [SerializeField] private Canvas weaponDrawUI;
+    [SerializeField] private TextMeshProUGUI crystalInfo;
     [SerializeField] private TMP_InputField countInputField;
     [SerializeField] private Button drawButton;
     [SerializeField] private CanvasGroup info;
@@ -38,6 +39,8 @@ public class WeaponDraw : MonoBehaviour, IItemObserver
         Item crystal = (Item)playerCTRL["Crystal"];
         crystal.Subscribe(this);
         ItemUpdate(crystal);
+
+        crystalInfo.text = $"1회에 {drawCost} 크리스탈";
 
         foreach (var item in playerCTRL.weapons) {
             WeaponDrawSlot weaponDrawSlot = Instantiate(slot, list).GetComponent<WeaponDrawSlot>();

@@ -251,8 +251,8 @@ PlayerSettings:
   AndroidTargetDevices: 0
   AndroidSplashScreenScale: 0
   androidSplashScreen: {fileID: 0}
-  AndroidKeystoreName: '{inproject}: TheKightIsDead.keystore'
-  AndroidKeyaliasName: the knight is dead keystore
+  AndroidKeystoreName: '{inproject}: TheKnightIsDead.keystore'
+  AndroidKeyaliasName: the knight is dead key
   AndroidBuildApkPerCpuArchitecture: 0
   AndroidTVCompatibility: 0
   AndroidIsGame: 1
