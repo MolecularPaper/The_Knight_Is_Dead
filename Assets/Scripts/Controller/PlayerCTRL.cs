@@ -338,7 +338,7 @@ public class PlayerCTRL : PlayerObservable, IEnemyObserver, IPlayerCalculate, IM
         try
         {
             Item item = (Item)this[name];
-            item.count += count;
+            item.Count += count;
         }
         catch (System.ArgumentNullException)
         {
@@ -350,6 +350,7 @@ public class PlayerCTRL : PlayerObservable, IEnemyObserver, IPlayerCalculate, IM
             }
 
             weapon.count += count;
+            weapon.WeaponUpdate();
         }
 
         GameDataManager.dataManager.SaveGameData();

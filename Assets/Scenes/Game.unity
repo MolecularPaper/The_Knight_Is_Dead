@@ -615,6 +615,9 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+    adLoadingEvent:
+      m_PersistentCalls:
+        m_Calls: []
   - adName: GetCrystal
     currentSecond: 0
     canShowAd: 1
@@ -643,6 +646,9 @@ MonoBehaviour:
             m_BoolArgument: 0
           m_CallState: 2
     adEndEvent:
+      m_PersistentCalls:
+        m_Calls: []
+    adLoadingEvent:
       m_PersistentCalls:
         m_Calls: []
 --- !u!1 &62113328
@@ -9731,7 +9737,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 2280}
+  m_AnchoredPosition: {x: 0, y: 3420}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1053375863
@@ -26296,7 +26302,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
       propertyPath: weapons.Array.data[1].weaponTitle
-      value: "\uB098\uBB34\uAC00\uC9C0"
+      value: "\uB098\uBB47\uAC00\uC9C0"
       objectReference: {fileID: 0}
     - target: {fileID: 4544550978808934478, guid: 49b27491c35223f4f96bd1b0b5537153, type: 3}
       propertyPath: weapons.Array.data[2].weaponTitle
