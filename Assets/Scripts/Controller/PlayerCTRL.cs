@@ -335,14 +335,16 @@ public class PlayerCTRL : PlayerObservable, IEnemyObserver, IPlayerCalculate, IM
 
     public void AddItem(string name, long count)
     {
+        object obj = this[name];
+
         try
         {
-            Item item = (Item)this[name];
+            Item item = (Item)obj;
             item.Count += count;
         }
-        catch (System.ArgumentNullException)
+        catch (System.InvalidCastException)
         {
-            Weapon weapon = (Weapon)this[name];
+            Weapon weapon = (Weapon)obj;
 
             if (!weapon.isUnlock)
             {
