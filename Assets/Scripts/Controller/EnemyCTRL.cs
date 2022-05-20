@@ -107,7 +107,7 @@ public class EnemyCTRL : EnemyObservable, IPlayerObserver, IEnemyAction
             try {
                 IsAttack = false;
             }
-            catch (MissingReferenceException) {
+            catch {
                 return;
             }
         }
