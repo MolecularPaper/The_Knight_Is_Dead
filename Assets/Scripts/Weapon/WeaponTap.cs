@@ -31,6 +31,7 @@ public class WeaponTap : MonoBehaviour
         foreach (var item in playerCTRL.weapons) {
             WeaponUI weaponSlot = Instantiate(this.weaponUI, content).GetComponent<WeaponUI>();
             weaponSlot.SetWeaponUI(item, () => { 
+                GameManager.gm.PauseGame();
                 WeaponReinforce(item);
             });
         }
@@ -73,8 +74,8 @@ public class WeaponTap : MonoBehaviour
         weaponReinforceCount.text = $"{weapon.count} / {weapon.RequestCount}";
         weaponRequestSoul.text = $"{weapon.RequestSoul}소울";
 
-        weaponInfoReinforceButton.interactable = weapon.canLevelUp;
-        weaponInfoMountButton.interactable = !weapon.isHold;
+        weaponInfoReinforceButton.interactable = weapon.isUnlock && weapon.canLevelUp;
+        weaponInfoMountButton.interactable = weapon.isUnlock && !weapon.isHold;
 
         if (weapon.isHold) {
             weaponInfoMountText.text = "장착중";

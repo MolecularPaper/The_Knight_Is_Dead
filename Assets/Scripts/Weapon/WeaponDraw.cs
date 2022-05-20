@@ -6,15 +6,28 @@ using UnityEngine.UI;
 using UnityEngine;
 using TMPro;
 
-public class WeaponDraw : MonoBehaviour, IItemObserver
+[System.Serializable]
+public class DrawButton : IItemObserver
+{
+    public Button drawButton;
+    public int drawCount;
+
+    [HideInInspector]
+    public int drawCost;
+
+    public void ItemUpdate(Item item) => drawButton.interactable = drawCount * drawCost <= item.Count;
+}
+
+public class WeaponDraw : MonoBehaviour
 {
     [Space(10)]
     [SerializeField] private Canvas weaponDrawUI;
     [SerializeField] private TextMeshProUGUI crystalInfo;
-    [SerializeField] private TMP_InputField countInputField;
-    [SerializeField] private Button drawButton;
     [SerializeField] private CanvasGroup info;
     [SerializeField] private CanvasGroup viewer;
+
+    [Space(10)]
+    [SerializeField] private DrawButton[] drawButtons;
 
     [Space(10)]
     [SerializeField] private Transform list;
@@ -27,22 +40,41 @@ public class WeaponDraw : MonoBehaviour, IItemObserver
     private PlayerCTRL playerCTRL;
     private Animator animator;
 
-    private int drawCount = 0;
-    private long crystalCount = 0;
-
     private CancellationTokenSource drawToken = new CancellationTokenSource();
 
     private void Start()
     {
         animator = GetComponent<Animator>();
-        playerCTRL = FindObjectOfType<PlayerCTRL>();
-        Item crystal = (Item)playerCTRL["Crystal"];
-        crystal.Subscribe(this);
-        ItemUpdate(crystal);
-
         crystalInfo.text = $"1회에 {drawCost} 크리스탈";
 
-        foreach (var item in playerCTRL.weapons) {
+        SetDrawButton();
+        CreateWeaponSlot();
+    }
+
+    public void SetDrawButton()
+    {
+        playerCTRL = FindObjectOfType<PlayerCTRL>();
+        Item crystal = (Item)playerCTRL["Crystal"];
+
+        foreach (var drawButton in drawButtons)
+        {
+            crystal.Subscribe(drawButton);
+
+            drawButton.drawCost = this.drawCost;
+            drawButton.ItemUpdate(crystal);
+
+            drawButton.drawButton.onClick.AddListener(() =>
+            {
+                tempDrawCount = drawButton.drawCount;
+                animator.SetTrigger("OnWeaponDraw");
+            });
+        }
+    }
+
+    public void CreateWeaponSlot()
+    {
+        foreach (var item in playerCTRL.weapons)
+        {
             WeaponDrawSlot weaponDrawSlot = Instantiate(slot, list).GetComponent<WeaponDrawSlot>();
             weaponDrawSlot.SetSlot(item);
             slots.Add(weaponDrawSlot);
@@ -87,33 +119,7 @@ public class WeaponDraw : MonoBehaviour, IItemObserver
         viewer.blocksRaycasts = !infoVisible;
     }
 
-    public void ItemUpdate(Item item)
-    {
-        crystalCount = item.count;
-        drawButton.interactable = drawCount * drawCost <= crystalCount;
-    }
-
-    public void SetDrawCount()
-    {
-        try {
-            drawCount = int.Parse(countInputField.text);
-        }
-        catch (System.FormatException) {
-            drawButton.interactable = false;
-        }
-
-        drawButton.interactable = drawCount * drawCost <= crystalCount;
-    }
-
-    public void DrawWeapon()
-    {
-        if (drawCount == 0 || drawCount * drawCost > crystalCount) {
-            return;
-        }
-
-        animator.SetTrigger("OnWeaponDraw");
-    }
-
+    private int tempDrawCount;
     public async void OnDrawWeapon()
     {
         animator.ResetTrigger("OnWeaponDraw");
@@ -124,7 +130,7 @@ public class WeaponDraw : MonoBehaviour, IItemObserver
 
         TapChange(false);
 
-        for (int i = 0; i < drawCount; i++) {
+        for (int i = 0; i < tempDrawCount; i++) {
             WeaponRate weaponRate = (WeaponRate)ChooseRate();
             Weapon weapon = ChooseWeapon(weaponRate);
             playerCTRL.AddItem(weapon.itemName, 1);
@@ -137,7 +143,7 @@ public class WeaponDraw : MonoBehaviour, IItemObserver
         }
 
         Item cryStal = (Item)playerCTRL["Crystal"];
-        cryStal.Count -= drawCount * drawCost;
+        cryStal.Count -= tempDrawCount * drawCost;
 
         foreach (var slot in slots) {
             if (slot.count > 0) {
@@ -165,8 +171,8 @@ public class WeaponDraw : MonoBehaviour, IItemObserver
 
     private int ChooseRate()
     {
-        float randomPoint = Random.value * 100f;
-        float[] probs = { 3, 6.2f, 8.5f, 10f, 15f, 20f, 40f };
+        float randomPoint = Random.value * 10000f;
+        float[] probs = { 1, 99, 640f, 850f, 1000f, 1500f, 2000f, 4000f };
 
         for (int i = 0; i < probs.Length; i++) {
             if (randomPoint < probs[i]) {

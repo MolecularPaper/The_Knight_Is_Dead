@@ -15,7 +15,6 @@ public class AdManager : MonoBehaviour
     public BannerAd bannerAd;
     public List<RewardAd> rewardedAds;
 
-
     public void Awake()
     {
         adManager = this;
@@ -50,11 +49,4 @@ public class AdManager : MonoBehaviour
     public void DoubleSpeed() => Time.timeScale = 2.0f;
 
     public void SpeedReset() => Time.timeScale = 1.0f;
-
-    public void GetCrystal()
-    {
-        PlayerCTRL playerCTRL = FindObjectOfType<PlayerCTRL>();
-        Item crystal = (Item)playerCTRL["Crystal"];
-        crystal.Count += 200;
-    }
 }

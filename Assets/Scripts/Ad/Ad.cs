@@ -50,25 +50,48 @@ public class AdInfo
 [System.Serializable]
 public class AdExtension : AdInfo
 {
-    [Space(10)]
+    [Header("AD Unit ID")]
     [SerializeField] protected string aosAdUnitID = "ca-app-pub-3940256099942544/5224354917";
     [SerializeField] protected string iosAdUnitID = "ca-app-pub-3940256099942544/1712485313";
     
     protected string testAosAdUnitID = "ca-app-pub-3940256099942544/5224354917";
     protected string testIosAdUnitID = "ca-app-pub-3940256099942544/5224354917";
 
-    [Space(10)]
-    public int compensationSecond;
-    public int maxAdNestingCount;
-    public bool isDelay;
-
-    [Space(10)]
+    [Header("Setting")]
     public Sprite icon;
     public string adTitle;
     [TextArea(5, 50)]
     public string desciption;
 
     [Space(10)]
+    public int compensationSecond;
+    public int maxAdNestingCount;
+    public bool isDelay;
+
+    [Header("Reward")]
+    [SerializeField] protected bool isItemReward;
+    [SerializeField] private bool isDynamicReward;
+
+    [Space(10)]
+    public string reawardItemName;
+    [SerializeField] private long rewardCount;
+    [SerializeField] private long reawrdCountInc;
+    public long ReawrdCount
+    {
+        get
+        {
+            if (isDynamicReward)
+            {
+                return (long)Mathf.Pow(reawrdCountInc * GameManager.gm.highestStageIndex, 2) + reawrdCountInc;
+            }
+            else
+            {
+                return rewardCount;
+            }
+        }
+    }
+
+    [Header("Events")]
     [SerializeField] protected UnityEvent adStartEvent;
     [SerializeField] protected UnityEvent adEndEvent;
     [SerializeField] protected UnityEvent adLoadingEvent;
@@ -124,8 +147,19 @@ public abstract class AdMethodExtension : AdObservable
         GameDataManager.dataManager.SaveGameData();
     }
 
+    protected void GetReward()
+    {
+        PlayerCTRL playerCTRL = GameObject.FindObjectOfType<PlayerCTRL>();
+        ((Item)playerCTRL[reawardItemName]).Count += ReawrdCount;
+    }
+
     public void AdEnd()
     {
+        if (isItemReward)
+        {
+            GetReward();
+            return;
+        }
         if (currentSecond <= 0) {
             currentSecond = compensationSecond;
             CalculateTime();

@@ -19,13 +19,14 @@ public interface IWeaponObservable
 [System.Serializable]
 public enum WeaponRate
 {
-    S = 0,
-    A = 1,
-    B = 2,
-    C = 3,
-    D = 4,
-    E = 5,
-    F = 6,
+    SS = 0,
+    S = 1,
+    A = 2,
+    B = 3,
+    C = 4,
+    D = 5,
+    E = 6,
+    F = 7,
 }
 
 [System.Serializable]

@@ -20,7 +20,6 @@ public class AdUI : MonoBehaviour, IAdObserver
         icon.sprite = ad.icon;
 
         title.text = ad.adTitle;
-        desciption.text = ad.desciption;
 
         button.interactable = ad.canShowAd;
         button.onClick.AddListener(() => {
@@ -35,6 +34,7 @@ public class AdUI : MonoBehaviour, IAdObserver
 
     public void AdUpdated(AdExtension adExtension)
     {
+        desciption.text = adExtension.desciption.Replace("{rewardCount}", adExtension.ReawrdCount.ToString());
         button.interactable = adExtension.canShowAd && adExtension.buttonEnbled;
 
         if (adExtension.currentSecond > 0) {
