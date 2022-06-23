@@ -219,7 +219,8 @@ public class PlayerCTRL : PlayerObservable, IEnemyObserver, IPlayerCalculate, IM
             if (CanLevelUp) {
                 LevelUp();
             }
-            
+            PlayerUpdated();
+
             IsAttack = false;
 
             try {
